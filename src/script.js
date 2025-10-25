@@ -3,9 +3,16 @@ class NameGuessingQuiz {
     constructor() {
         this.currentQuestion = 0;
         this.answers = {};
+        this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.questions = [
             {
+                text: "🗺️ What state were you born in?",
+                type: "map",
+                key: "state"
+            },
+            {
                 text: "🌈 What's your gender identity?",
+                type: "multi_select",
                 options: [
                     { text: "👨 Male", value: "M" },
                     { text: "👩 Female", value: "F" },
@@ -53,62 +60,134 @@ class NameGuessingQuiz {
             //     key: "popularity"
             // },
             {
-                text: "🎭 If you had to pick a creative hobby, which sounds most appealing?",
+                text: "🎭 What creative hobbies interest you?",
+                type: "multi_select",
                 options: [
                     { text: "✍️ Writing stories or poetry", value: "writer" },
                     { text: "🎵 Playing music or singing", value: "musician" },
                     { text: "🎨 Painting or drawing", value: "artist" },
-                    { text: "🎬 Acting or performing", value: "performer" }
+                    { text: "🎬 Acting or performing", value: "performer" },
+                    { text: "📸 Photography", value: "photography" },
+                    { text: "💃 Dancing", value: "dancing" },
+                    { text: "🎪 Crafts or DIY", value: "crafts" },
+                    { text: "🎮 Game design", value: "game_design" },
+                    { text: "🏗️ Architecture or design", value: "architecture" },
+                    { text: "🍳 Cooking or baking", value: "cooking" }
                 ],
                 key: "creative_interest"
             },
             {
-                text: "🏢 In a perfect world, what type of work environment appeals to you most?",
+                text: "🏢 What work environments appeal to you?",
+                type: "multi_select",
                 options: [
                     { text: "⚖️ Courtroom or law office", value: "legal" },
                     { text: "🏥 Hospital or clinic", value: "medical" },
                     { text: "🌾 Farm or outdoor work", value: "agricultural" },
-                    { text: "💻 Tech office or startup", value: "technology" }
+                    { text: "💻 Tech office or startup", value: "technology" },
+                    { text: "🎨 Art studio or creative space", value: "creative" },
+                    { text: "🏫 School or university", value: "education" },
+                    { text: "🏭 Factory or industrial setting", value: "industrial" },
+                    { text: "🏪 Retail store or shop", value: "retail" },
+                    { text: "🍳 Restaurant or kitchen", value: "culinary" },
+                    { text: "🏢 Corporate office building", value: "corporate" },
+                    { text: "🏠 Home office or remote work", value: "remote" },
+                    { text: "🎭 Theater or performance venue", value: "theater" },
+                    { text: "🏃‍♀️ Gym or fitness center", value: "fitness" },
+                    { text: "🌍 Travel or field work", value: "travel" },
+                    { text: "🔬 Laboratory or research facility", value: "research" },
+                    { text: "✈️ Airport or transportation hub", value: "transportation" }
                 ],
                 key: "work_environment"
             },
             {
-                text: "📚 What type of book would you most likely pick up?",
+                text: "📚 What types of books do you enjoy?",
+                type: "multi_select",
                 options: [
                     { text: "📖 Classic literature", value: "literature" },
                     { text: "🔬 Science or nature guide", value: "science" },
                     { text: "📊 Business or finance", value: "business" },
-                    { text: "🎨 Art or design book", value: "art" }
+                    { text: "🎨 Art or design book", value: "art" },
+                    { text: "🕵️ Mystery or thriller", value: "mystery" },
+                    { text: "🚀 Science fiction or fantasy", value: "sci_fi" },
+                    { text: "❤️ Romance or drama", value: "romance" },
+                    { text: "📚 Biography or memoir", value: "biography" },
+                    { text: "🌍 Travel or adventure", value: "travel" },
+                    { text: "🍳 Cookbook or lifestyle", value: "lifestyle" },
+                    { text: "🧠 Psychology or self-help", value: "psychology" },
+                    { text: "🏛️ History or philosophy", value: "history" },
+                    { text: "🎮 Gaming or technology", value: "gaming" },
+                    { text: "📰 News or current events", value: "news" },
+                    { text: "📚 Poetry or verse", value: "poetry" },
+                    { text: "🎭 Theater or plays", value: "theater" },
+                    { text: "🌱 Gardening or nature", value: "gardening" },
+                    { text: "🏃‍♀️ Health or fitness", value: "health" },
+                    { text: "🎵 Music or entertainment", value: "music" },
+                    { text: "📚 Children's books", value: "children" }
                 ],
                 key: "reading_preference"
             },
             {
-                text: "🏠 What type of neighborhood feels most like home to you?",
+                text: "🏠 What types of neighborhoods appeal to you?",
+                type: "multi_select",
                 options: [
                     { text: "🌳 Quiet suburban area", value: "suburban" },
                     { text: "🏙️ Bustling city center", value: "urban" },
                     { text: "🌾 Rural countryside", value: "rural" },
-                    { text: "🏘️ Historic district", value: "historic" }
+                    { text: "🏘️ Historic district", value: "historic" },
+                    { text: "🏖️ Beach or coastal town", value: "coastal" },
+                    { text: "🏔️ Mountain or hill area", value: "mountain" },
+                    { text: "🌲 Forest or woodland", value: "forest" },
+                    { text: "🏜️ Desert or arid region", value: "desert" },
+                    { text: "🏘️ College town or university area", value: "college" },
+                    { text: "🏭 Industrial or working-class area", value: "industrial" },
+                    { text: "🎨 Arts district or creative hub", value: "arts" },
+                    { text: "🌍 International or diverse community", value: "international" },
+                    { text: "🏡 Gated community or private area", value: "gated" },
+                    { text: "🚶‍♀️ Walkable downtown area", value: "walkable" }
                 ],
                 key: "neighborhood_preference"
             },
             {
-                text: "🎓 If you could choose any educational path, which appeals most?",
+                text: "🎓 What educational paths interest you?",
+                type: "multi_select",
                 options: [
                     { text: "⚖️ Law or political science", value: "legal" },
                     { text: "🔬 Medicine or research", value: "medical" },
                     { text: "💼 Business or economics", value: "business" },
-                    { text: "🎨 Arts or humanities", value: "arts" }
+                    { text: "🎨 Arts or humanities", value: "arts" },
+                    { text: "💻 Computer science or tech", value: "technology" },
+                    { text: "🏗️ Engineering or architecture", value: "engineering" },
+                    { text: "👨‍🏫 Education or teaching", value: "education" },
+                    { text: "🌱 Environmental science", value: "environment" },
+                    { text: "🎵 Music or performing arts", value: "performing" },
+                    { text: "📚 Psychology or social work", value: "social" },
+                    { text: "🌍 International studies", value: "international" },
+                    { text: "🏛️ History or philosophy", value: "humanities" },
+                    { text: "🌿 Agriculture or forestry", value: "agriculture" },
+                    { text: "🏥 Nursing or healthcare", value: "nursing" },
+                    { text: "🎬 Film or media studies", value: "film" },
+                    { text: "🏃‍♀️ Sports or kinesiology", value: "sports" },
+                    { text: "🍳 Culinary arts", value: "culinary" },
+                    { text: "🎨 Design or fashion", value: "design" },
+                    { text: "🌍 Languages or linguistics", value: "languages" },
+                    { text: "🔬 Mathematics or statistics", value: "mathematics" }
                 ],
                 key: "educational_interest"
             },
             {
                 text: "🌟 How do you prefer to stand out in a group?",
+                type: "multi_select",
                 options: [
                     { text: "💡 Through unique ideas", value: "creative" },
                     { text: "📊 Through expertise", value: "expert" },
                     { text: "🤝 Through leadership", value: "leader" },
-                    { text: "🎭 Through personality", value: "charismatic" }
+                    { text: "🎭 Through personality", value: "charismatic" },
+                    { text: "🎵 Through humor", value: "humorous" },
+                    { text: "💪 Through strength", value: "strong" },
+                    { text: "🧠 Through wisdom", value: "wise" },
+                    { text: "❤️ Through kindness", value: "kind" },
+                    { text: "🎨 Through creativity", value: "artistic" },
+                    { text: "🏃‍♀️ Through energy", value: "energetic" }
                 ],
                 key: "social_style"
             },
@@ -145,7 +224,8 @@ class NameGuessingQuiz {
                 key: "favorite_letter"
             },
             {
-                text: "🎯 What's your ideal career path?",
+                text: "🎯 What career paths interest you?",
+                type: "multi_select",
                 options: [
                     { text: "⚖️ Law and justice", value: "legal" },
                     { text: "🏥 Medicine and healing", value: "medical" },
@@ -154,38 +234,148 @@ class NameGuessingQuiz {
                     { text: "🔬 Science and research", value: "science" },
                     { text: "👨‍🏫 Education and teaching", value: "education" },
                     { text: "🎵 Music and entertainment", value: "entertainment" },
-                    { text: "🌱 Environment and nature", value: "environment" }
+                    { text: "🌱 Environment and nature", value: "environment" },
+                    { text: "💻 Technology and programming", value: "technology" },
+                    { text: "🏗️ Engineering and construction", value: "engineering" },
+                    { text: "👮‍♀️ Public service and safety", value: "public_service" },
+                    { text: "🍳 Culinary and hospitality", value: "culinary" },
+                    { text: "✈️ Travel and tourism", value: "travel" },
+                    { text: "📚 Writing and journalism", value: "writing" },
+                    { text: "🏃‍♀️ Sports and fitness", value: "sports" },
+                    { text: "🎭 Theater and performance", value: "theater" },
+                    { text: "🔧 Skilled trades and crafts", value: "trades" },
+                    { text: "💡 Entrepreneurship and innovation", value: "entrepreneurship" },
+                    { text: "🎬 Film and media", value: "film" },
+                    { text: "🏠 Real estate", value: "real_estate" },
+                    { text: "🎨 Design and fashion", value: "design" }
                 ],
                 key: "career_path"
             },
             {
-                text: "🎵 What type of music do you prefer?",
+                text: "🎵 What types of music do you enjoy?",
+                type: "multi_select",
                 options: [
                     { text: "🎼 Classical or orchestral", value: "classical" },
                     { text: "🎸 Rock or alternative", value: "rock" },
                     { text: "🎤 Pop or mainstream", value: "pop" },
                     { text: "🎷 Jazz or blues", value: "jazz" },
                     { text: "🎵 Electronic or ambient", value: "electronic" },
-                    { text: "🎶 Folk or acoustic", value: "folk" }
+                    { text: "🎶 Folk or acoustic", value: "folk" },
+                    { text: "🎺 Hip-hop or rap", value: "hip_hop" },
+                    { text: "🎻 Country or western", value: "country" },
+                    { text: "🎹 R&B or soul", value: "rnb" },
+                    { text: "🎸 Metal or heavy metal", value: "metal" },
+                    { text: "🎵 Reggae or ska", value: "reggae" },
+                    { text: "🎺 Funk or disco", value: "funk" },
+                    { text: "🎻 Gospel or spiritual", value: "gospel" },
+                    { text: "🎸 Punk or grunge", value: "punk" },
+                    { text: "🎵 World music or ethnic", value: "world" },
+                    { text: "🎹 Indie or alternative", value: "indie" },
+                    { text: "🎺 Latin or salsa", value: "latin" },
+                    { text: "🎻 Opera or musical theater", value: "opera" },
+                    { text: "🎸 New age or meditation", value: "new_age" },
+                    { text: "🎵 Experimental or avant-garde", value: "experimental" }
                 ],
                 key: "music_preference"
             },
             {
                 text: "🌟 How do you handle stress?",
+                type: "multi_select",
                 options: [
                     { text: "🧘 Meditation or mindfulness", value: "mindful" },
                     { text: "🏃 Exercise or physical activity", value: "active" },
                     { text: "📚 Reading or learning", value: "intellectual" },
                     { text: "🎨 Creative expression", value: "creative" },
                     { text: "👥 Socializing with friends", value: "social" },
-                    { text: "🎮 Gaming or entertainment", value: "distraction" }
+                    { text: "🎮 Gaming or entertainment", value: "distraction" },
+                    { text: "🎵 Music or singing", value: "music" },
+                    { text: "🍳 Cooking or baking", value: "cooking" },
+                    { text: "🌿 Nature or gardening", value: "nature" },
+                    { text: "✍️ Writing or journaling", value: "writing" },
+                    { text: "🎬 Movies or TV", value: "media" },
+                    { text: "🏃‍♀️ Sports or fitness", value: "sports" },
+                    { text: "🎨 Art or crafts", value: "art" },
+                    { text: "🐕 Pet care or animals", value: "pets" },
+                    { text: "🧘 Yoga or stretching", value: "yoga" }
                 ],
                 key: "stress_management"
             },
             {
-                text: "🗺️ What state were you born in?",
-                type: "map",
-                key: "state"
+                text: "⛪ What religious ceremonies were you part of as a child?",
+                type: "multi_select",
+                options: [
+                    { text: "✝️ Christian baptism", value: "christian_baptized" },
+                    { text: "✡️ Jewish naming ceremony", value: "jewish_naming" },
+                    { text: "🕉️ Hindu naming ceremony", value: "hindu_naming" },
+                    { text: "☪️ Islamic naming ceremony", value: "islamic_naming" },
+                    { text: "☸️ Buddhist naming ceremony", value: "buddhist_naming" },
+                    { text: "🕯️ Sikh naming ceremony", value: "sikh_naming" },
+                    { text: "🌿 Other religious ceremony", value: "other_ceremony" },
+                    { text: "❌ No religious ceremonies", value: "none" },
+                    { text: "🤷 I'm not sure", value: "unsure" },
+                    { text: "🚫 I prefer not to say", value: "prefer_not_to_say" }
+                ],
+                key: "baptism_status"
+            },
+            {
+                text: "🕊️ What religious or spiritual traditions does your family follow?",
+                type: "multi_select",
+                options: [
+                    { text: "✝️ Christianity", value: "christianity" },
+                    { text: "☪️ Islam", value: "islam" },
+                    { text: "✡️ Judaism", value: "judaism" },
+                    { text: "🕉️ Hinduism", value: "hinduism" },
+                    { text: "☸️ Buddhism", value: "buddhism" },
+                    { text: "🕯️ Sikhism", value: "sikhism" },
+                    { text: "🏛️ Greek/Roman Mythology", value: "greek" },
+                    { text: "⚡ Norse/Scandinavian", value: "norse" },
+                    { text: "🍀 Celtic/Irish", value: "celtic" },
+                    { text: "🌍 Other spiritual tradition", value: "other_spiritual" },
+                    { text: "🚫 No religious affiliation", value: "none" },
+                    { text: "🤐 Prefer not to say", value: "prefer_not_to_say" }
+                ],
+                key: "religious_tradition"
+            },
+            {
+                text: "🌍 What cultural backgrounds does your family come from?",
+                type: "multi_select",
+                options: [
+                    { text: "🇺🇸 American/English", value: "american" },
+                    { text: "🇪🇸 Spanish/Latin American", value: "spanish" },
+                    { text: "🇫🇷 French", value: "french" },
+                    { text: "🇩🇪 German", value: "german" },
+                    { text: "🇮🇹 Italian", value: "italian" },
+                    { text: "🇷🇺 Russian/Slavic", value: "slavic" },
+                    { text: "🇬🇷 Greek", value: "greek" },
+                    { text: "🇮🇳 Indian/Sanskrit", value: "sanskrit" },
+                    { text: "🇦🇪 Arabic/Middle Eastern", value: "arabic" },
+                    { text: "🇮🇱 Hebrew/Jewish", value: "hebrew" },
+                    { text: "🇮🇪 Irish/Celtic", value: "celtic" },
+                    { text: "🇳🇴 Scandinavian/Norse", value: "norse" },
+                    { text: "🌍 Mixed/Multiple", value: "mixed" },
+                    { text: "🤐 Prefer not to say", value: "prefer_not_to_say" }
+                ],
+                key: "cultural_background"
+            },
+            {
+                text: "📚 What type of name meaning appeals to you most?",
+                options: [
+                    { text: "👑 Royal or noble meaning", value: "royal" },
+                    { text: "🌿 Nature-inspired", value: "nature" },
+                    { text: "⚔️ Warrior or strength", value: "warrior" },
+                    { text: "💎 Precious or valuable", value: "precious" },
+                    { text: "🌟 Light or brightness", value: "light" },
+                    { text: "❤️ Love or compassion", value: "love" },
+                    { text: "🧠 Wisdom or knowledge", value: "wisdom" },
+                    { text: "🎵 Music or harmony", value: "music" },
+                    { text: "🌊 Water or flow", value: "water" },
+                    { text: "🔥 Fire or energy", value: "fire" },
+                    { text: "🌙 Moon or night", value: "moon" },
+                    { text: "☀️ Sun or day", value: "sun" },
+                    { text: "🕊️ Peace or freedom", value: "peace" },
+                    { text: "🎭 Creative or artistic", value: "creative" }
+                ],
+                key: "name_meaning_preference"
             }
         ];
         
@@ -196,31 +386,10 @@ class NameGuessingQuiz {
 
     async loadNameData() {
         try {
-            // Load recent name data (2020-2024) for better accuracy
-            const years = ['2020', '2021', '2022', '2023', '2024'];
-            const allNames = {};
-            
-            for (const year of years) {
-                const response = await fetch(`../names/yob${year}.txt`);
-                const text = await response.text();
-                const lines = text.split('\n');
-                
-                lines.forEach(line => {
-                    if (line.trim()) {
-                        const [name, gender, count] = line.split(',');
-                        const key = `${name.toLowerCase()}_${gender}`;
-                        if (!allNames[key]) {
-                            allNames[key] = { name, gender, totalCount: 0, years: [] };
-                        }
-                        allNames[key].totalCount += parseInt(count);
-                        allNames[key].years.push({ year, count: parseInt(count) });
-                    }
-                });
-            }
-            
-            this.nameData = allNames;
+            // Use the enhanced name database
+            this.nameData = await this.enhancedNameDatabase.loadEnhancedNameData();
         } catch (error) {
-            console.error('Error loading name data:', error);
+            console.error('Error loading enhanced name data:', error);
             // Fallback to a simple name list
             this.nameData = this.getFallbackNames();
         }
@@ -277,7 +446,9 @@ class NameGuessingQuiz {
         if (question.type === 'slider') {
             this.createSlider(question, optionsContainer);
         } else if (question.type === 'map') {
-            this.createMap(question, optionsContainer);
+            this.createMap();
+        } else if (question.type === 'multi_select') {
+            this.createMultiSelect(question, optionsContainer);
         } else {
             question.options.forEach(option => {
                 const button = document.createElement('button');
@@ -421,9 +592,182 @@ class NameGuessingQuiz {
         return value;
     }
 
+    createMultiSelect(question, container) {
+        // Create multi-select container
+        const multiSelectContainer = document.createElement('div');
+        multiSelectContainer.className = 'multi-select-container';
+        
+        // Create instruction text
+        const instructionText = document.createElement('p');
+        instructionText.className = 'multi-select-instruction';
+        instructionText.textContent = 'Select all that apply:';
+        instructionText.style.cssText = `
+            color: #FFD700;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        `;
+        multiSelectContainer.appendChild(instructionText);
+        
+        // Create options grid
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'multi-select-grid';
+        optionsGrid.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        `;
+        
+        // Store selected values
+        const selectedValues = new Set();
+        
+        // Create option buttons
+        question.options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'multi-select-option';
+            button.textContent = option.text;
+            button.dataset.value = option.value;
+            button.style.cssText = `
+                padding: 15px 20px;
+                background: linear-gradient(145deg, #4A148C, #7B1FA2);
+                border: 2px solid #FFD700;
+                color: white;
+                border-radius: 25px;
+                cursor: pointer;
+                font-family: 'Bohemian Typewriter', monospace;
+                font-size: 16px;
+                font-weight: bold;
+                transition: all 0.3s ease;
+                text-align: center;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+            `;
+            
+            // Add hover effects
+            button.addEventListener('mouseenter', () => {
+                if (!button.classList.contains('selected')) {
+                    button.style.background = 'linear-gradient(145deg, #7B1FA2, #9C27B0)';
+                    button.style.borderColor = '#FFFFFF';
+                    button.style.transform = 'scale(1.05)';
+                    button.style.boxShadow = '0 6px 20px rgba(255, 215, 0, 0.5)';
+                }
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                if (!button.classList.contains('selected')) {
+                    button.style.background = 'linear-gradient(145deg, #4A148C, #7B1FA2)';
+                    button.style.borderColor = '#FFD700';
+                    button.style.transform = 'scale(1)';
+                    button.style.boxShadow = '0 4px 15px rgba(138, 43, 226, 0.3)';
+                }
+            });
+            
+            // Add click handler
+            button.addEventListener('click', () => {
+                if (button.classList.contains('selected')) {
+                    // Deselect
+                    button.classList.remove('selected');
+                    button.style.background = 'linear-gradient(145deg, #4A148C, #7B1FA2)';
+                    button.style.borderColor = '#FFD700';
+                    button.style.transform = 'scale(1)';
+                    button.style.boxShadow = '0 4px 15px rgba(138, 43, 226, 0.3)';
+                    button.style.filter = 'none';
+                    selectedValues.delete(option.value);
+                } else {
+                    // Select
+                    button.classList.add('selected');
+                    button.style.background = 'linear-gradient(145deg, #FFD700, #FFA500)';
+                    button.style.borderColor = '#FFFFFF';
+                    button.style.transform = 'scale(1.05)';
+                    button.style.boxShadow = '0 6px 20px rgba(255, 215, 0, 0.8)';
+                    button.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                    selectedValues.add(option.value);
+                }
+                
+                // Update continue button visibility
+                this.updateMultiSelectContinueButton(continueBtn, selectedValues.size > 0);
+            });
+            
+            optionsGrid.appendChild(button);
+        });
+        
+        // Create continue button
+        const continueBtn = document.createElement('button');
+        continueBtn.className = 'multi-select-continue-btn';
+        continueBtn.textContent = 'Continue';
+        continueBtn.style.cssText = `
+            padding: 12px 24px;
+            background: linear-gradient(145deg, #1A0033, #4A148C);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Great Warrior', sans-serif;
+            font-size: 1rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            margin: 20px auto 0;
+            display: block;
+            opacity: 0.5;
+            pointer-events: none;
+            box-shadow: 0 6px 15px rgba(138, 43, 226, 0.4);
+        `;
+        
+        // Initially disabled
+        this.updateMultiSelectContinueButton(continueBtn, false);
+        
+        // Add continue button click handler
+        continueBtn.addEventListener('click', () => {
+            if (selectedValues.size > 0) {
+                this.selectAnswer(Array.from(selectedValues));
+            }
+        });
+        
+        multiSelectContainer.appendChild(optionsGrid);
+        multiSelectContainer.appendChild(continueBtn);
+        container.appendChild(multiSelectContainer);
+    }
+    
+    updateMultiSelectContinueButton(button, enabled) {
+        if (enabled) {
+            button.style.opacity = '1';
+            button.style.pointerEvents = 'auto';
+            button.style.background = 'linear-gradient(145deg, #1A0033, #4A148C)';
+            button.style.borderColor = '#FFD700';
+            button.style.color = '#FFD700';
+            button.style.boxShadow = '0 6px 15px rgba(138, 43, 226, 0.4)';
+            
+            // Add hover effects
+            button.addEventListener('mouseenter', () => {
+                button.style.background = 'linear-gradient(145deg, #4A148C, #6A1B9A)';
+                button.style.transform = 'translateY(-2px)';
+                button.style.boxShadow = '0 8px 20px rgba(138, 43, 226, 0.6), 0 0 30px rgba(255, 215, 0, 0.5)';
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.style.background = 'linear-gradient(145deg, #1A0033, #4A148C)';
+                button.style.transform = 'translateY(0)';
+                button.style.boxShadow = '0 6px 15px rgba(138, 43, 226, 0.4)';
+            });
+        } else {
+            button.style.opacity = '0.5';
+            button.style.pointerEvents = 'none';
+            button.style.background = 'linear-gradient(145deg, #0A001A, #2A0A4C)';
+            button.style.borderColor = '#666';
+            button.style.color = '#999';
+            button.style.boxShadow = '0 2px 8px rgba(138, 43, 226, 0.1)';
+            button.style.transform = 'translateY(0)';
+        }
+    }
+
     createMap() {
-        console.log("createMap called");
-      
         const mapContainer = document.getElementById('mapContainer');
         if (!mapContainer) {
           console.error("Map container not found!");
@@ -433,8 +777,7 @@ class NameGuessingQuiz {
          mapContainer.style.display = 'block';
          mapContainer.innerHTML = '<div id="continueContainer"></div>';
       
-        console.log("Fetching map...");
-        fetch('us.svg') // <-- change this if your file is in another folder
+        fetch('us.svg')
           .then(response => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.text();
@@ -451,7 +794,7 @@ class NameGuessingQuiz {
             svgElement.style.display = 'block';
             svgElement.style.margin = '0 auto';
       
-             svgElement.querySelectorAll('path').forEach(path => {
+            svgElement.querySelectorAll('path').forEach(path => {
                path.classList.add('state-path');
                
                // Add golden styling
@@ -504,7 +847,6 @@ class NameGuessingQuiz {
              });
       
             mapContainer.appendChild(svgElement);
-            console.log("Map successfully rendered!");
           })
           .catch(err => console.error("Error loading map:", err));
        }
@@ -804,6 +1146,95 @@ class NameGuessingQuiz {
             if (this.answers.popularity === 'uncommon' && isPopular) return false;
         }
         
+        // Check religious tradition (handle both single values and arrays)
+        if (this.answers.religious_tradition) {
+            const religiousSelections = Array.isArray(this.answers.religious_tradition) 
+                ? this.answers.religious_tradition 
+                : [this.answers.religious_tradition];
+            
+            // Filter out "prefer_not_to_say", "none", and "other_spiritual"
+            const validReligions = religiousSelections.filter(religion => 
+                religion !== "prefer_not_to_say" && 
+                religion !== "none" && 
+                religion !== "other_spiritual"
+            );
+            
+            if (validReligions.length > 0) {
+                const hasMatch = validReligions.some(religion => 
+                    nameInfo.religions && nameInfo.religions.includes(religion)
+                );
+                if (!hasMatch) {
+                    return false;
+                }
+            }
+        }
+        
+        // Check cultural background (handle both single values and arrays)
+        if (this.answers.cultural_background) {
+            const culturalSelections = Array.isArray(this.answers.cultural_background) 
+                ? this.answers.cultural_background 
+                : [this.answers.cultural_background];
+            
+            // Filter out "prefer_not_to_say" and "mixed"
+            const validCultures = culturalSelections.filter(culture => 
+                culture !== "prefer_not_to_say" && 
+                culture !== "mixed"
+            );
+            
+            if (validCultures.length > 0) {
+                const hasMatch = validCultures.some(culture => 
+                    nameInfo.culturalOrigins && nameInfo.culturalOrigins.includes(culture)
+                );
+                if (!hasMatch) {
+                    return false;
+                }
+            }
+        }
+        
+        // Check baptism status (for religious names)
+        if (this.answers.baptism_status) {
+            const baptismSelections = Array.isArray(this.answers.baptism_status) 
+                ? this.answers.baptism_status 
+                : [this.answers.baptism_status];
+            
+            // Filter out "prefer_not_to_say", "unsure", and "none"
+            const validCeremonies = baptismSelections.filter(ceremony => 
+                ceremony !== "prefer_not_to_say" && 
+                ceremony !== "unsure" && 
+                ceremony !== "none"
+            );
+            
+            if (validCeremonies.length > 0) {
+                // Check for religious ceremony matches
+                const hasReligiousMatch = validCeremonies.some(ceremony => {
+                    if (ceremony === "christian_baptized" && nameInfo.religions && nameInfo.religions.includes("christianity")) {
+                        return true;
+                    }
+                    if (ceremony === "jewish_naming" && nameInfo.religions && nameInfo.religions.includes("judaism")) {
+                        return true;
+                    }
+                    if (ceremony === "hindu_naming" && nameInfo.religions && nameInfo.religions.includes("hinduism")) {
+                        return true;
+                    }
+                    if (ceremony === "islamic_naming" && nameInfo.religions && nameInfo.religions.includes("islam")) {
+                        return true;
+                    }
+                    if (ceremony === "buddhist_naming" && nameInfo.religions && nameInfo.religions.includes("buddhism")) {
+                        return true;
+                    }
+                    if (ceremony === "sikh_naming" && nameInfo.religions && nameInfo.religions.includes("sikhism")) {
+                        return true;
+                    }
+                    return false;
+                });
+                
+                if (hasReligiousMatch) {
+                    // Boost names that match religious ceremonies
+                    return true;
+                }
+            }
+        }
+        
         // Check state (for now, just return true as we don't have state-specific data)
         if (this.answers.state) {
             // State filtering could be added here if we had state-specific name data
@@ -817,9 +1248,71 @@ class NameGuessingQuiz {
         const candidates = this.getCandidates();
         if (candidates.length === 0) return 30;
         if (candidates.length === 1) return 95;
-        if (candidates.length <= 3) return 85;
-        if (candidates.length <= 10) return 70;
-        return 60;
+        
+        // Boost confidence for religious/cultural matches
+        let confidence = 60;
+        if (candidates.length <= 3) confidence = 85;
+        else if (candidates.length <= 10) confidence = 70;
+        
+        // Check for religious significance
+        const topCandidate = candidates[0];
+        if (topCandidate.religiousSignificance === 'high') {
+            confidence += 15;
+        } else if (topCandidate.religiousSignificance === 'medium') {
+            confidence += 10;
+        } else if (topCandidate.religiousSignificance === 'low') {
+            confidence += 5;
+        }
+        
+        // Check for cross-religious compatibility
+        if (topCandidate.crossReligious) {
+            confidence += 10;
+        }
+        
+        // Check for cultural match (handle both single values and arrays)
+        if (this.answers.cultural_background) {
+            const culturalSelections = Array.isArray(this.answers.cultural_background) 
+                ? this.answers.cultural_background 
+                : [this.answers.cultural_background];
+            
+            const validCultures = culturalSelections.filter(culture => 
+                culture !== "prefer_not_to_say" && 
+                culture !== "mixed"
+            );
+            
+            if (validCultures.length > 0 && topCandidate.culturalOrigins) {
+                const hasCulturalMatch = validCultures.some(culture => 
+                    topCandidate.culturalOrigins.includes(culture)
+                );
+                if (hasCulturalMatch) {
+                    confidence += 10;
+                }
+            }
+        }
+        
+        // Check for religious match (handle both single values and arrays)
+        if (this.answers.religious_tradition) {
+            const religiousSelections = Array.isArray(this.answers.religious_tradition) 
+                ? this.answers.religious_tradition 
+                : [this.answers.religious_tradition];
+            
+            const validReligions = religiousSelections.filter(religion => 
+                religion !== "prefer_not_to_say" && 
+                religion !== "none" && 
+                religion !== "other_spiritual"
+            );
+            
+            if (validReligions.length > 0 && topCandidate.religions) {
+                const hasReligiousMatch = validReligions.some(religion => 
+                    topCandidate.religions.includes(religion)
+                );
+                if (hasReligiousMatch) {
+                    confidence += 15;
+                }
+            }
+        }
+        
+        return Math.min(confidence, 95); // Cap at 95%
     }
 
     handleCorrect() {
@@ -862,8 +1355,197 @@ class NameGuessingQuiz {
     }
 }
 
+// Mystical Background Graphics Manager
+class MysticalBackground {
+    constructor() {
+        this.graphics = [
+            'crystal_ball.png',
+            'devil.png',
+            'homer\'s_riddle.png',
+            'illuminati.png',
+            'mask.png',
+            'medusa.png',
+            'smoke.png',
+            'vecteezy_cobra_36629722.svg',
+            'vecteezy_egypt-sphinx_36659095.svg',
+            'vecteezy_snake_36654696.svg'
+        ];
+        this.container = document.getElementById('mysticalBackground');
+        this.quadrants = [];
+        this.activeGraphics = [];
+        this.maxActive = 8;
+        this.minActive = 5;
+        this.initializeQuadrants();
+        this.createGraphics();
+        this.startAnimationCycle();
+    }
+
+    initializeQuadrants() {
+        // Divide screen into 8 quadrants
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const quadrantWidth = screenWidth / 4;
+        const quadrantHeight = screenHeight / 2;
+        
+        this.quadrants = [
+            // Top row
+            { x: 0, y: 0, width: quadrantWidth, height: quadrantHeight, id: 0 },
+            { x: quadrantWidth, y: 0, width: quadrantWidth, height: quadrantHeight, id: 1 },
+            { x: quadrantWidth * 2, y: 0, width: quadrantWidth, height: quadrantHeight, id: 2 },
+            { x: quadrantWidth * 3, y: 0, width: quadrantWidth, height: quadrantHeight, id: 3 },
+            // Bottom row
+            { x: 0, y: quadrantHeight, width: quadrantWidth, height: quadrantHeight, id: 4 },
+            { x: quadrantWidth, y: quadrantHeight, width: quadrantWidth, height: quadrantHeight, id: 5 },
+            { x: quadrantWidth * 2, y: quadrantHeight, width: quadrantWidth, height: quadrantHeight, id: 6 },
+            { x: quadrantWidth * 3, y: quadrantHeight, width: quadrantWidth, height: quadrantHeight, id: 7 }
+        ];
+    }
+
+    createGraphics() {
+        // Create 24 graphic containers (3 per quadrant for more density)
+        for (let i = 0; i < 24; i++) {
+            const graphic = document.createElement('div');
+            graphic.className = 'mystical-graphic';
+            graphic.dataset.quadrant = i % 8; // Distribute across 8 quadrants
+            graphic.style.opacity = '0';
+            this.container.appendChild(graphic);
+        }
+    }
+
+    startAnimationCycle() {
+        // Start gradual fade in/out cycle
+        this.startGradualCycle();
+    }
+
+    startGradualCycle() {
+        // Create wave effect across the screen
+        this.createWaveEffect();
+    }
+
+    createWaveEffect() {
+        const allGraphics = document.querySelectorAll('.mystical-graphic');
+        
+        // Create wave pattern - graphics appear in waves across the screen
+        setInterval(() => {
+            this.startWave();
+        }, 8000); // New wave every 8 seconds
+        
+        // Start first wave immediately
+        this.startWave();
+    }
+
+    startWave() {
+        const allGraphics = document.querySelectorAll('.mystical-graphic');
+        
+        // Group graphics by quadrant
+        const graphicsByQuadrant = {};
+        allGraphics.forEach(graphic => {
+            const quadrant = parseInt(graphic.dataset.quadrant);
+            if (!graphicsByQuadrant[quadrant]) {
+                graphicsByQuadrant[quadrant] = [];
+            }
+            graphicsByQuadrant[quadrant].push(graphic);
+        });
+        
+        // Select one random graphic per quadrant to avoid duplicates
+        const selectedGraphics = [];
+        Object.keys(graphicsByQuadrant).forEach(quadrantId => {
+            const quadrantGraphics = graphicsByQuadrant[quadrantId];
+            const randomGraphic = quadrantGraphics[Math.floor(Math.random() * quadrantGraphics.length)];
+            selectedGraphics.push({
+                graphic: randomGraphic,
+                quadrant: parseInt(quadrantId)
+            });
+        });
+        
+        // Sort by quadrant for wave effect
+        selectedGraphics.sort((a, b) => a.quadrant - b.quadrant);
+        
+        // Wave timing - each graphic appears with a delay based on its position
+        selectedGraphics.forEach((item, index) => {
+            const waveDelay = index * 200; // 200ms between each graphic in the wave
+            
+            setTimeout(() => {
+                this.fadeInGraphic(item.graphic);
+                
+                // Fade out after a random duration
+                const visibleDuration = Math.random() * 3000 + 2000; // 2-5 seconds visible
+                
+                setTimeout(() => {
+                    this.fadeOutGraphic(item.graphic);
+                }, visibleDuration);
+            }, waveDelay);
+        });
+    }
+
+
+    fadeInGraphic(graphic) {
+        // Update the graphic with new properties
+        const quadrantId = parseInt(graphic.dataset.quadrant);
+        const quadrant = this.quadrants[quadrantId];
+        this.updateGraphic(graphic, quadrant);
+        
+        // Fade in
+        graphic.style.opacity = '0';
+        graphic.style.transition = 'opacity 1.5s ease-in-out';
+        setTimeout(() => {
+            graphic.style.opacity = '0.7';
+        }, 50);
+    }
+
+    fadeOutGraphic(graphic) {
+        // Fade out
+        graphic.style.transition = 'opacity 1.5s ease-in-out';
+        graphic.style.opacity = '0';
+    }
+
+
+    updateGraphic(graphic, quadrant) {
+        // Clear existing content
+        graphic.innerHTML = '';
+        
+        // Random size between 80px and 120px (smaller to prevent overlap)
+        const size = Math.random() * 40 + 80;
+        graphic.style.width = `${size}px`;
+        graphic.style.height = `${size}px`;
+        
+        // Since we only show one graphic per quadrant, we can center it
+        const centerX = quadrant.x + (quadrant.width / 2);
+        const centerY = quadrant.y + (quadrant.height / 2);
+        const x = centerX - size / 2;
+        const y = centerY - size / 2;
+        
+        graphic.style.left = `${x}px`;
+        graphic.style.top = `${y}px`;
+        
+        // Random orientation: 0 degrees, horizontal flip, vertical flip, or both
+        const orientations = [
+            'rotate(0deg)',           // Normal
+            'scaleX(-1)',             // Horizontal flip
+            'scaleY(-1)',             // Vertical flip
+            'scaleX(-1) scaleY(-1)'   // Both flips
+        ];
+        const orientation = orientations[Math.floor(Math.random() * orientations.length)];
+        graphic.style.transform = orientation;
+        
+        // Random graphic from the collection (using all 10 graphics)
+        const graphicSrc = this.graphics[Math.floor(Math.random() * this.graphics.length)];
+        const img = document.createElement('img');
+        img.src = `../assets/background-graphics/${graphicSrc}`;
+        img.alt = 'Mystical Symbol';
+        
+        graphic.appendChild(img);
+        
+        // Show the graphic
+        graphic.style.opacity = '0.7';
+    }
+}
+
 // Initialize the quiz when the page loads
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize mystical background
+    new MysticalBackground();
+    
     const quiz = new NameGuessingQuiz();
     
     // Handle browser back button
@@ -921,3 +1603,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
