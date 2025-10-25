@@ -16,26 +16,24 @@ class NameGuessingQuiz {
             },
             {
                 text: "🎂 What decade were you born in?",
-                options: [
-                    { text: "✨ 2010s", value: "2010s" },
-                    { text: "🔥 2000s", value: "2000s" },
-                    { text: "💫 1990s", value: "1990s" },
-                    { text: "🎵 1980s", value: "1980s" },
-                    { text: "🌈 1970s", value: "1970s" },
-                    { text: "🕺 1960s", value: "1960s" }
-                ],
+                type: "slider",
+                min: 1900,
+                max: 2020,
+                step: 10,
+                default: 1990,
+                labels: ["📜 1900s", "🎵 1950s", "🌈 2000s", "✨ 2020s"],
                 key: "decade"
             },
-            {
-                text: "📏 How many letters are in your first name?",
-                type: "slider",
-                min: 2,
-                max: 15,
-                step: 1,
-                default: 6,
-                labels: ["⚡ Short", "💫 Medium", "🌟 Long"],
-                key: "length"
-            },
+            // {
+            //     text: "📏 How many letters are in your first name?",
+            //     type: "slider",
+            //     min: 1,
+            //     max: 3,
+            //     step: 0.01,
+            //     default: 2,
+            //     labels: ["⚡ Short", "💫 Medium", "🌟 Long"],
+            //     key: "length"
+            // },
             {
                 text: "🔤 Does your name start with a vowel?",
                 options: [
@@ -44,15 +42,145 @@ class NameGuessingQuiz {
                 ],
                 key: "starts_with"
             },
+            // {
+            //     text: "⭐ How popular is your name?",
+            //     type: "slider",
+            //     min: 1,
+            //     max: 3,
+            //     step: 0.11,
+            //     default: 2,
+            //     labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
+            //     key: "popularity"
+            // },
             {
-                text: "⭐ How popular is your name?",
-                type: "slider",
-                min: 1,
-                max: 3,
-                step: 1,
-                default: 2,
-                labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
-                key: "popularity"
+                text: "🎭 If you had to pick a creative hobby, which sounds most appealing?",
+                options: [
+                    { text: "✍️ Writing stories or poetry", value: "writer" },
+                    { text: "🎵 Playing music or singing", value: "musician" },
+                    { text: "🎨 Painting or drawing", value: "artist" },
+                    { text: "🎬 Acting or performing", value: "performer" }
+                ],
+                key: "creative_interest"
+            },
+            {
+                text: "🏢 In a perfect world, what type of work environment appeals to you most?",
+                options: [
+                    { text: "⚖️ Courtroom or law office", value: "legal" },
+                    { text: "🏥 Hospital or clinic", value: "medical" },
+                    { text: "🌾 Farm or outdoor work", value: "agricultural" },
+                    { text: "💻 Tech office or startup", value: "technology" }
+                ],
+                key: "work_environment"
+            },
+            {
+                text: "📚 What type of book would you most likely pick up?",
+                options: [
+                    { text: "📖 Classic literature", value: "literature" },
+                    { text: "🔬 Science or nature guide", value: "science" },
+                    { text: "📊 Business or finance", value: "business" },
+                    { text: "🎨 Art or design book", value: "art" }
+                ],
+                key: "reading_preference"
+            },
+            {
+                text: "🏠 What type of neighborhood feels most like home to you?",
+                options: [
+                    { text: "🌳 Quiet suburban area", value: "suburban" },
+                    { text: "🏙️ Bustling city center", value: "urban" },
+                    { text: "🌾 Rural countryside", value: "rural" },
+                    { text: "🏘️ Historic district", value: "historic" }
+                ],
+                key: "neighborhood_preference"
+            },
+            {
+                text: "🎓 If you could choose any educational path, which appeals most?",
+                options: [
+                    { text: "⚖️ Law or political science", value: "legal" },
+                    { text: "🔬 Medicine or research", value: "medical" },
+                    { text: "💼 Business or economics", value: "business" },
+                    { text: "🎨 Arts or humanities", value: "arts" }
+                ],
+                key: "educational_interest"
+            },
+            {
+                text: "🌟 How do you prefer to stand out in a group?",
+                options: [
+                    { text: "💡 Through unique ideas", value: "creative" },
+                    { text: "📊 Through expertise", value: "expert" },
+                    { text: "🤝 Through leadership", value: "leader" },
+                    { text: "🎭 Through personality", value: "charismatic" }
+                ],
+                key: "social_style"
+            },
+            {
+                text: "🔤 What's your favorite letter of the alphabet?",
+                options: [
+                    { text: "A - First and foremost", value: "A" },
+                    { text: "B - Bold and brave", value: "B" },
+                    { text: "C - Creative and clever", value: "C" },
+                    { text: "D - Determined and driven", value: "D" },
+                    { text: "E - Energetic and exciting", value: "E" },
+                    { text: "F - Friendly and fun", value: "F" },
+                    { text: "G - Great and genuine", value: "G" },
+                    { text: "H - Happy and helpful", value: "H" },
+                    { text: "I - Intelligent and inspiring", value: "I" },
+                    { text: "J - Joyful and just", value: "J" },
+                    { text: "K - Kind and keen", value: "K" },
+                    { text: "L - Loyal and loving", value: "L" },
+                    { text: "M - Magnificent and mighty", value: "M" },
+                    { text: "N - Noble and nice", value: "N" },
+                    { text: "O - Outstanding and optimistic", value: "O" },
+                    { text: "P - Positive and powerful", value: "P" },
+                    { text: "Q - Quick and quirky", value: "Q" },
+                    { text: "R - Reliable and radiant", value: "R" },
+                    { text: "S - Smart and strong", value: "S" },
+                    { text: "T - Talented and trustworthy", value: "T" },
+                    { text: "U - Unique and understanding", value: "U" },
+                    { text: "V - Vibrant and valuable", value: "V" },
+                    { text: "W - Wise and wonderful", value: "W" },
+                    { text: "X - eXtraordinary and eXceptional", value: "X" },
+                    { text: "Y - Young and yearning", value: "Y" },
+                    { text: "Z - Zealous and zesty", value: "Z" }
+                ],
+                key: "favorite_letter"
+            },
+            {
+                text: "🎯 What's your ideal career path?",
+                options: [
+                    { text: "⚖️ Law and justice", value: "legal" },
+                    { text: "🏥 Medicine and healing", value: "medical" },
+                    { text: "🎨 Arts and creativity", value: "arts" },
+                    { text: "💼 Business and finance", value: "business" },
+                    { text: "🔬 Science and research", value: "science" },
+                    { text: "👨‍🏫 Education and teaching", value: "education" },
+                    { text: "🎵 Music and entertainment", value: "entertainment" },
+                    { text: "🌱 Environment and nature", value: "environment" }
+                ],
+                key: "career_path"
+            },
+            {
+                text: "🎵 What type of music do you prefer?",
+                options: [
+                    { text: "🎼 Classical or orchestral", value: "classical" },
+                    { text: "🎸 Rock or alternative", value: "rock" },
+                    { text: "🎤 Pop or mainstream", value: "pop" },
+                    { text: "🎷 Jazz or blues", value: "jazz" },
+                    { text: "🎵 Electronic or ambient", value: "electronic" },
+                    { text: "🎶 Folk or acoustic", value: "folk" }
+                ],
+                key: "music_preference"
+            },
+            {
+                text: "🌟 How do you handle stress?",
+                options: [
+                    { text: "🧘 Meditation or mindfulness", value: "mindful" },
+                    { text: "🏃 Exercise or physical activity", value: "active" },
+                    { text: "📚 Reading or learning", value: "intellectual" },
+                    { text: "🎨 Creative expression", value: "creative" },
+                    { text: "👥 Socializing with friends", value: "social" },
+                    { text: "🎮 Gaming or entertainment", value: "distraction" }
+                ],
+                key: "stress_management"
             },
             {
                 text: "🗺️ What state were you born in?",
@@ -187,14 +315,62 @@ class NameGuessingQuiz {
         const labelsContainer = document.createElement('div');
         labelsContainer.className = 'slider-labels';
         
-        question.labels.forEach((label, index) => {
-            const labelElement = document.createElement('div');
-            labelElement.className = 'slider-label';
-            labelElement.textContent = label;
-            if (index === 0) labelElement.classList.add('left');
-            if (index === question.labels.length - 1) labelElement.classList.add('right');
-            labelsContainer.appendChild(labelElement);
-        });
+        // For decade question, show key decades with proper spacing
+        if (question.key === 'decade') {
+            // Show key decades that align with slider positions
+            const keyDecades = [1900, 1920, 1940, 1960, 1980, 2000, 2020];
+            
+            keyDecades.forEach((year, index) => {
+                const labelElement = document.createElement('div');
+                labelElement.className = 'slider-label decade-label';
+                labelElement.textContent = year;
+                
+                // Calculate the position percentage for proper alignment
+                const position = ((year - question.min) / (question.max - question.min)) * 100;
+                labelElement.style.left = `${position}%`;
+                labelElement.style.position = 'absolute';
+                labelElement.style.transform = 'translateX(-50%)';
+                
+                labelsContainer.appendChild(labelElement);
+            });
+        } else if (question.key === 'length') {
+            // For name length question, position labels at fractional positions
+            const labels = ['⚡ Short', '💫 Medium', '🌟 Long'];
+            const numLabels = labels.length;
+            
+            labels.forEach((label, index) => {
+                const labelElement = document.createElement('div');
+                labelElement.className = 'slider-label length-label';
+                labelElement.textContent = label;
+                
+                // Calculate position: first at 0%, middle at 50%, last at 100%
+                let position;
+                if (index === 0) {
+                    position = 0; // Start of slider
+                } else if (index === numLabels - 1) {
+                    position = 100; // End of slider
+                } else {
+                    position = (index / (numLabels - 1)) * 100; // Evenly distributed
+                }
+                
+                labelElement.style.left = `${position}%`;
+                labelElement.style.position = 'absolute';
+                labelElement.style.transform = 'translateX(-50%)';
+                
+                labelsContainer.appendChild(labelElement);
+            });
+        } else {
+            // For other questions, use the provided labels
+            labelsContainer.classList.add('regular-labels');
+            question.labels.forEach((label, index) => {
+                const labelElement = document.createElement('div');
+                labelElement.className = 'slider-label regular-label';
+                labelElement.textContent = label;
+                if (index === 0) labelElement.classList.add('left');
+                if (index === question.labels.length - 1) labelElement.classList.add('right');
+                labelsContainer.appendChild(labelElement);
+            });
+        }
         
         // Create continue button
         const continueBtn = document.createElement('button');
@@ -224,8 +400,8 @@ class NameGuessingQuiz {
 
     getSliderLabel(question, value) {
         if (question.key === 'length') {
-            if (value <= 4) return '⚡ Short (2-4 letters)';
-            if (value <= 6) return '💫 Medium (5-6 letters)';
+            if (value <= 1.5) return '⚡ Short (2-4 letters)';
+            if (value <= 2.5) return '💫 Medium (5-6 letters)';
             return '🌟 Long (7+ letters)';
         } else if (question.key === 'popularity') {
             return question.labels[value - 1];
@@ -235,8 +411,8 @@ class NameGuessingQuiz {
 
     getSliderValue(question, value) {
         if (question.key === 'length') {
-            if (value <= 4) return 'short';
-            if (value <= 6) return 'medium';
+            if (value <= 1.5) return 'short';
+            if (value <= 2.5) return 'medium';
             return 'long';
         } else if (question.key === 'popularity') {
             const values = ['uncommon', 'popular', 'very_popular'];

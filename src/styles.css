@@ -491,9 +491,11 @@ body::before {
 
 /* Slider Styles */
 .slider-container {
-    max-width: 500px;
+    width: 100%;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .slider-value {
@@ -514,7 +516,6 @@ body::before {
 
 .slider {
     width: 100%;
-    max-width: 600px;
     height: 8px;
     border-radius: 5px;
     background: linear-gradient(90deg, #1A0033, #4A148C);
@@ -526,6 +527,48 @@ body::before {
         inset 0 0 10px rgba(138, 43, 226, 0.4),
         0 0 15px rgba(255, 215, 0, 0.3),
         0 0 25px rgba(255, 255, 255, 0.2);
+}
+
+.slider-labels {
+    position: relative;
+    margin-top: 10px;
+    font-family: 'Bohemian Typewriter', monospace;
+    font-size: 0.9rem;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 20px;
+}
+
+/* For decade labels - absolute positioning */
+.slider-label.decade-label {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+}
+
+/* For length labels - absolute positioning at fractional positions */
+.slider-label.length-label {
+    text-align: center;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+}
+
+/* For regular labels - flex layout */
+.slider-label.regular-label {
+    text-align: center;
+    flex: 1;
+    padding: 0 5px;
+}
+
+/* For regular labels container - use flex layout */
+.slider-labels.regular-labels {
+    display: flex;
+    justify-content: space-between;
 }
 
 .slider::-webkit-slider-thumb {
