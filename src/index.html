@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madame Mystique's Crystal Ball</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1 class="main-title">🔮 Madame Mystique's Crystal Ball 🔮</h1>
+            <p class="tagline">✨ I shall divine your name through the ancient arts! ✨</p>
+            
+            <div class="hero-content">
+                <div class="character-container">
+                    <div class="character" id="character">
+                        <div class="mystical-aura"></div>
+                        <div class="crystal-ball">
+                            <div class="crystal-inner"></div>
+                            <div class="crystal-sparkles">
+                                <div class="sparkle sparkle-1"></div>
+                                <div class="sparkle sparkle-2"></div>
+                                <div class="sparkle sparkle-3"></div>
+                                <div class="sparkle sparkle-4"></div>
+                            </div>
+                        </div>
+                        <div class="character-face">
+                            <div class="mystical-eyes">
+                                <div class="eye left-eye">
+                                    <div class="eye-pupil"></div>
+                                    <div class="eye-glow"></div>
+                                </div>
+                                <div class="eye right-eye">
+                                    <div class="eye-pupil"></div>
+                                    <div class="eye-glow"></div>
+                                </div>
+                            </div>
+                            <div class="mystical-mouth">
+                                <div class="mouth-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="start-section">
+                    <button class="start-btn" id="startBtn">🔮 Begin the Divination 🔮</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quiz Section -->
+        <main class="quiz-section" id="quizSection" style="display: none;">
+            <div class="quiz-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="question-container">
+                    <h2 class="question-text" id="questionText">Let me ask you a few questions...</h2>
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Map container for Question 5 -->
+                    <div id="mapContainer" class="map-container" style="display:none;">
+                        <h3 class="map-title">Select your state 🌎</h3>
+                    </div>                    
+                </div>
+
+                <div class="character-thinking" id="characterThinking">
+                    <div class="thinking-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Result Section -->
+        <section class="result-section" id="resultSection" style="display: none;">
+            <div class="result-container">
+                <div class="character-celebration" id="characterCelebration">
+                    <div class="devil-horns">
+                        <div class="horn left-horn"></div>
+                        <div class="horn right-horn"></div>
+                    </div>
+                    <div class="character-face">
+                        <div class="eyes">
+                            <div class="eye left-eye"></div>
+                            <div class="eye right-eye"></div>
+                        </div>
+                        <div class="mouth happy"></div>
+                    </div>
+                </div>
+                <h2 class="result-title">🔮 The spirits reveal your name is... 🔮</h2>
+                <div class="guess-display" id="guessDisplay">
+                    <span class="guess-name" id="guessName">Loading...</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidenceFill"></div>
+                    <span class="confidence-text" id="confidenceText">85% confident</span>
+                </div>
+                <div class="result-actions">
+                    <button class="action-btn correct" id="correctBtn">🔮 The spirits were right! 🔮</button>
+                    <button class="action-btn wrong" id="wrongBtn">🌫️ The vision was unclear... 🌫️</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Section -->
+        <section class="final-section" id="finalSection" style="display: none;">
+            <div class="final-container">
+                <div class="character-final" id="characterFinal">
+                    <div class="devil-horns">
+                        <div class="horn left-horn"></div>
+                        <div class="horn right-horn"></div>
+                    </div>
+                    <div class="character-face">
+                        <div class="eyes">
+                            <div class="eye left-eye"></div>
+                            <div class="eye right-eye"></div>
+                        </div>
+                        <div class="mouth" id="finalMouth"></div>
+                    </div>
+                </div>
+                <h2 class="final-title" id="finalTitle">🔮 The spirits have spoken! 🔮</h2>
+                <p class="final-message" id="finalMessage">✨ My crystal ball never lies! ✨</p>
+                <button class="play-again-btn" id="playAgainBtn">🔮 Consult the Spirits Again 🔮</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
