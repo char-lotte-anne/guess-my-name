@@ -255,7 +255,7 @@ class NameGuessingQuiz {
         }
       
          mapContainer.style.display = 'block';
-         mapContainer.innerHTML = '<h3 class="map-title">Select your state 🌎</h3><div id="continueContainer"></div>';
+         mapContainer.innerHTML = '<div id="continueContainer"></div>';
       
         console.log("Fetching map...");
         fetch('us.svg') // <-- change this if your file is in another folder
@@ -322,8 +322,8 @@ class NameGuessingQuiz {
                  
                  console.log("State selected:", path.id || path.getAttribute('name'));
                  
-                 // Show continue button
-                 showContinueButton();
+                 // Show continue button using existing system
+                 this.showMapContinueButton();
                });
              });
       
@@ -333,58 +333,33 @@ class NameGuessingQuiz {
           .catch(err => console.error("Error loading map:", err));
        }
        
-    showContinueButton() {
+    showMapContinueButton() {
+        console.log('showMapContinueButton called');
         const continueContainer = document.getElementById('continueContainer');
-        if (continueContainer && !continueContainer.querySelector('.continue-btn')) {
+        if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
+            // Use the same continue button system as sliders
             const continueBtn = document.createElement('button');
-            continueBtn.className = 'continue-btn';
-            continueBtn.innerHTML = '✨ Continue to Next Question ✨';
-            continueBtn.style.cssText = `
-                background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 255, 255, 0.2));
-                color: #FFFFFF;
-                border: 2px solid #FFD700;
-                padding: 15px 30px;
-                font-size: 16px;
-                font-weight: bold;
-                border-radius: 25px;
-                cursor: pointer;
-                font-family: 'Bohemian Typewriter', monospace;
-                margin: 20px auto;
-                display: block;
-                transition: all 0.3s ease;
-                box-shadow: 0 8px 16px rgba(138, 43, 226, 0.5);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            `;
-            
-            continueBtn.addEventListener('mouseenter', () => {
-                continueBtn.style.background = 'linear-gradient(145deg, rgba(255, 215, 0, 0.5), rgba(255, 255, 255, 0.3))';
-                continueBtn.style.borderColor = '#FFFFFF';
-                continueBtn.style.transform = 'scale(1.05)';
-                continueBtn.style.boxShadow = '0 12px 24px rgba(138, 43, 226, 0.7)';
-            });
-            
-            continueBtn.addEventListener('mouseleave', () => {
-                continueBtn.style.background = 'linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 255, 255, 0.2))';
-                continueBtn.style.borderColor = '#FFD700';
-                continueBtn.style.transform = 'scale(1)';
-                continueBtn.style.boxShadow = '0 8px 16px rgba(138, 43, 226, 0.5)';
-            });
-            
+            continueBtn.className = 'slider-continue-btn';
+            continueBtn.textContent = 'Continue';
             continueBtn.addEventListener('click', () => {
                 // Get the selected state
                 const selectedState = document.querySelector('.state-path.selected');
                 if (selectedState) {
                     const stateId = selectedState.id || selectedState.getAttribute('name');
                     console.log('Continuing with state:', stateId);
-                    // Call the quiz's selectAnswer method
-                    if (window.quiz) {
-                        window.quiz.selectAnswer(stateId);
-                    }
+                    this.selectAnswer(stateId);
                 }
             });
-            
             continueContainer.appendChild(continueBtn);
+            console.log('Map continue button added');
+        }
+    }
+    
+    hideMap() {
+        const mapContainer = document.getElementById('mapContainer');
+        if (mapContainer) {
+            mapContainer.style.display = 'none';
+            console.log('Map hidden');
         }
     }
     
@@ -551,6 +526,9 @@ class NameGuessingQuiz {
     selectAnswer(value) {
         const question = this.questions[this.currentQuestion];
         this.answers[question.key] = value;
+        
+        // Hide the map when moving away from state question
+        this.hideMap();
         
         // Show thinking animation
         document.getElementById('characterThinking').style.display = 'block';
