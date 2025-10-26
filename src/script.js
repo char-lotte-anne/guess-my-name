@@ -31,16 +31,16 @@ class NameGuessingQuiz {
                 labels: ["📜 1900s", "🎵 1950s", "🌈 2000s", "✨ 2020s"],
                 key: "decade"
             },
-            // {
-            //     text: "📏 How many letters are in your first name?",
-            //     type: "slider",
-            //     min: 1,
-            //     max: 3,
-            //     step: 0.01,
-            //     default: 2,
-            //     labels: ["⚡ Short", "💫 Medium", "🌟 Long"],
-            //     key: "length"
-            // },
+            {
+                text: "📏 How many letters are in your first name?",
+                type: "slider",
+                min: 1,
+                max: 3,
+                step: 0.01,
+                default: 2,
+                labels: ["⚡ Short", "💫 Medium", "🌟 Long"],
+                key: "length"
+            },
             {
                 text: "🔤 Does your name start with a vowel?",
                 options: [
@@ -49,147 +49,188 @@ class NameGuessingQuiz {
                 ],
                 key: "starts_with"
             },
-            // {
-            //     text: "⭐ How popular is your name?",
-            //     type: "slider",
-            //     min: 1,
-            //     max: 3,
-            //     step: 0.11,
-            //     default: 2,
-            //     labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
-            //     key: "popularity"
-            // },
             {
-                text: "🎭 What creative hobbies interest you?",
-                type: "multi_select",
-                options: [
-                    { text: "✍️ Writing stories or poetry", value: "writer" },
-                    { text: "🎵 Playing music or singing", value: "musician" },
-                    { text: "🎨 Painting or drawing", value: "artist" },
-                    { text: "🎬 Acting or performing", value: "performer" },
-                    { text: "📸 Photography", value: "photography" },
-                    { text: "💃 Dancing", value: "dancing" },
-                    { text: "🎪 Crafts or DIY", value: "crafts" },
-                    { text: "🎮 Game design", value: "game_design" },
-                    { text: "🏗️ Architecture or design", value: "architecture" },
-                    { text: "🍳 Cooking or baking", value: "cooking" }
-                ],
-                key: "creative_interest"
+                text: "⭐ How popular is your name?",
+                type: "slider",
+                min: 1,
+                max: 3,
+                step: 0.11,
+                default: 2,
+                labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
+                key: "popularity"
             },
             {
-                text: "🏢 What work environments appeal to you?",
+                text: "🗳️ What political values matter most to you?",
                 type: "multi_select",
                 options: [
-                    { text: "⚖️ Courtroom or law office", value: "legal" },
-                    { text: "🏥 Hospital or clinic", value: "medical" },
-                    { text: "🌾 Farm or outdoor work", value: "agricultural" },
-                    { text: "💻 Tech office or startup", value: "technology" },
-                    { text: "🎨 Art studio or creative space", value: "creative" },
-                    { text: "🏫 School or university", value: "education" },
-                    { text: "🏭 Factory or industrial setting", value: "industrial" },
-                    { text: "🏪 Retail store or shop", value: "retail" },
-                    { text: "🍳 Restaurant or kitchen", value: "culinary" },
-                    { text: "🏢 Corporate office building", value: "corporate" },
-                    { text: "🏠 Home office or remote work", value: "remote" },
-                    { text: "🎭 Theater or performance venue", value: "theater" },
-                    { text: "🏃‍♀️ Gym or fitness center", value: "fitness" },
-                    { text: "🌍 Travel or field work", value: "travel" },
-                    { text: "🔬 Laboratory or research facility", value: "research" },
-                    { text: "✈️ Airport or transportation hub", value: "transportation" }
+                    { text: "🏛️ Traditional values and heritage", value: "traditional" },
+                    { text: "🌍 Diversity and inclusion", value: "diverse" },
+                    { text: "🏡 Community and family", value: "community" },
+                    { text: "🚀 Innovation and progress", value: "progressive" },
+                    { text: "⚖️ Justice and equality", value: "justice" },
+                    { text: "🛡️ Security and stability", value: "security" },
+                    { text: "🌱 Environmental protection", value: "environment" },
+                    { text: "💼 Economic opportunity", value: "economic" },
+                    { text: "🎓 Education and learning", value: "education" },
+                    { text: "🤝 Cooperation and unity", value: "cooperation" }
                 ],
-                key: "work_environment"
+                key: "political_values"
             },
             {
-                text: "📚 What types of books do you enjoy?",
+                text: "🗣️ What languages do you speak or value?",
                 type: "multi_select",
                 options: [
-                    { text: "📖 Classic literature", value: "literature" },
-                    { text: "🔬 Science or nature guide", value: "science" },
-                    { text: "📊 Business or finance", value: "business" },
-                    { text: "🎨 Art or design book", value: "art" },
-                    { text: "🕵️ Mystery or thriller", value: "mystery" },
-                    { text: "🚀 Science fiction or fantasy", value: "sci_fi" },
-                    { text: "❤️ Romance or drama", value: "romance" },
-                    { text: "📚 Biography or memoir", value: "biography" },
-                    { text: "🌍 Travel or adventure", value: "travel" },
-                    { text: "🍳 Cookbook or lifestyle", value: "lifestyle" },
-                    { text: "🧠 Psychology or self-help", value: "psychology" },
-                    { text: "🏛️ History or philosophy", value: "history" },
-                    { text: "🎮 Gaming or technology", value: "gaming" },
-                    { text: "📰 News or current events", value: "news" },
-                    { text: "📚 Poetry or verse", value: "poetry" },
-                    { text: "🎭 Theater or plays", value: "theater" },
-                    { text: "🌱 Gardening or nature", value: "gardening" },
-                    { text: "🏃‍♀️ Health or fitness", value: "health" },
-                    { text: "🎵 Music or entertainment", value: "music" },
-                    { text: "📚 Children's books", value: "children" }
+                    { text: "🇺🇸 English only", value: "english_only" },
+                    { text: "🇪🇸 Spanish", value: "spanish" },
+                    { text: "🇫🇷 French", value: "french" },
+                    { text: "🇩🇪 German", value: "german" },
+                    { text: "🇮🇹 Italian", value: "italian" },
+                    { text: "🇷🇺 Russian", value: "russian" },
+                    { text: "🇨🇳 Chinese", value: "chinese" },
+                    { text: "🇯🇵 Japanese", value: "japanese" },
+                    { text: "🇰🇷 Korean", value: "korean" },
+                    { text: "🇮🇳 Hindi/Sanskrit", value: "hindi" },
+                    { text: "🇦🇪 Arabic", value: "arabic" },
+                    { text: "🇮🇱 Hebrew", value: "hebrew" },
+                    { text: "🇮🇪 Irish/Gaelic", value: "irish" },
+                    { text: "🇳🇴 Scandinavian", value: "scandinavian" },
+                    { text: "🌍 Multiple languages", value: "multilingual" }
                 ],
-                key: "reading_preference"
+                key: "language_preference"
             },
             {
-                text: "🏠 What types of neighborhoods appeal to you?",
+                text: "🏠 What type of community do you prefer?",
                 type: "multi_select",
                 options: [
-                    { text: "🌳 Quiet suburban area", value: "suburban" },
-                    { text: "🏙️ Bustling city center", value: "urban" },
-                    { text: "🌾 Rural countryside", value: "rural" },
-                    { text: "🏘️ Historic district", value: "historic" },
-                    { text: "🏖️ Beach or coastal town", value: "coastal" },
-                    { text: "🏔️ Mountain or hill area", value: "mountain" },
-                    { text: "🌲 Forest or woodland", value: "forest" },
-                    { text: "🏜️ Desert or arid region", value: "desert" },
-                    { text: "🏘️ College town or university area", value: "college" },
-                    { text: "🏭 Industrial or working-class area", value: "industrial" },
-                    { text: "🎨 Arts district or creative hub", value: "arts" },
-                    { text: "🌍 International or diverse community", value: "international" },
-                    { text: "🏡 Gated community or private area", value: "gated" },
-                    { text: "🚶‍♀️ Walkable downtown area", value: "walkable" }
+                    { text: "🏘️ Small town or rural", value: "rural" },
+                    { text: "🏙️ Urban city center", value: "urban" },
+                    { text: "🌳 Suburban neighborhood", value: "suburban" },
+                    { text: "🏖️ Coastal community", value: "coastal" },
+                    { text: "🏔️ Mountain region", value: "mountain" },
+                    { text: "🌾 Agricultural area", value: "agricultural" },
+                    { text: "🎓 College town", value: "college" },
+                    { text: "🏭 Industrial city", value: "industrial" },
+                    { text: "🎨 Arts district", value: "arts" },
+                    { text: "🌍 International community", value: "international" },
+                    { text: "🏡 Gated community", value: "gated" },
+                    { text: "🚶‍♀️ Walkable downtown", value: "walkable" }
                 ],
-                key: "neighborhood_preference"
+                key: "community_type"
             },
             {
-                text: "🎓 What educational paths interest you?",
+                text: "🌍 Where did you grow up?",
                 type: "multi_select",
                 options: [
-                    { text: "⚖️ Law or political science", value: "legal" },
-                    { text: "🔬 Medicine or research", value: "medical" },
-                    { text: "💼 Business or economics", value: "business" },
-                    { text: "🎨 Arts or humanities", value: "arts" },
-                    { text: "💻 Computer science or tech", value: "technology" },
-                    { text: "🏗️ Engineering or architecture", value: "engineering" },
-                    { text: "👨‍🏫 Education or teaching", value: "education" },
-                    { text: "🌱 Environmental science", value: "environment" },
-                    { text: "🎵 Music or performing arts", value: "performing" },
-                    { text: "📚 Psychology or social work", value: "social" },
-                    { text: "🌍 International studies", value: "international" },
-                    { text: "🏛️ History or philosophy", value: "humanities" },
-                    { text: "🌿 Agriculture or forestry", value: "agriculture" },
-                    { text: "🏥 Nursing or healthcare", value: "nursing" },
-                    { text: "🎬 Film or media studies", value: "film" },
-                    { text: "🏃‍♀️ Sports or kinesiology", value: "sports" },
-                    { text: "🍳 Culinary arts", value: "culinary" },
-                    { text: "🎨 Design or fashion", value: "design" },
-                    { text: "🌍 Languages or linguistics", value: "languages" },
-                    { text: "🔬 Mathematics or statistics", value: "mathematics" }
+                    { text: "🏘️ Rural area or small town", value: "rural_grew_up" },
+                    { text: "🏙️ Urban city", value: "urban_grew_up" },
+                    { text: "🌳 Suburban area", value: "suburban_grew_up" },
+                    { text: "🏖️ Coastal region", value: "coastal_grew_up" },
+                    { text: "🏔️ Mountain region", value: "mountain_grew_up" },
+                    { text: "🌾 Farm or agricultural area", value: "agricultural_grew_up" },
+                    { text: "🎓 College town", value: "college_grew_up" },
+                    { text: "🏭 Industrial city", value: "industrial_grew_up" },
+                    { text: "🌍 International city", value: "international_grew_up" },
+                    { text: "🏡 Gated community", value: "gated_grew_up" }
                 ],
-                key: "educational_interest"
+                key: "grew_up_location"
             },
             {
-                text: "🌟 How do you prefer to stand out in a group?",
+                text: "👨‍👩‍👧‍👦 How important is family tradition to you?",
+                type: "slider",
+                min: 1,
+                max: 3,
+                step: 0.1,
+                default: 2,
+                labels: ["🆕 Create new traditions", "⚖️ Mix old and new", "🏛️ Honor family heritage"],
+                key: "family_tradition"
+            },
+            {
+                text: "🌍 How do you view cultural diversity?",
+                type: "slider",
+                min: 1,
+                max: 3,
+                step: 0.1,
+                default: 2,
+                labels: ["🏛️ Preserve traditions", "⚖️ Balance both", "🌍 Embrace diversity"],
+                key: "diversity_attitude"
+            },
+            {
+                text: "🏛️ What type of name meaning appeals to you most?",
                 type: "multi_select",
                 options: [
-                    { text: "💡 Through unique ideas", value: "creative" },
-                    { text: "📊 Through expertise", value: "expert" },
-                    { text: "🤝 Through leadership", value: "leader" },
-                    { text: "🎭 Through personality", value: "charismatic" },
-                    { text: "🎵 Through humor", value: "humorous" },
-                    { text: "💪 Through strength", value: "strong" },
-                    { text: "🧠 Through wisdom", value: "wise" },
-                    { text: "❤️ Through kindness", value: "kind" },
-                    { text: "🎨 Through creativity", value: "artistic" },
-                    { text: "🏃‍♀️ Through energy", value: "energetic" }
+                    { text: "👑 Royal or noble meaning", value: "royal" },
+                    { text: "🌿 Nature-inspired", value: "nature" },
+                    { text: "⚔️ Warrior or strength", value: "warrior" },
+                    { text: "💎 Precious or valuable", value: "precious" },
+                    { text: "🌟 Light or brightness", value: "light" },
+                    { text: "❤️ Love or compassion", value: "love" },
+                    { text: "🧠 Wisdom or knowledge", value: "wisdom" },
+                    { text: "🎵 Music or harmony", value: "music" },
+                    { text: "🌊 Water or flow", value: "water" },
+                    { text: "🔥 Fire or energy", value: "fire" },
+                    { text: "🌙 Moon or night", value: "moon" },
+                    { text: "☀️ Sun or day", value: "sun" },
+                    { text: "🕊️ Peace or freedom", value: "peace" },
+                    { text: "🎭 Creative or artistic", value: "creative" }
                 ],
-                key: "social_style"
+                key: "name_meaning_preference"
+            },
+            {
+                text: "👥 How do people typically perceive your name?",
+                type: "multi_select",
+                options: [
+                    { text: "👑 Elegant and sophisticated", value: "elegant" },
+                    { text: "💪 Strong and powerful", value: "strong" },
+                    { text: "😊 Friendly and approachable", value: "friendly" },
+                    { text: "🧠 Intelligent and scholarly", value: "intelligent" },
+                    { text: "🎨 Creative and artistic", value: "creative_perceived" },
+                    { text: "🌟 Unique and memorable", value: "unique" },
+                    { text: "🏛️ Traditional and classic", value: "traditional_perceived" },
+                    { text: "🚀 Modern and trendy", value: "modern" },
+                    { text: "🌿 Natural and earthy", value: "natural" },
+                    { text: "💎 Precious and special", value: "precious_perceived" },
+                    { text: "🎭 Dramatic and expressive", value: "dramatic" },
+                    { text: "🤝 Trustworthy and reliable", value: "trustworthy" }
+                ],
+                key: "name_perception"
+            },
+            {
+                text: "🎯 What impression do you want your name to give?",
+                type: "multi_select",
+                options: [
+                    { text: "👑 Authority and leadership", value: "authority" },
+                    { text: "💪 Strength and confidence", value: "strength_desired" },
+                    { text: "😊 Warmth and kindness", value: "warmth" },
+                    { text: "🧠 Intelligence and wisdom", value: "intelligence_desired" },
+                    { text: "🎨 Creativity and originality", value: "creativity_desired" },
+                    { text: "🌟 Uniqueness and distinction", value: "uniqueness_desired" },
+                    { text: "🏛️ Tradition and heritage", value: "tradition_desired" },
+                    { text: "🚀 Innovation and progress", value: "innovation" },
+                    { text: "🌿 Connection to nature", value: "nature_connection" },
+                    { text: "💎 Value and worth", value: "value" },
+                    { text: "🎭 Expressiveness and personality", value: "expressiveness" },
+                    { text: "🤝 Trust and reliability", value: "trust_desired" }
+                ],
+                key: "desired_impression"
+            },
+            {
+                text: "😮 How do people typically react when they hear your name?",
+                type: "multi_select",
+                options: [
+                    { text: "😍 They love it and compliment it", value: "loved" },
+                    { text: "🤔 They ask how to spell it", value: "spelling_questions" },
+                    { text: "😮 They're surprised or impressed", value: "surprised" },
+                    { text: "😊 They smile and remember it easily", value: "memorable" },
+                    { text: "🤷 They're neutral about it", value: "neutral" },
+                    { text: "😅 They make jokes or puns about it", value: "jokes" },
+                    { text: "🤝 They find it trustworthy", value: "trustworthy_reaction" },
+                    { text: "🎨 They comment on its uniqueness", value: "unique_reaction" },
+                    { text: "🏛️ They recognize it as traditional", value: "traditional_reaction" },
+                    { text: "🚀 They see it as modern/trendy", value: "modern_reaction" },
+                    { text: "🌍 They ask about its origin", value: "origin_questions" },
+                    { text: "💪 They find it strong/powerful", value: "strong_reaction" }
+                ],
+                key: "name_reactions"
             },
             {
                 text: "🔤 What's your favorite letter of the alphabet?",
@@ -250,55 +291,6 @@ class NameGuessingQuiz {
                     { text: "🎨 Design and fashion", value: "design" }
                 ],
                 key: "career_path"
-            },
-            {
-                text: "🎵 What types of music do you enjoy?",
-                type: "multi_select",
-                options: [
-                    { text: "🎼 Classical or orchestral", value: "classical" },
-                    { text: "🎸 Rock or alternative", value: "rock" },
-                    { text: "🎤 Pop or mainstream", value: "pop" },
-                    { text: "🎷 Jazz or blues", value: "jazz" },
-                    { text: "🎵 Electronic or ambient", value: "electronic" },
-                    { text: "🎶 Folk or acoustic", value: "folk" },
-                    { text: "🎺 Hip-hop or rap", value: "hip_hop" },
-                    { text: "🎻 Country or western", value: "country" },
-                    { text: "🎹 R&B or soul", value: "rnb" },
-                    { text: "🎸 Metal or heavy metal", value: "metal" },
-                    { text: "🎵 Reggae or ska", value: "reggae" },
-                    { text: "🎺 Funk or disco", value: "funk" },
-                    { text: "🎻 Gospel or spiritual", value: "gospel" },
-                    { text: "🎸 Punk or grunge", value: "punk" },
-                    { text: "🎵 World music or ethnic", value: "world" },
-                    { text: "🎹 Indie or alternative", value: "indie" },
-                    { text: "🎺 Latin or salsa", value: "latin" },
-                    { text: "🎻 Opera or musical theater", value: "opera" },
-                    { text: "🎸 New age or meditation", value: "new_age" },
-                    { text: "🎵 Experimental or avant-garde", value: "experimental" }
-                ],
-                key: "music_preference"
-            },
-            {
-                text: "🌟 How do you handle stress?",
-                type: "multi_select",
-                options: [
-                    { text: "🧘 Meditation or mindfulness", value: "mindful" },
-                    { text: "🏃 Exercise or physical activity", value: "active" },
-                    { text: "📚 Reading or learning", value: "intellectual" },
-                    { text: "🎨 Creative expression", value: "creative" },
-                    { text: "👥 Socializing with friends", value: "social" },
-                    { text: "🎮 Gaming or entertainment", value: "distraction" },
-                    { text: "🎵 Music or singing", value: "music" },
-                    { text: "🍳 Cooking or baking", value: "cooking" },
-                    { text: "🌿 Nature or gardening", value: "nature" },
-                    { text: "✍️ Writing or journaling", value: "writing" },
-                    { text: "🎬 Movies or TV", value: "media" },
-                    { text: "🏃‍♀️ Sports or fitness", value: "sports" },
-                    { text: "🎨 Art or crafts", value: "art" },
-                    { text: "🐕 Pet care or animals", value: "pets" },
-                    { text: "🧘 Yoga or stretching", value: "yoga" }
-                ],
-                key: "stress_management"
             },
             {
                 text: "⛪ What religious ceremonies were you part of as a child?",
@@ -425,6 +417,23 @@ class NameGuessingQuiz {
         document.getElementById('correctBtn').addEventListener('click', () => this.handleCorrect());
         document.getElementById('wrongBtn').addEventListener('click', () => this.handleWrong());
         document.getElementById('playAgainBtn').addEventListener('click', () => this.resetQuiz());
+        
+        // Add navigation event listeners
+        document.querySelectorAll('.nav-link, .nav-brand-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                if (href === '#home') {
+                    this.showHome();
+                } else if (href === '#how-it-works') {
+                    this.showHowItWorks();
+                } else if (href === '#about') {
+                    this.showAbout();
+                } else if (href === '#contact') {
+                    this.showContact();
+                }
+            });
+        });
     }
 
     startQuiz() {
@@ -1087,28 +1096,475 @@ class NameGuessingQuiz {
     }
 
     calculateGuess() {
+        console.log('=== STARTING NAME SEARCH ===');
+        console.log('Current answers:', this.answers);
+        console.log('Total names in database:', Object.keys(this.enhancedNameDatabase.nameData).length);
+        console.log('Sample names from database:', Object.values(this.enhancedNameDatabase.nameData).slice(0, 10).map(n => n.name));
+        
         const candidates = this.getCandidates();
         
+        console.log('Candidates after filtering:', candidates.length);
+        console.log('Filtered candidates:', candidates.map(c => c.name).slice(0, 10));
+        
         if (candidates.length === 0) {
-            return { name: 'Alex', confidence: 50 };
+            console.log('🔍 NO CANDIDATES FOUND - trying with relaxed criteria');
+            
+            // Try with relaxed length criteria first
+            const relaxedCandidates = Object.values(this.enhancedNameDatabase.nameData).filter(nameInfo => {
+                // Keep all other filters but relax length
+                if (this.answers.gender && 
+                    this.answers.gender !== "NB" && 
+                    this.answers.gender !== "PREFER_NOT_TO_SAY" && 
+                    nameInfo.gender !== this.answers.gender) {
+                    return false;
+                }
+                
+                // Relax length: if they want long, accept 6+ letters
+                if (this.answers.length === 'long') {
+                    const nameLength = nameInfo.name.length;
+                    if (nameLength < 6) return false; // Still reject very short names
+                }
+                
+                // Keep vowel filter
+                if (this.answers.starts_with) {
+                    const firstLetter = nameInfo.name.charAt(0).toLowerCase();
+                    const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
+                    if (this.answers.starts_with === 'vowel' && !isVowel) return false;
+                    if (this.answers.starts_with === 'consonant' && isVowel) return false;
+                }
+                
+                return true;
+            });
+            
+            console.log('✅ Relaxed candidates found:', relaxedCandidates.length);
+            console.log('📝 Relaxed candidate names:', relaxedCandidates.map(c => c.name).slice(0, 10));
+            
+            if (relaxedCandidates.length === 0) {
+                console.log('🚨 STILL NO CANDIDATES - checking what long consonant names exist');
+                
+                // Debug: Show what long consonant names are in the database
+                const longConsonantNames = Object.values(this.enhancedNameDatabase.nameData).filter(nameInfo => {
+                    const nameLength = nameInfo.name.length;
+                    const firstLetter = nameInfo.name.charAt(0).toLowerCase();
+                    const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
+                    return nameLength >= 6 && !isVowel;
+                });
+                
+                console.log('🔍 Long consonant names in database:', longConsonantNames.map(n => n.name).slice(0, 20));
+                
+                if (longConsonantNames.length > 0) {
+                    console.log('✅ Using first available long consonant name:', longConsonantNames[0].name);
+                    return longConsonantNames[0];
+                }
+                
+                console.log('❌ NO LONG CONSONANT NAMES FOUND - returning default Alex');
+                return { name: 'Alex', confidence: 25 };
+            }
+            
+            // Use relaxed candidates
+            console.log('🎯 Using relaxed candidates for scoring');
+            const scoredCandidates = relaxedCandidates.map(candidate => ({
+                ...candidate,
+                score: this.calculateNameScore(candidate)
+            }));
+            
+            scoredCandidates.sort((a, b) => b.score - a.score);
+            console.log('🏆 Best relaxed candidate:', scoredCandidates[0].name, 'Score:', scoredCandidates[0].score);
+            return scoredCandidates[0];
         }
         
-        // Sort by total count (popularity)
-        candidates.sort((a, b) => b.totalCount - a.totalCount);
+        // Score each candidate based on how well they match the responses
+        const scoredCandidates = candidates.map(candidate => ({
+            ...candidate,
+            score: this.calculateNameScore(candidate)
+        }));
         
-        return candidates[0];
+        // Sort by score (highest first), then by popularity as tiebreaker
+        scoredCandidates.sort((a, b) => {
+            if (b.score !== a.score) {
+                return b.score - a.score;
+            }
+            return b.totalCount - a.totalCount;
+        });
+        
+        return scoredCandidates[0];
+    }
+
+    calculateNameScore(nameInfo) {
+        let score = 0;
+        
+        // DEBUG: Log current answers
+        console.log('Current answers:', this.answers);
+        
+        // HIGHEST PRIORITY: Political/Cultural identity (60 points) - NPR research shows this is the strongest predictor
+        if (this.answers.political_values) {
+            const politicalSelections = Array.isArray(this.answers.political_values) 
+                ? this.answers.political_values 
+                : [this.answers.political_values];
+            
+            // Traditional/conservative values correlate with English names
+            const traditionalValues = ['traditional', 'security', 'community'];
+            const progressiveValues = ['diverse', 'progressive', 'justice', 'environment'];
+            
+            const hasTraditionalValues = politicalSelections.some(val => traditionalValues.includes(val));
+            const hasProgressiveValues = politicalSelections.some(val => progressiveValues.includes(val));
+            
+            if (nameInfo.languageOrigin === 'english' && hasTraditionalValues) {
+                score += 60; // Strong traditional + English name match
+            } else if (nameInfo.languageOrigin !== 'english' && hasProgressiveValues) {
+                score += 60; // Strong progressive + non-English name match
+            } else if (nameInfo.languageOrigin === 'english' && hasProgressiveValues) {
+                score += 30; // Partial match
+            } else if (nameInfo.languageOrigin !== 'english' && hasTraditionalValues) {
+                score += 20; // Weaker match
+            }
+        }
+        
+        // HIGH PRIORITY: Language preference (50 points) - 84% of blue state names are non-English
+        if (this.answers.language_preference) {
+            const languageSelections = Array.isArray(this.answers.language_preference) 
+                ? this.answers.language_preference 
+                : [this.answers.language_preference];
+            
+            if (languageSelections.includes('english_only') && nameInfo.languageOrigin === 'english') {
+                score += 50; // Strong English-only preference match
+            } else if (languageSelections.includes('multilingual') && nameInfo.languageOrigin !== 'english') {
+                score += 50; // Multilingual preference + non-English name
+            } else if (languageSelections.some(lang => lang === nameInfo.languageOrigin)) {
+                score += 45; // Direct language match
+            } else if (languageSelections.includes('english_only') && nameInfo.languageOrigin !== 'english') {
+                score -= 20; // Penalty for mismatch
+            }
+        }
+        
+        // HIGH PRIORITY: Cultural/Religious factors (40-50 points) - Still very important
+        if (this.answers.religious_tradition) {
+            const religiousSelections = Array.isArray(this.answers.religious_tradition) 
+                ? this.answers.religious_tradition 
+                : [this.answers.religious_tradition];
+            
+            const validReligions = religiousSelections.filter(religion => 
+                religion !== "prefer_not_to_say" && 
+                religion !== "none" && 
+                religion !== "other_spiritual"
+            );
+            
+            if (validReligions.length > 0 && nameInfo.religions) {
+                const hasReligiousMatch = validReligions.some(religion => 
+                    nameInfo.religions.includes(religion)
+                );
+                if (hasReligiousMatch) {
+                    score += 50; // Strong religious match
+                } else if (nameInfo.crossReligious) {
+                    score += 25; // Cross-religious compatibility
+                }
+            }
+        }
+        
+        // HIGH PRIORITY: Cultural background (35-45 points) - Major socioeconomic determinant
+        if (this.answers.cultural_background) {
+            const culturalSelections = Array.isArray(this.answers.cultural_background) 
+                ? this.answers.cultural_background 
+                : [this.answers.cultural_background];
+            
+            const validCultures = culturalSelections.filter(culture => 
+                culture !== "prefer_not_to_say" && 
+                culture !== "mixed"
+            );
+            
+            if (validCultures.length > 0 && nameInfo.culturalOrigins) {
+                const hasCulturalMatch = validCultures.some(culture => 
+                    nameInfo.culturalOrigins.includes(culture)
+                );
+                if (hasCulturalMatch) {
+                    score += 45; // Strong cultural match
+                }
+            }
+        }
+        
+        // HIGH: Name length (35 points) - Critical user preference that must be respected
+        if (this.answers.length) {
+            const nameLength = nameInfo.name.length;
+            if (this.answers.length === 'short' && nameLength <= 4) score += 35;
+            else if (this.answers.length === 'medium' && nameLength >= 5 && nameLength <= 6) score += 35;
+            else if (this.answers.length === 'long' && nameLength >= 7) score += 35;
+            else if (this.answers.length === 'short' && nameLength <= 5) score += 20; // partial match
+            else if (this.answers.length === 'long' && nameLength >= 6) score += 20; // partial match
+            else {
+                // STRONG PENALTY for length mismatch - this is a critical user preference
+                if (this.answers.length === 'long' && nameLength < 6) score -= 40; // Heavy penalty for long preference getting short name
+                else if (this.answers.length === 'short' && nameLength > 5) score -= 30; // Penalty for short preference getting long name
+                else if (this.answers.length === 'medium' && (nameLength < 4 || nameLength > 7)) score -= 25; // Penalty for medium preference mismatch
+            }
+        }
+        
+        // MEDIUM-HIGH: Gender (25 points) - Important demographic factor
+        if (this.answers.gender && 
+            this.answers.gender !== "NB" && 
+            this.answers.gender !== "PREFER_NOT_TO_SAY" && 
+            nameInfo.gender === this.answers.gender) {
+            score += 25;
+        }
+        
+        // MEDIUM: Popularity with generational trends (20 points) - Enhanced with decade analysis
+        if (this.answers.popularity && this.answers.decade) {
+            const isPopular = nameInfo.totalCount > 500;
+            const isVeryPopular = nameInfo.totalCount > 800;
+            
+            // Check if name was popular in the specified decade
+            const decadePopularity = this.getDecadePopularity(nameInfo, this.answers.decade);
+            
+            if (this.answers.popularity === 'very_popular' && isVeryPopular && decadePopularity > 0.7) score += 20;
+            else if (this.answers.popularity === 'popular' && isPopular && decadePopularity > 0.5) score += 20;
+            else if (this.answers.popularity === 'uncommon' && !isPopular && decadePopularity < 0.3) score += 20;
+            else if (this.answers.popularity === 'very_popular' && isPopular && decadePopularity > 0.5) score += 15; // partial match
+            else if (this.answers.popularity === 'uncommon' && nameInfo.totalCount < 1000 && decadePopularity < 0.5) score += 15; // partial match
+        } else if (this.answers.popularity) {
+            // Fallback to original popularity logic if no decade specified
+            const isPopular = nameInfo.totalCount > 500;
+            const isVeryPopular = nameInfo.totalCount > 800;
+            
+            if (this.answers.popularity === 'very_popular' && isVeryPopular) score += 20;
+            else if (this.answers.popularity === 'popular' && isPopular && !isVeryPopular) score += 20;
+            else if (this.answers.popularity === 'uncommon' && !isPopular) score += 20;
+            else if (this.answers.popularity === 'very_popular' && isPopular) score += 10; // partial match
+            else if (this.answers.popularity === 'uncommon' && nameInfo.totalCount < 1000) score += 10; // partial match
+        }
+        
+        // MEDIUM: Vowel/consonant start (15 points) - Name letter effect
+        if (this.answers.starts_with) {
+            const firstLetter = nameInfo.name.charAt(0).toLowerCase();
+            const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
+            if ((this.answers.starts_with === 'vowel' && isVowel) || 
+                (this.answers.starts_with === 'consonant' && !isVowel)) {
+                score += 15;
+            }
+        }
+        
+        // NEW: Name letter effect - preference for names starting with letters from their own name
+        if (this.answers.favorite_letter) {
+            const nameFirstLetter = nameInfo.name.charAt(0).toLowerCase();
+            if (nameFirstLetter === this.answers.favorite_letter.toLowerCase()) {
+                score += 20; // Strong name letter effect
+            }
+        }
+        
+        // NEW: Socioeconomic factors based on career/education interests
+        if (this.answers.career_path && nameInfo.socioeconomicLevel) {
+            const careerSelections = Array.isArray(this.answers.career_path) 
+                ? this.answers.career_path 
+                : [this.answers.career_path];
+            
+            // Higher education careers correlate with traditional/elite names
+            const highEducationCareers = ['legal', 'medical', 'science', 'education', 'technology', 'engineering'];
+            const hasHighEducationCareer = careerSelections.some(career => 
+                highEducationCareers.includes(career)
+            );
+            
+            if (hasHighEducationCareer && nameInfo.socioeconomicLevel === 'high') {
+                score += 15;
+            } else if (!hasHighEducationCareer && nameInfo.socioeconomicLevel === 'medium') {
+                score += 10;
+            }
+        }
+        
+        // MEDIUM: Family tradition importance (20 points) - Predicts traditional vs modern names
+        if (this.answers.family_tradition) {
+            if (this.answers.family_tradition >= 2.5 && nameInfo.traditionalSignificance === 'high') {
+                score += 20; // Strong traditional match
+            } else if (this.answers.family_tradition <= 1.5 && nameInfo.traditionalSignificance === 'low') {
+                score += 20; // Strong modern match
+            } else if (this.answers.family_tradition >= 2.0 && nameInfo.traditionalSignificance === 'medium') {
+                score += 15; // Partial traditional match
+            } else if (this.answers.family_tradition <= 2.0 && nameInfo.traditionalSignificance === 'medium') {
+                score += 15; // Partial modern match
+            }
+        }
+        
+        // MEDIUM: Diversity attitude (15 points) - Correlates with name origin diversity
+        if (this.answers.diversity_attitude) {
+            if (this.answers.diversity_attitude >= 2.5 && nameInfo.languageOrigin !== 'english') {
+                score += 15; // High diversity preference + non-English name
+            } else if (this.answers.diversity_attitude <= 1.5 && nameInfo.languageOrigin === 'english') {
+                score += 15; // Low diversity preference + English name
+            } else if (this.answers.diversity_attitude >= 2.0 && nameInfo.languageOrigin !== 'english') {
+                score += 10; // Partial diversity match
+            }
+        }
+        
+        // MEDIUM: Name meaning preference (15 points) - Semantic matching
+        if (this.answers.name_meaning_preference && nameInfo.nameMeaning) {
+            const meaningSelections = Array.isArray(this.answers.name_meaning_preference) 
+                ? this.answers.name_meaning_preference 
+                : [this.answers.name_meaning_preference];
+            
+            const hasMeaningMatch = meaningSelections.some(meaning => 
+                nameInfo.nameMeaning.includes(meaning)
+            );
+            if (hasMeaningMatch) {
+                score += 15; // Name meaning match
+            }
+        }
+        
+        // CRITICAL: Rural/Urban factor (30 points) - Namerology research shows rural areas are LEAST traditional
+        if (this.answers.grew_up_location) {
+            const locationSelections = Array.isArray(this.answers.grew_up_location) 
+                ? this.answers.grew_up_location 
+                : [this.answers.grew_up_location];
+            
+            const isRuralGrewUp = locationSelections.some(loc => 
+                ['rural_grew_up', 'agricultural_grew_up'].includes(loc)
+            );
+            const isUrbanGrewUp = locationSelections.some(loc => 
+                ['urban_grew_up', 'international_grew_up'].includes(loc)
+            );
+            
+            // Counterintuitive: Rural areas prefer NON-traditional names, urban areas prefer traditional names
+            if (isRuralGrewUp && nameInfo.traditionalSignificance === 'low') {
+                score += 30; // Rural + non-traditional name (research-backed)
+            } else if (isUrbanGrewUp && nameInfo.traditionalSignificance === 'high') {
+                score += 30; // Urban + traditional name (research-backed)
+            } else if (isRuralGrewUp && nameInfo.traditionalSignificance === 'medium') {
+                score += 20; // Rural + medium traditional
+            } else if (isUrbanGrewUp && nameInfo.traditionalSignificance === 'medium') {
+                score += 20; // Urban + medium traditional
+            } else if (isRuralGrewUp && nameInfo.traditionalSignificance === 'high') {
+                score -= 15; // Rural + traditional name (counter to research)
+            } else if (isUrbanGrewUp && nameInfo.traditionalSignificance === 'low') {
+                score -= 10; // Urban + non-traditional name (counter to research)
+            }
+        }
+        
+        // HIGH: Name perception matching (25 points) - How people perceive your name
+        if (this.answers.name_perception && nameInfo.perceivedTraits) {
+            const perceptionSelections = Array.isArray(this.answers.name_perception) 
+                ? this.answers.name_perception 
+                : [this.answers.name_perception];
+            
+            const hasPerceptionMatch = perceptionSelections.some(perception => 
+                nameInfo.perceivedTraits.includes(perception)
+            );
+            if (hasPerceptionMatch) {
+                score += 25; // Strong perception match
+            }
+        }
+        
+        // HIGH: Desired impression matching (25 points) - What impression you want to give
+        if (this.answers.desired_impression && nameInfo.desiredTraits) {
+            const impressionSelections = Array.isArray(this.answers.desired_impression) 
+                ? this.answers.desired_impression 
+                : [this.answers.desired_impression];
+            
+            const hasImpressionMatch = impressionSelections.some(impression => 
+                nameInfo.desiredTraits.includes(impression)
+            );
+            if (hasImpressionMatch) {
+                score += 25; // Strong desired impression match
+            }
+        }
+        
+        // HIGH: Name reactions matching (25 points) - How people react to your name
+        if (this.answers.name_reactions && nameInfo.typicalReactions) {
+            const reactionSelections = Array.isArray(this.answers.name_reactions) 
+                ? this.answers.name_reactions 
+                : [this.answers.name_reactions];
+            
+            const hasReactionMatch = reactionSelections.some(reaction => 
+                nameInfo.typicalReactions.includes(reaction)
+            );
+            if (hasReactionMatch) {
+                score += 25; // Strong reaction match
+            }
+        }
+        
+        // MEDIUM: Community type (15 points) - Geographic correlation
+        if (this.answers.community_type && nameInfo.geographicPreference) {
+            const communitySelections = Array.isArray(this.answers.community_type) 
+                ? this.answers.community_type 
+                : [this.answers.community_type];
+            
+            const hasCommunityMatch = communitySelections.some(community => 
+                nameInfo.geographicPreference.includes(community)
+            );
+            if (hasCommunityMatch) {
+                score += 15; // Community type match
+            }
+        }
+        
+        return score;
+    }
+
+    getDecadePopularity(nameInfo, decade) {
+        // This would ideally use historical data, but for now we'll use a simplified approach
+        // In a real implementation, you'd have decade-specific popularity data
+        const decadeRanges = {
+            1900: [1900, 1909],
+            1910: [1910, 1919],
+            1920: [1920, 1929],
+            1930: [1930, 1939],
+            1940: [1940, 1949],
+            1950: [1950, 1959],
+            1960: [1960, 1969],
+            1970: [1970, 1979],
+            1980: [1980, 1989],
+            1990: [1990, 1999],
+            2000: [2000, 2009],
+            2010: [2010, 2019],
+            2020: [2020, 2029]
+        };
+        
+        // For now, return a base popularity score
+        // In a real implementation, this would check historical data
+        if (nameInfo.totalCount > 1000) return 0.8; // Very popular
+        if (nameInfo.totalCount > 500) return 0.6;  // Popular
+        if (nameInfo.totalCount > 100) return 0.4;  // Somewhat popular
+        return 0.2; // Uncommon
     }
 
     getCandidates() {
         const candidates = [];
         
-        Object.values(this.nameData).forEach(nameInfo => {
+        Object.values(this.enhancedNameDatabase.nameData).forEach(nameInfo => {
+            // Only filter out names that absolutely don't match (like wrong gender)
+            // Let the scoring system handle the rest
             if (this.matchesCriteria(nameInfo)) {
                 candidates.push(nameInfo);
             }
         });
         
         return candidates;
+    }
+
+    basicCriteriaMatch(nameInfo) {
+        // Only filter out names that absolutely don't match (like wrong gender)
+        // Let the scoring system handle the rest
+        
+        // Check gender (include non-binary and prefer not to say as matching any gender)
+        if (this.answers.gender && 
+            this.answers.gender !== "NB" && 
+            this.answers.gender !== "PREFER_NOT_TO_SAY" && 
+            nameInfo.gender !== this.answers.gender) {
+            return false;
+        }
+        
+        // Only filter out if religious tradition is completely incompatible
+        if (this.answers.religious_tradition) {
+            const religiousSelections = Array.isArray(this.answers.religious_tradition) 
+                ? this.answers.religious_tradition 
+                : [this.answers.religious_tradition];
+            
+            const validReligions = religiousSelections.filter(religion => 
+                religion !== "prefer_not_to_say" && 
+                religion !== "none" && 
+                religion !== "other_spiritual"
+            );
+            
+            if (validReligions.length > 0 && nameInfo.religiousSignificance === 'incompatible') {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     matchesCriteria(nameInfo) {
@@ -1120,20 +1576,39 @@ class NameGuessingQuiz {
             return false;
         }
         
-        // Check name length
+        // Check name length - CRITICAL FILTER
         if (this.answers.length) {
             const nameLength = nameInfo.name.length;
-            if (this.answers.length === 'short' && nameLength > 4) return false;
-            if (this.answers.length === 'medium' && (nameLength < 5 || nameLength > 6)) return false;
-            if (this.answers.length === 'long' && nameLength < 7) return false;
+            console.log(`Checking ${nameInfo.name} (${nameLength} letters) against length preference: ${this.answers.length}`);
+            if (this.answers.length === 'short' && nameLength > 4) {
+                console.log(`REJECTED: ${nameInfo.name} too long for short preference`);
+                return false;
+            }
+            if (this.answers.length === 'medium' && (nameLength < 5 || nameLength > 6)) {
+                console.log(`REJECTED: ${nameInfo.name} wrong length for medium preference`);
+                return false;
+            }
+            if (this.answers.length === 'long' && nameLength < 7) {
+                console.log(`REJECTED: ${nameInfo.name} too short for long preference (need 7+ letters)`);
+                return false;
+            }
+            console.log(`ACCEPTED: ${nameInfo.name} matches length preference`);
         }
         
         // Check if starts with vowel
         if (this.answers.starts_with) {
             const firstLetter = nameInfo.name.charAt(0).toLowerCase();
             const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
-            if (this.answers.starts_with === 'vowel' && !isVowel) return false;
-            if (this.answers.starts_with === 'consonant' && isVowel) return false;
+            console.log(`Checking ${nameInfo.name} (starts with ${firstLetter}, isVowel: ${isVowel}) against preference: ${this.answers.starts_with}`);
+            if (this.answers.starts_with === 'vowel' && !isVowel) {
+                console.log(`REJECTED: ${nameInfo.name} doesn't start with vowel but user wants vowel`);
+                return false;
+            }
+            if (this.answers.starts_with === 'consonant' && isVowel) {
+                console.log(`REJECTED: ${nameInfo.name} starts with vowel but user wants consonant`);
+                return false;
+            }
+            console.log(`ACCEPTED: ${nameInfo.name} matches vowel/consonant preference`);
         }
         
         // Check popularity
@@ -1246,51 +1721,54 @@ class NameGuessingQuiz {
 
     calculateConfidence() {
         const candidates = this.getCandidates();
-        if (candidates.length === 0) return 30;
+        if (candidates.length === 0) return 25; // Lower base confidence
         if (candidates.length === 1) return 95;
         
-        // Boost confidence for religious/cultural matches
-        let confidence = 60;
-        if (candidates.length <= 3) confidence = 85;
-        else if (candidates.length <= 10) confidence = 70;
+        // Base confidence on number of candidates
+        let confidence = 50; // Lower base confidence
+        if (candidates.length <= 2) confidence = 85;
+        else if (candidates.length <= 5) confidence = 75;
+        else if (candidates.length <= 10) confidence = 65;
+        else if (candidates.length <= 20) confidence = 55;
         
-        // Check for religious significance
         const topCandidate = candidates[0];
-        if (topCandidate.religiousSignificance === 'high') {
-            confidence += 15;
-        } else if (topCandidate.religiousSignificance === 'medium') {
-            confidence += 10;
-        } else if (topCandidate.religiousSignificance === 'low') {
-            confidence += 5;
-        }
         
-        // Check for cross-religious compatibility
-        if (topCandidate.crossReligious) {
-            confidence += 10;
-        }
+        // HIGHEST CONFIDENCE BOOST: Political/cultural identity matches (NPR research shows strongest predictor)
+        let politicalCulturalBoost = 0;
         
-        // Check for cultural match (handle both single values and arrays)
-        if (this.answers.cultural_background) {
-            const culturalSelections = Array.isArray(this.answers.cultural_background) 
-                ? this.answers.cultural_background 
-                : [this.answers.cultural_background];
+        // Political values match boost
+        if (this.answers.political_values) {
+            const politicalSelections = Array.isArray(this.answers.political_values) 
+                ? this.answers.political_values 
+                : [this.answers.political_values];
             
-            const validCultures = culturalSelections.filter(culture => 
-                culture !== "prefer_not_to_say" && 
-                culture !== "mixed"
-            );
+            const traditionalValues = ['traditional', 'security', 'community'];
+            const progressiveValues = ['diverse', 'progressive', 'justice', 'environment'];
             
-            if (validCultures.length > 0 && topCandidate.culturalOrigins) {
-                const hasCulturalMatch = validCultures.some(culture => 
-                    topCandidate.culturalOrigins.includes(culture)
-                );
-                if (hasCulturalMatch) {
-                    confidence += 10;
-                }
+            const hasTraditionalValues = politicalSelections.some(val => traditionalValues.includes(val));
+            const hasProgressiveValues = politicalSelections.some(val => progressiveValues.includes(val));
+            
+            if (topCandidate.languageOrigin === 'english' && hasTraditionalValues) {
+                politicalCulturalBoost += 25; // Strong traditional + English match
+            } else if (topCandidate.languageOrigin !== 'english' && hasProgressiveValues) {
+                politicalCulturalBoost += 25; // Strong progressive + non-English match
             }
         }
         
-        // Check for religious match (handle both single values and arrays)
+        // Language preference match boost
+        if (this.answers.language_preference) {
+            const languageSelections = Array.isArray(this.answers.language_preference) 
+                ? this.answers.language_preference 
+                : [this.answers.language_preference];
+            
+            if (languageSelections.includes('english_only') && topCandidate.languageOrigin === 'english') {
+                politicalCulturalBoost += 20; // English-only preference match
+            } else if (languageSelections.includes('multilingual') && topCandidate.languageOrigin !== 'english') {
+                politicalCulturalBoost += 20; // Multilingual + non-English match
+            }
+        }
+        
+        // Religious match boost
         if (this.answers.religious_tradition) {
             const religiousSelections = Array.isArray(this.answers.religious_tradition) 
                 ? this.answers.religious_tradition 
@@ -1307,8 +1785,136 @@ class NameGuessingQuiz {
                     topCandidate.religions.includes(religion)
                 );
                 if (hasReligiousMatch) {
-                    confidence += 15;
+                    politicalCulturalBoost += 15; // Religious match
                 }
+            }
+        }
+        
+        confidence += politicalCulturalBoost;
+        
+        // HIGH CONFIDENCE BOOST: Rural/Urban factor (Namerology research)
+        let ruralUrbanBoost = 0;
+        
+        if (this.answers.grew_up_location) {
+            const locationSelections = Array.isArray(this.answers.grew_up_location) 
+                ? this.answers.grew_up_location 
+                : [this.answers.grew_up_location];
+            
+            const isRuralGrewUp = locationSelections.some(loc => 
+                ['rural_grew_up', 'agricultural_grew_up'].includes(loc)
+            );
+            const isUrbanGrewUp = locationSelections.some(loc => 
+                ['urban_grew_up', 'international_grew_up'].includes(loc)
+            );
+            
+            // Counterintuitive research finding: Rural = non-traditional, Urban = traditional
+            if (isRuralGrewUp && topCandidate.traditionalSignificance === 'low') {
+                ruralUrbanBoost += 20; // Strong rural + non-traditional match
+            } else if (isUrbanGrewUp && topCandidate.traditionalSignificance === 'high') {
+                ruralUrbanBoost += 20; // Strong urban + traditional match
+            } else if (isRuralGrewUp && topCandidate.traditionalSignificance === 'medium') {
+                ruralUrbanBoost += 12; // Partial rural match
+            } else if (isUrbanGrewUp && topCandidate.traditionalSignificance === 'medium') {
+                ruralUrbanBoost += 12; // Partial urban match
+            }
+        }
+        
+        confidence += ruralUrbanBoost;
+        
+        // MEDIUM CONFIDENCE BOOST: Name letter effect and socioeconomic factors
+        let additionalBoost = 0;
+        
+        // Name letter effect boost
+        if (this.answers.favorite_letter) {
+            const nameFirstLetter = topCandidate.name.charAt(0).toLowerCase();
+            if (nameFirstLetter === this.answers.favorite_letter.toLowerCase()) {
+                additionalBoost += 10; // Name letter effect
+            }
+        }
+        
+        // Socioeconomic match boost
+        if (this.answers.career_path && topCandidate.socioeconomicLevel) {
+            const careerSelections = Array.isArray(this.answers.career_path) 
+                ? this.answers.career_path 
+                : [this.answers.career_path];
+            
+            const highEducationCareers = ['legal', 'medical', 'science', 'education', 'technology', 'engineering'];
+            const hasHighEducationCareer = careerSelections.some(career => 
+                highEducationCareers.includes(career)
+            );
+            
+            if (hasHighEducationCareer && topCandidate.socioeconomicLevel === 'high') {
+                additionalBoost += 8; // Socioeconomic match
+            } else if (!hasHighEducationCareer && topCandidate.socioeconomicLevel === 'medium') {
+                additionalBoost += 5;
+            }
+        }
+        
+        confidence += additionalBoost;
+        
+        // HIGH CONFIDENCE BOOST: Name perception factors
+        let perceptionBoost = 0;
+        
+        // Name perception boost
+        if (this.answers.name_perception && topCandidate.perceivedTraits) {
+            const perceptionSelections = Array.isArray(this.answers.name_perception) 
+                ? this.answers.name_perception 
+                : [this.answers.name_perception];
+            
+            const hasPerceptionMatch = perceptionSelections.some(perception => 
+                topCandidate.perceivedTraits.includes(perception)
+            );
+            if (hasPerceptionMatch) {
+                perceptionBoost += 15; // Strong perception match
+            }
+        }
+        
+        // Desired impression boost
+        if (this.answers.desired_impression && topCandidate.desiredTraits) {
+            const impressionSelections = Array.isArray(this.answers.desired_impression) 
+                ? this.answers.desired_impression 
+                : [this.answers.desired_impression];
+            
+            const hasImpressionMatch = impressionSelections.some(impression => 
+                topCandidate.desiredTraits.includes(impression)
+            );
+            if (hasImpressionMatch) {
+                perceptionBoost += 15; // Strong desired impression match
+            }
+        }
+        
+        // Name reactions boost
+        if (this.answers.name_reactions && topCandidate.typicalReactions) {
+            const reactionSelections = Array.isArray(this.answers.name_reactions) 
+                ? this.answers.name_reactions 
+                : [this.answers.name_reactions];
+            
+            const hasReactionMatch = reactionSelections.some(reaction => 
+                topCandidate.typicalReactions.includes(reaction)
+            );
+            if (hasReactionMatch) {
+                perceptionBoost += 15; // Strong reaction match
+            }
+        }
+        
+        confidence += perceptionBoost;
+        
+        // LOWER CONFIDENCE BOOST: Other factors
+        if (this.answers.length && topCandidate.name) {
+            const nameLength = topCandidate.name.length;
+            if ((this.answers.length === 'short' && nameLength <= 4) ||
+                (this.answers.length === 'medium' && nameLength >= 5 && nameLength <= 6) ||
+                (this.answers.length === 'long' && nameLength >= 7)) {
+                confidence += 5; // Length match
+            }
+        }
+        
+        if (this.answers.starts_with && topCandidate.name) {
+            const firstLetter = topCandidate.name.charAt(0).toLowerCase();
+            const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
+            if ((this.answers.starts_with === 'vowel' && isVowel) || 
+                (this.answers.starts_with === 'consonant' && !isVowel)) {
+                confidence += 3; // Vowel/consonant match
             }
         }
         
@@ -1352,6 +1958,70 @@ class NameGuessingQuiz {
         
         // Reset browser history
         history.pushState({page: 'home'}, '', '#');
+    }
+
+    showHome() {
+        // Hide all sections
+        document.getElementById('aboutSection').style.display = 'none';
+        document.getElementById('howItWorksSection').style.display = 'none';
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
+        
+        // Show hero section
+        document.querySelector('.hero').style.display = 'block';
+        
+        // Update browser history
+        history.pushState({page: 'home'}, '', '#home');
+    }
+
+    showHowItWorks() {
+        // Hide all sections
+        document.querySelector('.hero').style.display = 'none';
+        document.getElementById('aboutSection').style.display = 'none';
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
+        
+        // Show How It Works section
+        document.getElementById('howItWorksSection').style.display = 'block';
+        
+        // Update browser history
+        history.pushState({page: 'how-it-works'}, '', '#how-it-works');
+    }
+
+    showAbout() {
+        // Hide all sections
+        document.querySelector('.hero').style.display = 'none';
+        document.getElementById('howItWorksSection').style.display = 'none';
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
+        
+        // Show About section
+        document.getElementById('aboutSection').style.display = 'block';
+        
+        // Update browser history
+        history.pushState({page: 'about'}, '', '#about');
+    }
+
+    showContact() {
+        // Hide all sections
+        document.querySelector('.hero').style.display = 'none';
+        document.getElementById('aboutSection').style.display = 'none';
+        document.getElementById('howItWorksSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
+        
+        // Show Contact section
+        document.getElementById('contactSection').style.display = 'block';
+        
+        // Update browser history
+        history.pushState({page: 'contact'}, '', '#contact');
     }
 }
 
@@ -1541,12 +2211,32 @@ class MysticalBackground {
     }
 }
 
+// Global function for the "Try the Crystal Ball" button
+function showQuiz() {
+    const quiz = window.quizInstance;
+    if (quiz) {
+        // Hide all sections
+        document.getElementById('aboutSection').style.display = 'none';
+        document.getElementById('howItWorksSection').style.display = 'none';
+        document.getElementById('contactSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
+        
+        // Show hero section
+        document.querySelector('.hero').style.display = 'block';
+        
+        // Reset quiz state
+        quiz.resetQuiz();
+    }
+}
+
 // Initialize the quiz when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize mystical background
     new MysticalBackground();
     
     const quiz = new NameGuessingQuiz();
+    window.quizInstance = quiz; // Make quiz instance globally available
     
     // Handle browser back button
     window.addEventListener('popstate', (event) => {
@@ -1589,9 +2279,37 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('quizSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'block';
+            document.getElementById('howItWorksSection').style.display = 'none';
+        } else if (hash === '#how-it-works') {
+            document.querySelector('.hero').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('finalSection').style.display = 'none';
+            document.getElementById('howItWorksSection').style.display = 'block';
+        } else if (hash === '#about') {
+            document.querySelector('.hero').style.display = 'none';
+            document.getElementById('howItWorksSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('finalSection').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'block';
+        } else if (hash === '#contact') {
+            document.querySelector('.hero').style.display = 'none';
+            document.getElementById('aboutSection').style.display = 'none';
+            document.getElementById('howItWorksSection').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('finalSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'block';
         } else {
             // Default to hero section
             document.querySelector('.hero').style.display = 'block';
+            document.getElementById('aboutSection').style.display = 'none';
+            document.getElementById('howItWorksSection').style.display = 'none';
+            document.getElementById('contactSection').style.display = 'none';
             document.getElementById('quizSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'none';

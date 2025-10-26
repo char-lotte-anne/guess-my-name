@@ -15,6 +15,19 @@
     <div class="mystical-background" id="mysticalBackground"></div>
     
     <div class="container">
+        <!-- Navigation Header -->
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <a href="#home" class="nav-brand-link">🔮 Madame Mystique</a>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </nav>
+        
         <!-- Hero Section -->
         <header class="hero">
             <h1 class="main-title">🔮 Madame Mystique's Crystal Ball 🔮</h1>
@@ -138,6 +151,343 @@
                 <button class="play-again-btn" id="playAgainBtn">🔮 Consult the Spirits Again 🔮</button>
             </div>
         </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="aboutSection" style="display: none;">
+            <div class="about-container">
+                <h2 class="section-title">✨ About the Mystique ✨</h2>
+                <p class="section-subtitle">The story behind the crystal ball</p>
+                
+                <div class="about-content">
+                    <div class="about-card">
+                        <h3>🔮 The Vision</h3>
+                        <p>This interactive name-guessing experience was created as a fun demonstration of modern web development techniques, combining entertainment with technical innovation. Built with vanilla JavaScript, CSS animations, and responsive design principles.</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>👩‍💻 The Developer</h3>
+                        <p><strong>Charlotte Larson Freeman</strong> - Software Engineer (New Grad, March 2026)</p>
+                        <p>Passionate about human-centered, accessible AI and creating engaging user experiences. Currently working as an R&D Intern at Silfab Solar Inc., developing image processing software for solar cell analysis.</p>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>🎯 Technical Highlights</h3>
+                        <ul>
+                            <li>Responsive design with mobile-first approach</li>
+                            <li>Advanced CSS animations and transitions</li>
+                            <li>Interactive JavaScript quiz logic</li>
+                            <li>Modern web development best practices</li>
+                            <li>Accessibility considerations</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="about-card">
+                        <h3>🌟 Skills Demonstrated</h3>
+                        <p><strong>Languages:</strong> JavaScript, HTML5, CSS3</p>
+                        <p><strong>Concepts:</strong> DOM manipulation, event handling, responsive design, CSS animations, user experience design</p>
+                        <p><strong>Tools:</strong> Git version control, modern development workflow</p>
+                    </div>
+                </div>
+                
+                <div class="back-to-quiz">
+                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works-section" id="howItWorksSection" style="display: none;">
+            <div class="how-it-works-container">
+                <h2 class="section-title">🔮 How the Crystal Ball Works 🔮</h2>
+                <p class="section-subtitle">Discover the mystical science behind name divination</p>
+                
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Research-Based Data Collection</h3>
+                            <p>Our crystal ball draws from cutting-edge research and comprehensive databases:</p>
+                            <ul>
+                                <li>Social Security Administration baby name data (1880-2024)</li>
+                                <li>NPR research on political polarization in naming patterns</li>
+                                <li>Namerology studies on rural vs urban naming trends</li>
+                                <li>Academic research on cultural and religious naming traditions</li>
+                                <li>Demographic correlations from peer-reviewed studies</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Advanced Pattern Analysis</h3>
+                            <p>Our algorithm analyzes your responses using research-backed factors:</p>
+                            <ul>
+                                <li><strong>Political/Cultural Identity</strong> - Strongest predictor per NPR research</li>
+                                <li><strong>Language Preferences</strong> - 84% of blue state names are non-English</li>
+                                <li><strong>Rural vs Urban Background</strong> - Counterintuitive research findings</li>
+                                <li><strong>Family Tradition Importance</strong> - Traditional vs modern name preferences</li>
+                                <li><strong>Religious and Cultural Background</strong> - Major socioeconomic determinants</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Research-Driven Correlation</h3>
+                            <p>Our crystal ball correlates your responses with proven predictors:</p>
+                            <ul>
+                                <li><strong>Political Values</strong> - Traditional values → English names, Progressive → Non-English</li>
+                                <li><strong>Geographic Background</strong> - Rural areas prefer non-traditional names</li>
+                                <li><strong>Cultural Identity Strength</strong> - Stronger predictor than personality traits</li>
+                                <li><strong>Language Heritage</strong> - Multilingual preferences correlate with diverse names</li>
+                                <li><strong>Family Naming Traditions</strong> - Predicts traditional vs modern choices</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Scientific Name Prediction</h3>
+                            <p>The algorithm combines research findings to predict your name:</p>
+                            <ul>
+                                <li><strong>Political Identity Matching</strong> - 60 points (highest weight)</li>
+                                <li><strong>Language Preference Alignment</strong> - 50 points</li>
+                                <li><strong>Geographic Pattern Recognition</strong> - 30 points</li>
+                                <li><strong>Cultural/Religious Significance</strong> - 50 points</li>
+                                <li><strong>Statistical Probability</strong> - Based on research-backed correlations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-sources">
+                    <h3>📚 Research Sources & References</h3>
+                    <div class="sources-grid">
+                        <div class="source-card">
+                            <h4>NPR Research on Political Polarization</h4>
+                            <p>Groundbreaking study revealing that 84% of blue state names are non-English, while 90% of red state names are English. Political identity is the strongest predictor of name choice.</p>
+                            <a href="https://www.npr.org/transcripts/1242780108" target="_blank" class="source-link">Read NPR Study →</a>
+                        </div>
+                        
+                        <div class="source-card">
+                            <h4>Namerology by Laura Wattenberg</h4>
+                            <p>Authoritative research by the creator of "The Baby Name Wizard" revealing that rural white America is the LEAST traditional in naming patterns - a counterintuitive finding.</p>
+                            <a href="https://namerology.com/2019/11/06/the-tradition-shattering-names-of-rural-white-america/" target="_blank" class="source-link">Explore Namerology →</a>
+                        </div>
+                        
+                        <div class="source-card">
+                            <h4>Social Security Administration</h4>
+                            <p>Official baby name data from 1880-2024, including popularity rankings and birth counts by state. The gold standard for name statistics.</p>
+                            <a href="https://www.ssa.gov/oact/babynames/" target="_blank" class="source-link">View Official Data →</a>
+                        </div>
+                        
+                        <div class="source-card">
+                            <h4>Academic Research on Socioeconomic Determinants</h4>
+                            <p>Peer-reviewed studies showing how family income, education level, and cultural background influence naming choices across different social strata.</p>
+                            <a href="https://ans-names.pitt.edu/ans/article/view/2034/2033" target="_blank" class="source-link">Academic Study →</a>
+                        </div>
+                        
+                        <div class="source-card">
+                            <h4>Name Letter Effect Research</h4>
+                            <p>Psychological studies demonstrating that people prefer names starting with letters from their own name - a phenomenon called the "name letter effect."</p>
+                            <a href="https://www.psychologistworld.com/emotion/name-letter-effect-attraction" target="_blank" class="source-link">Psychology Research →</a>
+                        </div>
+                        
+                        <div class="source-card">
+                            <h4>Cultural Naming Traditions</h4>
+                            <p>Research on naming patterns across different cultural and religious traditions, including naming ceremonies and their significance.</p>
+                            <a href="https://www.behindthename.com/" target="_blank" class="source-link">Cultural Studies →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="methodology">
+                    <h3>🔬 Research-Based Methodology</h3>
+                    <p>Our crystal ball employs cutting-edge research findings to predict names. The algorithm is based on peer-reviewed studies and authoritative research:</p>
+                    
+                    <div class="methodology-grid">
+                        <div class="method-item">
+                            <h4>Political/Cultural Identity (60 points)</h4>
+                            <p><strong>NPR Research:</strong> Strongest predictor of name choice. Traditional values → English names, Progressive values → Non-English names</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Language Preferences (50 points)</h4>
+                            <p><strong>NPR Finding:</strong> 84% of blue state names are non-English, 90% of red state names are English</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Rural/Urban Background (30 points)</h4>
+                            <p><strong>Namerology Research:</strong> Counterintuitive finding - rural areas prefer non-traditional names, urban areas prefer traditional names</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Religious/Cultural Background (50 points)</h4>
+                            <p><strong>Academic Studies:</strong> Major socioeconomic determinants of naming choices across different social strata</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Family Tradition Importance (20 points)</h4>
+                            <p><strong>Research-Based:</strong> Predicts traditional vs modern name preferences</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Name Letter Effect (20 points)</h4>
+                            <p><strong>Psychology Research:</strong> People prefer names starting with letters from their own name</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Diversity Attitude (15 points)</h4>
+                            <p><strong>Cultural Studies:</strong> Correlates with name origin diversity and cultural openness</p>
+                        </div>
+                        
+                        <div class="method-item">
+                            <h4>Name Meaning Preferences (15 points)</h4>
+                            <p><strong>Semantic Research:</strong> People are drawn to names with meanings that align with their values</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accuracy-info">
+                    <h3>🎯 Research-Enhanced Accuracy</h3>
+                    <p>Our crystal ball achieves unprecedented accuracy through research-backed improvements:</p>
+                    <ul>
+                        <li><strong>High Confidence (85-95%):</strong> When political identity, language preferences, and cultural factors align strongly</li>
+                        <li><strong>Medium Confidence (60-85%):</strong> When some research factors align with geographic and demographic patterns</li>
+                        <li><strong>Lower Confidence (30-60%):</strong> When patterns are less clear or research data is limited</li>
+                    </ul>
+                    
+                    <div class="research-improvements">
+                        <h4>🔬 Key Research Improvements:</h4>
+                        <ul>
+                            <li><strong>Political Identity Recognition:</strong> NPR research shows this is the strongest predictor</li>
+                            <li><strong>Language Origin Analysis:</strong> 84% correlation between political leanings and name origins</li>
+                            <li><strong>Geographic Pattern Recognition:</strong> Counterintuitive rural/urban naming trends</li>
+                            <li><strong>Cultural Identity Mapping:</strong> Stronger predictor than individual personality traits</li>
+                            <li><strong>Family Tradition Assessment:</strong> Predicts traditional vs modern name preferences</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="disclaimer">* Results are for entertainment purposes. Name prediction accuracy varies based on available research data and user responses. Algorithm based on peer-reviewed studies and authoritative research.</p>
+                </div>
+
+                <div class="back-to-quiz">
+                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section class="contact-section" id="contactSection" style="display: none;">
+            <div class="contact-container">
+                <h2 class="section-title">📞 Contact the Mystique 📞</h2>
+                <p class="section-subtitle">Connect with the developer behind the magic</p>
+                
+                <div class="contact-content">
+                    <div class="contact-card">
+                        <h3>👩‍💻 Charlotte Larson Freeman</h3>
+                        <p class="contact-role">Software Engineer (New Grad, March 2026)</p>
+                        <p class="contact-location">Bellingham, WA | Open to relocation</p>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <h4>📧 Email</h4>
+                            <a href="mailto:charlottelf@protonmail.com" class="contact-link">charlottelf@protonmail.com</a>
+                        </div>
+                        
+                        
+                        <div class="contact-item">
+                            <h4>💼 LinkedIn</h4>
+                            <a href="https://www.linkedin.com/in/clarsonfreeman/" target="_blank" class="contact-link">linkedin.com/in/clarsonfreeman</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <h4>🐙 GitHub</h4>
+                            <a href="https://github.com/char-lotte-anne" target="_blank" class="contact-link">github.com/char-lotte-anne</a>
+                        </div>
+                    </div>
+                    
+                    <div class="resume-highlights">
+                        <h3>🎯 Current Experience</h3>
+                        <div class="highlight-card">
+                            <h4>Research and Development Intern</h4>
+                            <p><strong>Silfab Solar Inc.</strong> | June 2025 - Present</p>
+                            <p>Developing image processing software for solar cell analysis, using AI-assisted development tools while maintaining full QA responsibility.</p>
+                        </div>
+                        
+                        <div class="highlight-card">
+                            <h4>Undergraduate Researcher</h4>
+                            <p><strong>Western Washington University</strong> | January 2025 - Present</p>
+                            <p>Researching ethical implications of AI and ableism in LLMs, co-developing coding schemas for bias analysis.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="skills-showcase">
+                        <h3>🛠️ Technical Skills</h3>
+                        <div class="skills-grid">
+                            <div class="skill-category">
+                                <h4>Languages</h4>
+                                <p>Java, Python, C, JavaScript, HTML/CSS, Racket, SQL, React</p>
+                            </div>
+                            <div class="skill-category">
+                                <h4>Tools</h4>
+                                <p>Git, IntelliJ, Visual Studio, ImageJ, LaTeX, Bash, OpenCV</p>
+                            </div>
+                            <div class="skill-category">
+                                <h4>Specialties</h4>
+                                <p>Image Analysis, AI Ethics, Human-Centered Design, Data Visualization</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="fun-facts">
+                        <h3>🌟 Fun Facts</h3>
+                        <ul>
+                            <li>Speaks some Spanish and "holiday" German</li>
+                            <li>Takes latin dance classes (salsa, bachata, cha-cha)</li>
+                            <li>Fascinated by the intersection of science and food</li>
+                            <li>Avid reader of contemporary mythology reimaginings</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="back-to-quiz">
+                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🔮 Madame Mystique</h3>
+                    <p>Divining names through the ancient arts since time immemorial.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Developer</h4>
+                    <p>👩‍💻 Charlotte Larson Freeman</p>
+                    <p>📧 <a href="mailto:charlottelf@protonmail.com">charlottelf@protonmail.com</a></p>
+                    <p>💼 <a href="https://www.linkedin.com/in/clarsonfreeman/" target="_blank">LinkedIn</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Madame Mystique's Crystal Ball. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
     <script src="nameDatabase.js"></script>
