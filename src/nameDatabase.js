@@ -18,12 +18,13 @@ class EnhancedNameDatabase {
         this.lengthIndex = {
             'short': [], // 2-4 letters
             'medium': [], // 5-6 letters  
-            'long': [] // 7+ letters
+            'long': [], // 7-9 letters
+            'extra_long': [] // 10+ letters
         };
         this.genderLengthIndex = {
-            'M': { 'short': [], 'medium': [], 'long': [] },
-            'F': { 'short': [], 'medium': [], 'long': [] },
-            'NB': { 'short': [], 'medium': [], 'long': [] }
+            'M': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] },
+            'F': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] },
+            'NB': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] }
         };
         
         // State-specific indexes
@@ -440,11 +441,11 @@ class EnhancedNameDatabase {
         
         // Clear existing indexes
         this.genderIndex = { 'M': [], 'F': [], 'NB': [] };
-        this.lengthIndex = { 'short': [], 'medium': [], 'long': [] };
+        this.lengthIndex = { 'short': [], 'medium': [], 'long': [], 'extra_long': [] };
         this.genderLengthIndex = {
-            'M': { 'short': [], 'medium': [], 'long': [] },
-            'F': { 'short': [], 'medium': [], 'long': [] },
-            'NB': { 'short': [], 'medium': [], 'long': [] }
+            'M': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] },
+            'F': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] },
+            'NB': { 'short': [], 'medium': [], 'long': [], 'extra_long': [] }
         };
         
         // Clear new indexes
@@ -475,8 +476,10 @@ class EnhancedNameDatabase {
                 lengthCategory = 'short';
             } else if (nameLength <= 6) {
                 lengthCategory = 'medium';
-            } else {
+            } else if (nameLength <= 9) {
                 lengthCategory = 'long';
+            } else {
+                lengthCategory = 'extra_long';
             }
             
             // Categorize by vowel/consonant
@@ -546,7 +549,7 @@ class EnhancedNameDatabase {
         
         console.log('✅ Comprehensive indexes built successfully!');
         console.log(`📊 Gender index: M=${this.genderIndex.M.length}, F=${this.genderIndex.F.length}, NB=${this.genderIndex.NB.length}`);
-        console.log(`📏 Length index: short=${this.lengthIndex.short.length}, medium=${this.lengthIndex.medium.length}, long=${this.lengthIndex.long.length}`);
+        console.log(`📏 Length index: short=${this.lengthIndex.short.length}, medium=${this.lengthIndex.medium.length}, long=${this.lengthIndex.long.length}, extra_long=${this.lengthIndex.extra_long.length}`);
         console.log(`🔤 Vowel index: vowel=${this.vowelIndex.vowel.length}, consonant=${this.vowelIndex.consonant.length}`);
         console.log(`⭐ Popularity index: very_popular=${this.popularityIndex.very_popular.length}, popular=${this.popularityIndex.popular.length}, uncommon=${this.popularityIndex.uncommon.length}`);
         console.log(`🗺️ State indexes: ${Object.keys(this.stateGenderIndex).length} states loaded`);

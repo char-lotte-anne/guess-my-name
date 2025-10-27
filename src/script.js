@@ -96,10 +96,12 @@ class NamePredictionML {
         if (answers.language_preference) {
             const languageValues = Array.isArray(answers.language_preference) ? answers.language_preference : [answers.language_preference];
             const languageMap = {
-                'english_only': 0, 'spanish': 1, 'french': 2, 'german': 3,
-                'italian': 4, 'russian': 5, 'chinese': 6, 'japanese': 7,
-                'korean': 8, 'hindi': 9, 'arabic': 10, 'hebrew': 11,
-                'irish': 12, 'scandinavian': 13, 'multilingual': 14
+                'english_only': 0, 'spanish': 1, 'chinese': 2, 'filipino': 3,
+                'vietnamese': 4, 'korean': 5, 'japanese': 6, 'hindi': 7,
+                'arabic': 8, 'hebrew': 9, 'french': 10, 'german': 11,
+                'italian': 12, 'russian': 13, 'polish': 14, 'greek': 15,
+                'irish': 16, 'scandinavian': 17, 'yoruba': 18, 'amharic': 19,
+                'haitian_creole': 20, 'portuguese': 21, 'multilingual': 22
             };
             languageValues.forEach(value => {
                 if (languageMap[value] !== undefined) {
@@ -107,7 +109,7 @@ class NamePredictionML {
                 }
             });
         }
-        featureIndex += 15;
+        featureIndex += 23;
 
         // Add more features as needed...
         // For now, pad the remaining features with zeros
@@ -221,6 +223,7 @@ class NameGuessingQuiz {
         this.currentQuestion = 0;
         this.answers = {};
         this.realName = null; // Store user's real name for training
+        this.selectedCountries = []; // Store selected countries for world map
         this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.mlModel = new NamePredictionML();
         this.questions = [
@@ -254,10 +257,10 @@ class NameGuessingQuiz {
                 text: "📏 How many letters are in your first name?",
                 type: "slider",
                 min: 1,
-                max: 3,
-                step: 0.01,
+                max: 4,
+                step: 1,
                 default: 2,
-                labels: ["⚡ Short", "💫 Medium", "🌟 Long"],
+                labels: ["⚡ Short (2-4)", "💫 Medium (5-6)", "🌟 Long (7-9)", "✨ Extra Long (10+)"],
                 key: "length"
             },
             {
@@ -301,18 +304,26 @@ class NameGuessingQuiz {
                 options: [
                     { text: "🇺🇸 English only", value: "english_only" },
                     { text: "🇪🇸 Spanish", value: "spanish" },
+                    { text: "🇨🇳 Chinese (Mandarin/Cantonese)", value: "chinese" },
+                    { text: "🇵🇭 Filipino/Tagalog", value: "filipino" },
+                    { text: "🇻🇳 Vietnamese", value: "vietnamese" },
+                    { text: "🇰🇷 Korean", value: "korean" },
+                    { text: "🇯🇵 Japanese", value: "japanese" },
+                    { text: "🇮🇳 Hindi/Urdu", value: "hindi" },
+                    { text: "🇦🇪 Arabic", value: "arabic" },
+                    { text: "🇮🇱 Hebrew", value: "hebrew" },
                     { text: "🇫🇷 French", value: "french" },
                     { text: "🇩🇪 German", value: "german" },
                     { text: "🇮🇹 Italian", value: "italian" },
-                    { text: "🇷🇺 Russian", value: "russian" },
-                    { text: "🇨🇳 Chinese", value: "chinese" },
-                    { text: "🇯🇵 Japanese", value: "japanese" },
-                    { text: "🇰🇷 Korean", value: "korean" },
-                    { text: "🇮🇳 Hindi/Sanskrit", value: "hindi" },
-                    { text: "🇦🇪 Arabic", value: "arabic" },
-                    { text: "🇮🇱 Hebrew", value: "hebrew" },
+                    { text: "🇷🇺 Russian/Slavic", value: "russian" },
+                    { text: "🇵🇱 Polish", value: "polish" },
+                    { text: "🇬🇷 Greek", value: "greek" },
                     { text: "🇮🇪 Irish/Gaelic", value: "irish" },
-                    { text: "🇳🇴 Scandinavian", value: "scandinavian" },
+                    { text: "🇳🇴 Scandinavian/Norse", value: "scandinavian" },
+                    { text: "🇳🇬 Nigerian/Yoruba", value: "yoruba" },
+                    { text: "🇪🇹 Amharic", value: "amharic" },
+                    { text: "🇭🇹 Haitian Creole", value: "haitian_creole" },
+                    { text: "🇵🇷 Portuguese", value: "portuguese" },
                     { text: "🌍 Multiple languages", value: "multilingual" }
                 ],
                 key: "language_preference"
@@ -548,24 +559,8 @@ class NameGuessingQuiz {
                 key: "religious_tradition"
             },
             {
-                text: "🌍 What cultural backgrounds does your family come from?",
-                type: "multi_select",
-                options: [
-                    { text: "🇺🇸 American/English", value: "american" },
-                    { text: "🇪🇸 Spanish/Latin American", value: "spanish" },
-                    { text: "🇫🇷 French", value: "french" },
-                    { text: "🇩🇪 German", value: "german" },
-                    { text: "🇮🇹 Italian", value: "italian" },
-                    { text: "🇷🇺 Russian/Slavic", value: "slavic" },
-                    { text: "🇬🇷 Greek", value: "greek" },
-                    { text: "🇮🇳 Indian/Sanskrit", value: "sanskrit" },
-                    { text: "🇦🇪 Arabic/Middle Eastern", value: "arabic" },
-                    { text: "🇮🇱 Hebrew/Jewish", value: "hebrew" },
-                    { text: "🇮🇪 Irish/Celtic", value: "celtic" },
-                    { text: "🇳🇴 Scandinavian/Norse", value: "norse" },
-                    { text: "🌍 Mixed/Multiple", value: "mixed" },
-                    { text: "🤐 Prefer not to say", value: "prefer_not_to_say" }
-                ],
+                text: "🌍 What cultural backgrounds does your family come from? (Select all that apply)",
+                type: "world_map",
                 key: "cultural_background"
             }
         ];
@@ -670,6 +665,8 @@ class NameGuessingQuiz {
             this.createSlider(question, optionsContainer);
         } else if (question.type === 'map') {
             this.createMap();
+        } else if (question.type === 'world_map') {
+            this.createWorldMap();
         } else if (question.type === 'multi_select') {
             this.createMultiSelect(question, optionsContainer);
         } else {
@@ -709,61 +706,50 @@ class NameGuessingQuiz {
         const labelsContainer = document.createElement('div');
         labelsContainer.className = 'slider-labels';
         
-        // For decade question, show key decades with proper spacing
-        if (question.key === 'decade') {
-            // Show key decades that align with slider positions
-            const keyDecades = [1900, 1920, 1940, 1960, 1980, 2000, 2020];
+        // Use consistent absolute positioning for all sliders
+        if (question.labels && question.labels.length > 0) {
+            labelsContainer.style.position = 'relative';
+            labelsContainer.style.minHeight = '30px';
             
-            keyDecades.forEach((year, index) => {
-                const labelElement = document.createElement('div');
-                labelElement.className = 'slider-label decade-label';
-                labelElement.textContent = year;
-                
-                // Calculate the position percentage for proper alignment
-                const position = ((year - question.min) / (question.max - question.min)) * 100;
-                labelElement.style.left = `${position}%`;
-                labelElement.style.position = 'absolute';
-                labelElement.style.transform = 'translateX(-50%)';
-                
-                labelsContainer.appendChild(labelElement);
-            });
-        } else if (question.key === 'length') {
-            // For name length question, position labels at fractional positions
-            const labels = ['⚡ Short', '💫 Medium', '🌟 Long'];
-            const numLabels = labels.length;
-            
-            labels.forEach((label, index) => {
-                const labelElement = document.createElement('div');
-                labelElement.className = 'slider-label length-label';
-                labelElement.textContent = label;
-                
-                // Calculate position: first at 0%, middle at 50%, last at 100%
-                let position;
-                if (index === 0) {
-                    position = 0; // Start of slider
-                } else if (index === numLabels - 1) {
-                    position = 100; // End of slider
-                } else {
-                    position = (index / (numLabels - 1)) * 100; // Evenly distributed
-                }
-                
-                labelElement.style.left = `${position}%`;
-                labelElement.style.position = 'absolute';
-                labelElement.style.transform = 'translateX(-50%)';
-                
-                labelsContainer.appendChild(labelElement);
-            });
-        } else {
-            // For other questions, use the provided labels
-            labelsContainer.classList.add('regular-labels');
-            question.labels.forEach((label, index) => {
-                const labelElement = document.createElement('div');
-                labelElement.className = 'slider-label regular-label';
-                labelElement.textContent = label;
-                if (index === 0) labelElement.classList.add('left');
-                if (index === question.labels.length - 1) labelElement.classList.add('right');
-                labelsContainer.appendChild(labelElement);
-            });
+            // Special handling for decade slider to align with actual years
+            if (question.key === 'decade') {
+                const decadeYears = [1900, 1950, 2000, 2020];
+                question.labels.forEach((label, index) => {
+                    const labelElement = document.createElement('div');
+                    labelElement.className = 'slider-label';
+                    labelElement.textContent = label;
+                    labelElement.style.position = 'absolute';
+                    labelElement.style.transform = 'translateX(-50%)';
+                    labelElement.style.whiteSpace = 'nowrap';
+                    labelElement.style.textAlign = 'center';
+                    
+                    // Calculate position based on actual year values
+                    const year = decadeYears[index];
+                    const position = ((year - question.min) / (question.max - question.min)) * 100;
+                    labelElement.style.left = `${position}%`;
+                    labelElement.style.top = '0';
+                    
+                    labelsContainer.appendChild(labelElement);
+                });
+            } else {
+                // Standard positioning for other sliders
+                question.labels.forEach((label, index) => {
+                    const labelElement = document.createElement('div');
+                    labelElement.className = 'slider-label';
+                    labelElement.textContent = label;
+                    labelElement.style.position = 'absolute';
+                    labelElement.style.transform = 'translateX(-50%)';
+                    labelElement.style.whiteSpace = 'nowrap';
+                    labelElement.style.textAlign = 'center';
+                    
+                    // Calculate position based on slider range
+                    const position = (index / (question.labels.length - 1)) * 100;
+                    labelElement.style.left = `${position}%`;
+                    labelElement.style.top = '0';
+                    
+                    labelsContainer.appendChild(labelElement);
+                });
+            }
         }
         
         // Create continue button
@@ -796,7 +782,8 @@ class NameGuessingQuiz {
         if (question.key === 'length') {
             if (value <= 1.5) return '⚡ Short (2-4 letters)';
             if (value <= 2.5) return '💫 Medium (5-6 letters)';
-            return '🌟 Long (7+ letters)';
+            if (value <= 3.5) return '🌟 Long (7-9 letters)';
+            return '✨ Extra Long (10+ letters)';
         } else if (question.key === 'popularity') {
             return question.labels[value - 1];
         }
@@ -807,7 +794,8 @@ class NameGuessingQuiz {
         if (question.key === 'length') {
             if (value <= 1.5) return 'short';
             if (value <= 2.5) return 'medium';
-            return 'long';
+            if (value <= 3.5) return 'long';
+            return 'extra_long';
         } else if (question.key === 'popularity') {
             const values = ['uncommon', 'popular', 'very_popular'];
             return values[value - 1];
@@ -1073,6 +1061,151 @@ class NameGuessingQuiz {
           })
           .catch(err => console.error("Error loading map:", err));
        }
+
+    createWorldMap() {
+        const mapContainer = document.getElementById('mapContainer');
+        if (!mapContainer) {
+          console.error("Map container not found!");
+          return;
+        }
+      
+        mapContainer.style.display = 'block';
+        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        
+        // Initialize selected countries array
+        this.selectedCountries = [];
+      
+        fetch('../assets/world-map/world-map.svg')
+          .then(response => {
+            console.log('World map fetch response:', response.status, response.statusText);
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            return response.text();
+          })
+          .then(svgText => {
+            console.log('World map SVG loaded successfully, length:', svgText.length);
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+            const svgElement = svgDoc.documentElement;
+      
+            svgElement.classList.add('world-map');
+            svgElement.style.width = '100%';
+            svgElement.style.height = 'auto';
+            svgElement.style.maxWidth = '1000px';
+            svgElement.style.display = 'block';
+            svgElement.style.margin = '0 auto';
+      
+            svgElement.querySelectorAll('path').forEach(path => {
+               path.classList.add('country-path');
+               
+               // Add golden styling
+               path.style.fill = 'rgba(255, 215, 0, 0.1)';
+               path.style.stroke = '#FFD700';
+               path.style.strokeWidth = '1';
+               path.style.cursor = 'pointer';
+               path.style.transition = 'all 0.3s ease';
+               
+               // Add hover effects
+               path.addEventListener('mouseenter', () => {
+                 if (!path.classList.contains('selected')) {
+                   path.style.fill = 'rgba(255, 215, 0, 0.4)';
+                   path.style.stroke = '#FFFFFF';
+                   path.style.strokeWidth = '2';
+                   path.style.filter = 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.6))';
+                 }
+               });
+               
+               path.addEventListener('mouseleave', () => {
+                 if (!path.classList.contains('selected')) {
+                   path.style.fill = 'rgba(255, 215, 0, 0.1)';
+                   path.style.stroke = '#FFD700';
+                   path.style.strokeWidth = '1';
+                   path.style.filter = 'none';
+                 }
+               });
+               
+               path.addEventListener('click', () => {
+                 const countryId = path.id || path.getAttribute('name') || path.getAttribute('data-name');
+                 
+                 if (path.classList.contains('selected')) {
+                   // Deselect country
+                   path.classList.remove('selected');
+                   path.style.fill = 'rgba(255, 215, 0, 0.1)';
+                   path.style.stroke = '#FFD700';
+                   path.style.strokeWidth = '1';
+                   path.style.filter = 'none';
+                   
+                   // Remove from selected countries
+                   this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
+                 } else {
+                   // Select country
+                   path.classList.add('selected');
+                   path.style.fill = 'rgba(255, 215, 0, 0.7)';
+                   path.style.stroke = '#FFA500';
+                   path.style.strokeWidth = '2.5';
+                   path.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                   
+                   // Add to selected countries
+                   this.selectedCountries.push(countryId);
+                 }
+                 
+                 console.log("Selected countries:", this.selectedCountries);
+                 
+                 // Show continue button if any countries are selected
+                 if (this.selectedCountries.length > 0) {
+                   this.showWorldMapContinueButton();
+                 } else {
+                   this.hideWorldMapContinueButton();
+                 }
+               });
+             });
+      
+            mapContainer.appendChild(svgElement);
+          })
+          .catch(err => {
+            console.error("Error loading world map:", err);
+            // Show user-friendly error message
+            const mapContainer = document.getElementById('mapContainer');
+            if (mapContainer) {
+              mapContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #FFD700;">
+                  <h3>🗺️ World Map Loading Error</h3>
+                  <p>Unable to load the world map. Please refresh the page and try again.</p>
+                  <p style="font-size: 0.9em; color: #ccc;">Error: ${err.message}</p>
+                </div>
+              `;
+            }
+          });
+       }
+
+    showWorldMapContinueButton() {
+        console.log('showWorldMapContinueButton called');
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
+            // Use the same continue button system as sliders
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'slider-continue-btn';
+            continueBtn.textContent = `Continue (${this.selectedCountries.length} selected)`;
+            continueBtn.addEventListener('click', () => {
+                console.log('Continuing with countries:', this.selectedCountries);
+                this.selectAnswer(this.selectedCountries);
+            });
+            continueContainer.appendChild(continueBtn);
+        } else if (continueContainer && continueContainer.querySelector('.slider-continue-btn')) {
+            // Update existing button text
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            existingBtn.textContent = `Continue (${this.selectedCountries.length} selected)`;
+        }
+    }
+
+    hideWorldMapContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer) {
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+        }
+    }
        
     showMapContinueButton() {
         console.log('showMapContinueButton called');
@@ -1368,10 +1501,14 @@ class NameGuessingQuiz {
                 // Use efficient gender lookup, then filter with relaxed length
                 const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
                 relaxedCandidates = genderCandidates.filter(nameInfo => {
-                // Relax length: if they want long, accept 6+ letters
+                // Relax length: if they want long, accept 6+ letters; if extra_long, accept 8+ letters
                 if (this.answers.length === 'long') {
                     const nameLength = nameInfo.name.length;
                     if (nameLength < 6) return false; // Still reject very short names
+                }
+                if (this.answers.length === 'extra_long') {
+                    const nameLength = nameInfo.name.length;
+                    if (nameLength < 8) return false; // Still reject very short names
                 }
                 
                 // Keep vowel filter
@@ -1488,10 +1625,14 @@ class NameGuessingQuiz {
                 // Use efficient gender lookup, then filter with relaxed length
                 const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
                 relaxedCandidates = genderCandidates.filter(nameInfo => {
-                // Relax length: if they want long, accept 6+ letters
+                // Relax length: if they want long, accept 6+ letters; if extra_long, accept 8+ letters
                 if (this.answers.length === 'long') {
                     const nameLength = nameInfo.name.length;
                     if (nameLength < 6) return false; // Still reject very short names
+                }
+                if (this.answers.length === 'extra_long') {
+                    const nameLength = nameInfo.name.length;
+                    if (nameLength < 8) return false; // Still reject very short names
                 }
                 
                 // Keep vowel filter
@@ -1530,6 +1671,15 @@ class NameGuessingQuiz {
                             { name: 'Gabrielle', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Stephanie', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
+                    } else if (this.answers.length === 'extra_long') {
+                        console.log('✅ Adding extra long female names');
+                        fallbackNames.push(
+                            { name: 'Alexandria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Christina', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Katherine', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Stephanie', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Elizabeth', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
+                        );
                     } else if (this.answers.length === 'medium') {
                         fallbackNames.push(
                             { name: 'Sarah', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
@@ -1561,6 +1711,15 @@ class NameGuessingQuiz {
                             { name: 'Benjamin', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Nathaniel', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Sebastian', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
+                        );
+                    } else if (this.answers.length === 'extra_long') {
+                        console.log('✅ Adding extra long male names');
+                        fallbackNames.push(
+                            { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Nathaniel', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Sebastian', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                            { name: 'Theodore', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else if (this.answers.length === 'medium') {
                         fallbackNames.push(
@@ -1608,6 +1767,15 @@ class NameGuessingQuiz {
                             { name: 'Taylor', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Casey', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
+                        );
+                    } else if (this.answers.length === 'extra_long') {
+                        console.log('✅ Adding extra long non-binary names');
+                        fallbackNames.push(
+                            { name: 'Alexandria', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
+                            { name: 'Christopher', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
+                            { name: 'Stephanie', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
+                            { name: 'Nathaniel', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
+                            { name: 'Gabrielle', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
                     } else if (this.answers.length === 'medium') {
                         fallbackNames.push(
@@ -2127,7 +2295,8 @@ class NameGuessingQuiz {
                     const nameLength = nameInfo.name.length;
                     if (this.answers.length === 'short' && nameLength <= 4) return true;
                     if (this.answers.length === 'medium' && nameLength >= 5 && nameLength <= 6) return true;
-                    if (this.answers.length === 'long' && nameLength >= 7) return true;
+                    if (this.answers.length === 'long' && nameLength >= 7 && nameLength <= 9) return true;
+                    if (this.answers.length === 'extra_long' && nameLength >= 10) return true;
                     return false;
                 });
                 console.log(`📏 Filtered to ${candidates.length} non-binary names matching length=${this.answers.length}`);
@@ -2244,8 +2413,12 @@ class NameGuessingQuiz {
                 console.log(`❌ REJECTED: ${nameInfo.name} - wrong length for medium preference (${nameLength} not 5-6)`);
                 return false;
             }
-            if (this.answers.length === 'long' && nameLength < 7) {
-                console.log(`❌ REJECTED: ${nameInfo.name} - too short for long preference (${nameLength} < 7)`);
+            if (this.answers.length === 'long' && (nameLength < 7 || nameLength > 9)) {
+                console.log(`❌ REJECTED: ${nameInfo.name} - wrong length for long preference (${nameLength} not 7-9)`);
+                return false;
+            }
+            if (this.answers.length === 'extra_long' && nameLength < 10) {
+                console.log(`❌ REJECTED: ${nameInfo.name} - too short for extra long preference (${nameLength} < 10)`);
                 return false;
             }
             console.log(`✅ ACCEPTED: ${nameInfo.name} - matches length preference`);
@@ -2674,6 +2847,7 @@ class NameGuessingQuiz {
         this.currentQuestion = 0;
         this.answers = {};
         this.realName = null; // Reset real name
+        this.selectedCountries = []; // Reset selected countries
         
         document.getElementById('finalSection').style.display = 'none';
         document.getElementById('quizSection').style.display = 'none';
