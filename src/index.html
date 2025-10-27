@@ -115,13 +115,41 @@
                         <div class="mouth happy"></div>
                     </div>
                 </div>
-                <h2 class="result-title">🔮 The spirits reveal your name is... 🔮</h2>
-                <div class="guess-display" id="guessDisplay">
-                    <span class="guess-name" id="guessName">Loading...</span>
+                <h2 class="result-title">🔮 The spirits reveal your top 5 names... 🔮</h2>
+                <div class="guesses-container" id="guessesContainer">
+                    <div class="guess-item" id="guess1">
+                        <div class="guess-rank">1</div>
+                        <div class="guess-name" id="guessName1">Loading...</div>
+                        <div class="guess-confidence" id="confidence1">85%</div>
+                    </div>
+                    <div class="guess-item" id="guess2">
+                        <div class="guess-rank">2</div>
+                        <div class="guess-name" id="guessName2">Loading...</div>
+                        <div class="guess-confidence" id="confidence2">82%</div>
+                    </div>
+                    <div class="guess-item" id="guess3">
+                        <div class="guess-rank">3</div>
+                        <div class="guess-name" id="guessName3">Loading...</div>
+                        <div class="guess-confidence" id="confidence3">78%</div>
+                    </div>
+                    <div class="guess-item" id="guess4">
+                        <div class="guess-rank">4</div>
+                        <div class="guess-name" id="guessName4">Loading...</div>
+                        <div class="guess-confidence" id="confidence4">75%</div>
+                    </div>
+                    <div class="guess-item" id="guess5">
+                        <div class="guess-rank">5</div>
+                        <div class="guess-name" id="guessName5">Loading...</div>
+                        <div class="guess-confidence" id="confidence5">72%</div>
+                    </div>
                 </div>
-                <div class="confidence-bar">
-                    <div class="confidence-fill" id="confidenceFill"></div>
-                    <span class="confidence-text" id="confidenceText">85% confident</span>
+                <div class="name-input-section" id="nameInputSection">
+                    <p class="name-input-prompt">✨ Help train the spirits by sharing your real name (optional):</p>
+                    <div class="name-input-container">
+                        <input type="text" id="realNameInput" class="name-input" placeholder="Enter your first name..." maxlength="50">
+                        <button class="name-submit-btn" id="nameSubmitBtn">✨ Submit ✨</button>
+                    </div>
+                    <p class="name-input-note">This helps the spirits learn and improve their predictions!</p>
                 </div>
                 <div class="result-actions">
                     <button class="action-btn correct" id="correctBtn">🔮 The spirits were right! 🔮</button>
@@ -186,6 +214,22 @@
                         <p><strong>Languages:</strong> JavaScript, HTML5, CSS3</p>
                         <p><strong>Concepts:</strong> DOM manipulation, event handling, responsive design, CSS animations, user experience design</p>
                         <p><strong>Tools:</strong> Git version control, modern development workflow</p>
+                    </div>
+                    
+                    <div class="about-card data-usage-card">
+                        <h3>🔒 Data Usage & Privacy</h3>
+                        <div class="privacy-notice">
+                            <p><strong>This is a fun, educational project only!</strong> 🎉</p>
+                            <p>Your data is completely private and secure:</p>
+                            <ul>
+                                <li>✅ <strong>No personal information collected</strong> - Only quiz answers and optional first names</li>
+                                <li>✅ <strong>Data stays in your browser</strong> - Stored locally using localStorage only</li>
+                                <li>✅ <strong>Never shared with anyone</strong> - No servers, no third parties, no data transmission</li>
+                                <li>✅ <strong>No tracking or analytics</strong> - This site doesn't track you or collect analytics</li>
+                                <li>✅ <strong>Machine learning is local</strong> - All AI training happens in your browser only</li>
+                            </ul>
+                            <p class="privacy-note">The optional name input helps improve the guessing algorithm locally in your browser - it's never sent anywhere or stored on any servers. You can use the quiz without providing your name at all!</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -490,7 +534,8 @@
         </footer>
     </div>
 
-    <script src="nameDatabase.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="nameDatabase.js?v=2"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>

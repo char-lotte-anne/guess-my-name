@@ -1216,6 +1216,112 @@ body::after {
     margin: 40px 0;
 }
 
+/* Top 5 Guesses Container */
+.guesses-container {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.guess-item {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 170, 0.1));
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 15px;
+    padding: 20px 25px;
+    position: relative;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+}
+
+.guess-item:hover {
+    transform: translateX(10px);
+    border-color: rgba(0, 255, 136, 0.6);
+    box-shadow: 0 6px 25px rgba(0, 255, 136, 0.4);
+}
+
+.guess-item:nth-child(1) {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 255, 0, 0.1));
+    border-color: rgba(255, 215, 0, 0.5);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+}
+
+.guess-item:nth-child(1):hover {
+    box-shadow: 0 6px 30px rgba(255, 215, 0, 0.5);
+}
+
+.guess-rank {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #00ff88;
+    background: linear-gradient(45deg, #000000, #1a1a1a);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+    flex-shrink: 0;
+}
+
+.guess-item:nth-child(1) .guess-rank {
+    color: #ffd700;
+    border-color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+}
+
+.guess-item .guess-name {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    flex-grow: 1;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    background: none;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    animation: none;
+    position: static;
+}
+
+.guess-item:nth-child(1) .guess-name {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    font-size: 2.4rem;
+}
+
+.guess-confidence {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    min-width: 60px;
+    text-align: center;
+}
+
+.guess-item:nth-child(1) .guess-confidence {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
 .guess-name {
     font-family: 'Bohemian Typewriter', sans-serif;
     font-size: 3.5rem;
@@ -1316,6 +1422,85 @@ body::after {
 .action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(114, 9, 183, 0.3);
+}
+
+/* Name Input Section */
+.name-input-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(0, 255, 136, 0.05);
+    border: 2px solid rgba(0, 255, 136, 0.2);
+    border-radius: 15px;
+    text-align: center;
+}
+
+.name-input-prompt {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 1.1rem;
+    color: #00ff88;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.name-input-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.name-input {
+    padding: 12px 20px;
+    border: 2px solid rgba(0, 255, 136, 0.3);
+    border-radius: 25px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #00ff88;
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 1rem;
+    text-align: center;
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.name-input::placeholder {
+    color: rgba(0, 255, 136, 0.5);
+}
+
+.name-submit-btn {
+    padding: 12px 25px;
+    background: linear-gradient(145deg, #00ff88, #00cc6a);
+    color: #000000;
+    border: none;
+    border-radius: 25px;
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: none;
+}
+
+.name-submit-btn:hover {
+    background: linear-gradient(145deg, #00cc6a, #00ff88);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 255, 136, 0.4);
+}
+
+.name-input-note {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(0, 255, 136, 0.7);
+    margin: 0;
+    font-style: italic;
 }
 
 .correct:hover {
@@ -1470,6 +1655,47 @@ body::after {
         0 0 30px #00ff88,
         0 0 60px #00ff88,
         inset 0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+/* Special styling for data usage card - matches other cards */
+.data-usage-card {
+    border-color: #00ff88;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 136, 0.3),
+        inset 0 0 20px rgba(0, 255, 136, 0.1);
+}
+
+.data-usage-card:hover {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: #00ffaa;
+    box-shadow: 
+        0 0 30px #00ff88,
+        0 0 60px #00ff88,
+        inset 0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+.privacy-notice {
+    text-align: left;
+}
+
+.privacy-notice ul {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.privacy-notice li {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.privacy-note {
+    font-style: italic;
+    color: rgba(0, 255, 136, 0.8);
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 136, 0.05);
+    border-left: 3px solid #00ff88;
+    border-radius: 5px;
 }
 
 .about-card h3 {
