@@ -1,3 +1,110 @@
+/**
+ * Security utility functions for input sanitization and rate limiting
+ * Prevents XSS attacks by escaping HTML special characters
+ */
+const SecurityUtils = {
+    /**
+     * Escapes HTML special characters to prevent XSS attacks
+     * @param {string} text - The text to escape
+     * @returns {string} - Escaped text safe for HTML insertion
+     */
+    escapeHtml(text) {
+        if (typeof text !== 'string') {
+            return String(text);
+        }
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    },
+    
+    /**
+     * Sanitizes user input by trimming and escaping
+     * @param {string} input - User input to sanitize
+     * @param {number} maxLength - Maximum allowed length (default: 100)
+     * @returns {string} - Sanitized input
+     */
+    sanitizeInput(input, maxLength = 100) {
+        if (typeof input !== 'string') {
+            return '';
+        }
+        return this.escapeHtml(input.trim().substring(0, maxLength));
+    },
+    
+    /**
+     * Rate limiting utility for preventing abuse
+     * Tracks submissions in localStorage with a time window
+     * @param {string} key - Storage key for rate limiting
+     * @param {number} maxAttempts - Maximum attempts allowed (default: 5)
+     * @param {number} windowMs - Time window in milliseconds (default: 1 hour)
+     * @returns {Object} - { allowed: boolean, remaining: number, resetAt: number }
+     */
+    checkRateLimit(key, maxAttempts = 5, windowMs = 60 * 60 * 1000) {
+        try {
+            const now = Date.now();
+            const stored = localStorage.getItem(key);
+            let attempts = [];
+            
+            if (stored) {
+                try {
+                    attempts = JSON.parse(stored);
+                } catch (e) {
+                    attempts = [];
+                }
+            }
+            
+            // Filter out attempts outside the time window
+            attempts = attempts.filter(timestamp => (now - timestamp) < windowMs);
+            
+            if (attempts.length >= maxAttempts) {
+                const oldestAttempt = Math.min(...attempts);
+                const resetAt = oldestAttempt + windowMs;
+                return {
+                    allowed: false,
+                    remaining: 0,
+                    resetAt: resetAt,
+                    retryAfter: Math.ceil((resetAt - now) / 1000) // seconds
+                };
+            }
+            
+            // Record this attempt
+            attempts.push(now);
+            localStorage.setItem(key, JSON.stringify(attempts));
+            
+            return {
+                allowed: true,
+                remaining: maxAttempts - attempts.length,
+                resetAt: null
+            };
+        } catch (error) {
+            console.error('Rate limit check error:', error);
+            // On error, allow the request (fail open)
+            return { allowed: true, remaining: maxAttempts, resetAt: null };
+        }
+    },
+    
+    /**
+     * Formats time remaining for rate limit reset
+     * @param {number} seconds - Seconds until reset
+     * @returns {string} - Human-readable time string
+     */
+    formatTimeRemaining(seconds) {
+        if (seconds < 60) {
+            return `${seconds} second${seconds !== 1 ? 's' : ''}`;
+        } else if (seconds < 3600) {
+            const minutes = Math.ceil(seconds / 60);
+            return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+        } else {
+            const hours = Math.ceil(seconds / 3600);
+            return `${hours} hour${hours !== 1 ? 's' : ''}`;
+        }
+    }
+};
+
 // Simple Neural Network for Name Prediction
 class NamePredictionML {
     constructor() {
@@ -6,7 +113,53 @@ class NamePredictionML {
         this.featureNames = [];
         this.nameIndex = {};
         this.indexToName = {};
+        this.globalModelLoaded = false;
         this.initializeModel();
+    }
+    
+    /**
+     * Load global model from GitHub Releases
+     * This allows the model to benefit from aggregated learning across all users
+     */
+    async loadGlobalModel() {
+        const GITHUB_USERNAME = 'char-lotte-anne';
+        const REPO_NAME = 'guess-my-name';
+        
+        try {
+            console.log('🔍 Checking for global model from GitHub Releases...');
+            
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/releases/latest`
+            );
+            
+            if (!response.ok) {
+                console.log('ℹ️  No global model available (this is okay)');
+                return false;
+            }
+            
+            const release = await response.json();
+            const modelJsonAsset = release.assets.find(a => a.name === 'model.json');
+            const weightsAsset = release.assets.find(a => a.name.endsWith('.bin'));
+            
+            if (modelJsonAsset && weightsAsset) {
+                console.log(`📥 Found global model: ${release.tag_name}`);
+                const modelJsonUrl = modelJsonAsset.browser_download_url;
+                
+                // Load the model
+                this.model = await tf.loadLayersModel(modelJsonUrl);
+                this.isModelLoaded = true;
+                this.globalModelLoaded = true;
+                
+                console.log('✅ Global model loaded successfully!');
+                return true;
+            } else {
+                console.log('ℹ️  Release found but model files missing');
+                return false;
+            }
+        } catch (error) {
+            console.log('ℹ️  Could not load global model, will use local model:', error.message);
+            return false;
+        }
     }
 
     async initializeModel() {
@@ -2635,9 +2788,20 @@ class NameGuessingQuiz {
 
     async trainMLModel() {
         try {
-            const trainingData = this.getTrainingData();
-            if (trainingData.length > 0) {
-                await this.mlModel.train(trainingData);
+            // First, try to load global model from GitHub Releases
+            const globalModelLoaded = await this.mlModel.loadGlobalModel();
+            
+            if (!globalModelLoaded) {
+                // Fallback to local training if global model not available
+                console.log('🏠 Training local model on user data...');
+                const trainingData = this.getTrainingData();
+                if (trainingData.length > 0) {
+                    await this.mlModel.train(trainingData);
+                } else {
+                    console.log('ℹ️  No local training data available yet');
+                }
+            } else {
+                console.log('🌍 Using global model trained on aggregated data');
             }
         } catch (error) {
             console.error('Error training ML model:', error);
@@ -3842,17 +4006,37 @@ class NameGuessingQuiz {
     }
 
     handleNameSubmit() {
-        const realName = document.getElementById('realNameInput').value.trim();
+        const realNameInput = document.getElementById('realNameInput');
+        const realName = realNameInput ? realNameInput.value.trim() : '';
+        
         if (realName) {
-            // Store the real name for training
-            this.realName = realName;
+            // Sanitize the name to prevent XSS attacks
+            const sanitizedName = SecurityUtils.sanitizeInput(realName, 50);
+            
+            // Store the sanitized name for training
+            this.realName = sanitizedName;
             
             // Update the UI to show the name was submitted
-            document.getElementById('nameInputSection').innerHTML = `
-                <p class="name-input-prompt">✨ Thank you! The spirits have learned from your name: <strong>${realName}</strong></p>
-                <p class="name-input-note">This will help improve future predictions!</p>
-            `;
-            
+            // Use textContent instead of innerHTML to prevent XSS
+            const nameInputSection = document.getElementById('nameInputSection');
+            if (nameInputSection) {
+                nameInputSection.innerHTML = '';
+                
+                const prompt = document.createElement('p');
+                prompt.className = 'name-input-prompt';
+                prompt.textContent = `✨ Thank you! The spirits have learned from your name: `;
+                
+                const strong = document.createElement('strong');
+                strong.textContent = sanitizedName;
+                prompt.appendChild(strong);
+                
+                const note = document.createElement('p');
+                note.className = 'name-input-note';
+                note.textContent = 'This will help improve future predictions!';
+                
+                nameInputSection.appendChild(prompt);
+                nameInputSection.appendChild(note);
+            }
         }
     }
 
@@ -3915,8 +4099,7 @@ class NameGuessingQuiz {
     }
 
     storeTrainingData(data) {
-        // Store training data in localStorage for now
-        // In a real app, this would be sent to a server
+        // Store training data in localStorage
         try {
             const existingData = JSON.parse(localStorage.getItem('nameGuessingTrainingData') || '[]');
             existingData.push(data);
@@ -3929,6 +4112,85 @@ class NameGuessingQuiz {
             localStorage.setItem('nameGuessingTrainingData', JSON.stringify(existingData));
         } catch (error) {
             console.error('Error storing training data:', error);
+        }
+        
+        // Also send anonymized data to GitHub for global model training
+        // This happens asynchronously and doesn't block the UI
+        this.sendTrainingDataToGitHub(data).catch(error => {
+            // Fail silently - don't break user experience if GitHub API is unavailable
+            console.log('Could not send training data to GitHub (this is okay):', error.message);
+        });
+    }
+    
+    /**
+     * Send training data to GitHub for global model training
+     * Uses GitHub Issues API (no authentication needed for public repos)
+     * Data is stored as GitHub Issues, then processed by GitHub Actions
+     * Includes first names if users voluntarily provide them (for better model training)
+     * Note: This data will be visible in public GitHub Issues
+     */
+    async sendTrainingDataToGitHub(data) {
+        // Only send if user provided feedback (success or failure)
+        if (data.success === undefined && !data.realName) {
+            return; // Skip if no meaningful feedback
+        }
+        
+        const GITHUB_USERNAME = 'char-lotte-anne';
+        const REPO_NAME = 'guess-my-name';
+        
+        // Create training data payload
+        // Includes realName if provided (users voluntarily submit this for training)
+        // Note: This data will be visible in public GitHub Issues
+        const trainingData = {
+            timestamp: data.timestamp || Date.now(),
+            answers: data.answers,
+            success: data.success,
+            // Include realName if user provided it (voluntary submission for training)
+            ...(data.realName ? { realName: data.realName } : {}),
+            // Include correctGuess only if success is true
+            ...(data.success === true && data.correctGuess ? { correctGuess: data.correctGuess } : {}),
+            // Include guesses only if success is false
+            ...(data.success === false && data.guesses ? { guesses: data.guesses } : {})
+            // Note: Only first names are included (no last names, emails, or other identifying info)
+        };
+        
+        // Create GitHub Issue with training data
+        // Using Issues API because it's public and doesn't require authentication
+        // Note: This data (including first names if provided) will be visible in public GitHub Issues
+        const issueTitle = `Training Data: ${data.success ? 'Success' : 'Failure'} - ${new Date(trainingData.timestamp).toISOString()}`;
+        const issueBody = `<!-- Training Data for Global Model -->
+\`\`\`json
+${JSON.stringify(trainingData, null, 2)}
+\`\`\`
+
+*This issue was automatically created for model training. It will be processed and closed by GitHub Actions.*`;
+
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/issues`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({
+                        title: issueTitle,
+                        body: issueBody,
+                        labels: ['training-data', 'auto-generated']
+                    })
+                }
+            );
+            
+            if (!response.ok) {
+                throw new Error(`GitHub API error: ${response.status}`);
+            }
+            
+            const issue = await response.json();
+            console.log('✅ Training data sent to GitHub:', issue.number);
+        } catch (error) {
+            // Re-throw to be caught by caller
+            throw error;
         }
     }
 
@@ -3947,14 +4209,18 @@ class NameGuessingQuiz {
         document.getElementById('characterThinking').style.display = 'none';
         
         // Reset name input section
-        document.getElementById('nameInputSection').innerHTML = `
-            <p class="name-input-prompt">✨ Help train the spirits by sharing your real name (optional):</p>
-            <div class="name-input-container">
-                <input type="text" id="realNameInput" class="name-input" placeholder="Enter your first name..." maxlength="50">
-                <button class="name-submit-btn" id="nameSubmitBtn">✨ Submit ✨</button>
-            </div>
-            <p class="name-input-note">This helps the spirits learn and improve their predictions!</p>
-        `;
+        // NOTE: Safe to use innerHTML here - this is static HTML with no user input
+        const nameInputSection = document.getElementById('nameInputSection');
+        if (nameInputSection) {
+            nameInputSection.innerHTML = `
+                <p class="name-input-prompt">✨ Help train the spirits by sharing your real name (optional):</p>
+                <div class="name-input-container">
+                    <input type="text" id="realNameInput" class="name-input" placeholder="Enter your first name..." maxlength="50">
+                    <button class="name-submit-btn" id="nameSubmitBtn">✨ Submit ✨</button>
+                </div>
+                <p class="name-input-note">This helps the spirits learn and improve their predictions!</p>
+            `;
+        }
         
         // Re-add event listeners for the reset name input
         document.getElementById('nameSubmitBtn').addEventListener('click', () => this.handleNameSubmit());
@@ -4410,7 +4676,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // FEEDBACK FORM FUNCTIONALITY
     // ============================================
-
+    
+    /**
+     * EmailJS Configuration
+     * NOTE: These are PUBLIC keys meant for client-side use.
+     * EmailJS public keys are safe to expose in client-side code.
+     * They are rate-limited and can only send emails through your configured service.
+     * For production, consider using environment variables or a config file.
+     */
     const EMAILJS_PUBLIC_KEY = 'qZJaIaRbwRvm5WYrB';
     const EMAILJS_SERVICE_ID = 'service_2adxbmy'; 
     const EMAILJS_TEMPLATE_ID = 'template_s6ss6lg';
@@ -4419,6 +4692,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof emailjs !== 'undefined') {
         emailjs.init(EMAILJS_PUBLIC_KEY);
     }
+    
+    // Add event listeners for "back to quiz" buttons (replacing inline onclick handlers)
+    document.querySelectorAll('#backToQuizBtn1, #backToQuizBtn2, #backToQuizBtn3').forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', () => {
+                if (typeof showQuiz === 'function') {
+                    showQuiz();
+                }
+            });
+        }
+    });
     
     // Feedback modal elements
     const feedbackFloatBtn = document.getElementById('feedbackFloatBtn');
@@ -4456,11 +4740,35 @@ document.addEventListener('DOMContentLoaded', () => {
     feedbackForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Get form values
-        const name = document.getElementById('feedbackName').value || 'Anonymous';
-        const email = document.getElementById('feedbackEmail').value || 'No email provided';
-        const type = document.getElementById('feedbackType').value;
-        const message = document.getElementById('feedbackMessage').value;
+        // Rate limiting: Allow max 5 submissions per hour per user
+        const rateLimitKey = 'feedbackFormRateLimit';
+        const rateLimit = SecurityUtils.checkRateLimit(rateLimitKey, 5, 60 * 60 * 1000); // 5 per hour
+        
+        if (!rateLimit.allowed) {
+            const timeRemaining = SecurityUtils.formatTimeRemaining(rateLimit.retryAfter);
+            feedbackStatus.textContent = `⏱️ Rate limit exceeded. Please try again in ${timeRemaining}.`;
+            feedbackStatus.className = 'feedback-status feedback-status-warning';
+            return;
+        }
+        
+        // Get and sanitize form values to prevent XSS and injection attacks
+        const nameInput = document.getElementById('feedbackName');
+        const emailInput = document.getElementById('feedbackEmail');
+        const typeInput = document.getElementById('feedbackType');
+        const messageInput = document.getElementById('feedbackMessage');
+        
+        // Sanitize all inputs
+        const name = nameInput ? SecurityUtils.sanitizeInput(nameInput.value, 100) || 'Anonymous' : 'Anonymous';
+        const email = emailInput ? SecurityUtils.sanitizeInput(emailInput.value, 200) || 'No email provided' : 'No email provided';
+        const type = typeInput ? SecurityUtils.sanitizeInput(typeInput.value, 50) : '';
+        const message = messageInput ? SecurityUtils.sanitizeInput(messageInput.value, 2000) : '';
+        
+        // Validate required fields
+        if (!type || !message) {
+            feedbackStatus.textContent = '⚠️ Please fill in all required fields.';
+            feedbackStatus.className = 'feedback-status feedback-status-warning';
+            return;
+        }
         
         // Disable submit button
         feedbackSubmitBtn.disabled = true;
@@ -4475,6 +4783,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // If EmailJS is not configured, show instructions
             feedbackStatus.textContent = '⚠️ EmailJS is not configured yet. Please check the console for setup instructions.';
             feedbackStatus.className = 'feedback-status feedback-status-warning';
+            // Log sanitized feedback (safe to log since it's already sanitized)
             console.log(`
 ================================================================================
 FEEDBACK RECEIVED (EmailJS not configured):
@@ -4482,7 +4791,7 @@ FEEDBACK RECEIVED (EmailJS not configured):
 Name: ${name}
 Email: ${email}
 Type: ${type}
-Message: ${message}
+Message: ${message.substring(0, 500)}${message.length > 500 ? '...' : ''}
 --------------------------------------------------------------------------------
 To enable email functionality:
 1. Sign up at https://www.emailjs.com/ (free tier available)

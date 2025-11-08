@@ -1,0 +1,20 @@
+{
+  "name": "guess-my-name-training",
+  "version": "1.0.0",
+  "description": "Training scripts for global model",
+  "scripts": {
+    "collect": "node collect-training-data.js",
+    "train": "node train-model.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "@tensorflow/tfjs": "^4.15.0"
+  },
+  "optionalDependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

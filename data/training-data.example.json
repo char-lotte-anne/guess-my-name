@@ -1,0 +1,39 @@
+[
+  {
+    "timestamp": 1704067200000,
+    "answers": {
+      "gender": "F",
+      "decade": 1990,
+      "state": "CA",
+      "length": "medium",
+      "starts_with": "consonant",
+      "popularity": "popular",
+      "political_values": ["progressive", "diverse"],
+      "language_preference": ["english_only"]
+    },
+    "correctGuess": {
+      "name": "Sarah",
+      "confidence": 85
+    },
+    "success": true
+  },
+  {
+    "timestamp": 1704153600000,
+    "answers": {
+      "gender": "M",
+      "decade": 1985,
+      "state": "TX",
+      "length": "short",
+      "starts_with": "consonant",
+      "popularity": "very_popular",
+      "political_values": ["traditional"],
+      "language_preference": ["english_only"]
+    },
+    "correctGuess": {
+      "name": "Michael",
+      "confidence": 82
+    },
+    "success": true
+  }
+]
+

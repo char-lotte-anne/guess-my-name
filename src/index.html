@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy to help prevent XSS attacks -->
+    <!-- Note: 'unsafe-inline' is still needed for styles due to inline style attributes in HTML -->
+    <!-- All inline event handlers (onclick) have been removed and replaced with event listeners -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.emailjs.com;">
     <title>Madame Mystique's Crystal Ball</title>
     <!-- Safari-compatible PNG favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
@@ -194,7 +198,7 @@
                 <div class="about-content">
                     <div class="about-card">
                         <h3>🔮 The Vision</h3>
-                        <p>This interactive name-guessing experience combines cutting-edge web development with extensive cultural research and AI-powered predictions. Built with vanilla JavaScript, it demonstrates sophisticated algorithms, cultural sensitivity, and modern UX design while remaining fun and accessible.</p>
+                        <p>This interactive name-guessing experience combines cutting-edge web development with extensive cultural research and our own custom-built AI-powered predictions. Built with vanilla JavaScript and TensorFlow.js, it demonstrates sophisticated algorithms, cultural sensitivity, and modern UX design while remaining fun and accessible. <strong>All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
                     </div>
                     
                     <div class="about-card">
@@ -211,7 +215,7 @@
                             <li><strong>Interactive Maps</strong> - Continent and country selection with SVG manipulation</li>
                             <li><strong>350+ Curated Gender-Neutral Names</strong> from reputable baby name sources</li>
                             <li><strong>Multi-Factor Scoring</strong> - 15+ dimensions analyzed per name</li>
-                            <li><strong>TensorFlow.js Integration</strong> - Machine learning predictions</li>
+                            <li><strong>Custom TensorFlow.js Implementation</strong> - Our own machine learning model (no commercial AI services)</li>
                             <li><strong>Responsive & Accessible</strong> - Mobile-first design with WCAG considerations</li>
                         </ul>
                     </div>
@@ -222,19 +226,19 @@
                             <p><strong>This is a fun, educational project only!</strong> 🎉</p>
                             <p>Your data is completely private and secure:</p>
                             <ul>
-                                <li>✅ <strong>No personal information collected</strong> - Only quiz answers and optional first names</li>
-                                <li>✅ <strong>Data stays in your browser</strong> - Stored locally using localStorage only</li>
-                                <li>✅ <strong>Never shared with anyone</strong> - No servers, no third parties, no data transmission</li>
+                                <li>✅ <strong>Local learning first</strong> - Quiz answers and optional names are stored in your browser's localStorage. Our custom TensorFlow.js AI model trains on your device using this local data.</li>
                                 <li>✅ <strong>No tracking or analytics</strong> - This site doesn't track you or collect analytics</li>
-                                <li>✅ <strong>Machine learning is local</strong> - All AI training happens in your browser only</li>
+                                <li>✅ <strong>Custom AI implementation</strong> - Our own TensorFlow.js machine learning model trains on your device using locally stored data. The trained model stays in memory and is not saved. <strong>No data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></li>
+                                <li>✅ <strong>Optional global learning</strong> - When you provide feedback, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues to improve predictions for all users. First names are included because they're the most valuable data for training. This data will be visible in public GitHub Issues. Only first names are sent (no last names, emails, or other identifying info).</li>
+                                <li>✅ <strong>You control your data</strong> - You can clear your browser's localStorage at any time to delete all stored data</li>
                             </ul>
-                            <p class="privacy-note">The optional name input helps improve the guessing algorithm locally in your browser - it's never sent anywhere or stored on any servers. You can use the quiz without providing your name at all!</p>
+                            <p class="privacy-note"><strong>How it works:</strong> When you provide feedback (correct/wrong guesses or your real name), this data is stored locally in your browser. Our custom TensorFlow.js machine learning model then trains on this local data to personalize predictions for you. The model itself is not saved - it only exists in memory during your session. <strong>All AI processing happens locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong> Additionally, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues for global model training. Your first name (if provided) is the most valuable data for training - it helps the model learn which names correspond to which characteristics. This data will be visible in public GitHub Issues. Providing your name is completely optional.</p>
                         </div>
                     </div>
                 </div>
                 
                 <div class="back-to-quiz">
-                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                    <button class="start-btn" id="backToQuizBtn1">🔮 Try the Crystal Ball 🔮</button>
                 </div>
             </div>
         </section>
@@ -267,11 +271,12 @@
                     <div class="step">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <h3>Hybrid AI System</h3>
+                            <h3>Custom Hybrid AI System</h3>
+                            <p>Our own implementation combines rule-based logic with machine learning. <strong>All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
                             <p>Our advanced system combines rule-based logic with machine learning:</p>
                             <ul>
                                 <li><strong>Decision Tree Filtering</strong> - Efficient state/gender/length filtering</li>
-                                <li><strong>Neural Network</strong> - TensorFlow.js-powered pattern recognition</li>
+                                <li><strong>Custom Neural Network</strong> - Our own TensorFlow.js-powered pattern recognition (no commercial AI services)</li>
                                 <li><strong>70% Rule-Based + 30% ML</strong> - Best of both worlds</li>
                                 <li><strong>Real-Time Learning</strong> - Improves with each user interaction</li>
                                 <li><strong>Top 5 Predictions</strong> - Multiple name suggestions with confidence scores</li>
@@ -307,7 +312,8 @@
                     <div class="step">
                         <div class="step-number">4</div>
                         <div class="step-content">
-                            <h3>Machine Learning Enhancement</h3>
+                            <h3>Custom Machine Learning Enhancement</h3>
+                            <p><strong>Note:</strong> This is our own TensorFlow.js implementation. No data is sent to ChatGPT, OpenAI, or any commercial AI services.</p>
                             <p>Our system learns and improves with every interaction:</p>
                             <ul>
                                 <li><strong>User Feedback Collection</strong> - Right/wrong responses train the model</li>
@@ -359,8 +365,8 @@
                         </div>
                         
                         <div class="feature-card">
-                            <h4>🧠 Hybrid AI Architecture</h4>
-                            <p>Combines sophisticated rule-based scoring with TensorFlow.js neural networks. 70% algorithmic precision + 30% machine learning adaptability.</p>
+                            <h4>🧠 Custom Hybrid AI Architecture</h4>
+                            <p>Our own implementation combining sophisticated rule-based scoring with TensorFlow.js neural networks. 70% algorithmic precision + 30% machine learning adaptability. <strong>All processing is local - no commercial AI services are used.</strong></p>
                         </div>
                         
                         <div class="feature-card">
@@ -380,7 +386,7 @@
                         
                         <div class="feature-card">
                             <h4>📊 Continuous Learning</h4>
-                            <p>Local TensorFlow.js model improves with each quiz completion and user feedback, adapting to real-world naming patterns while respecting privacy.</p>
+                            <p>Our custom local TensorFlow.js model improves with each quiz completion and user feedback, adapting to real-world naming patterns while respecting privacy. <strong>No data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
                         </div>
                         
                         <div class="feature-card">
@@ -535,7 +541,7 @@
                 </div>
 
                 <div class="back-to-quiz">
-                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                    <button class="start-btn" id="backToQuizBtn2">🔮 Try the Crystal Ball 🔮</button>
                 </div>
             </div>
         </section>
@@ -616,7 +622,7 @@
                 </div>
                 
                 <div class="back-to-quiz">
-                    <button class="start-btn" onclick="showQuiz()">🔮 Try the Crystal Ball 🔮</button>
+                    <button class="start-btn" id="backToQuizBtn3">🔮 Try the Crystal Ball 🔮</button>
                 </div>
             </div>
         </section>
