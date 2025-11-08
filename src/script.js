@@ -258,7 +258,7 @@ class NameGuessingQuiz {
                 key: "state"
             },
             {
-                text: "📏 How many letters are in your first name?",
+                text: "How many letters are in your first name?",
                 type: "slider",
                 min: 1,
                 max: 4,
@@ -4395,7 +4395,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // FEEDBACK FORM FUNCTIONALITY
     // ============================================
-    
+
     const EMAILJS_PUBLIC_KEY = 'qZJaIaRbwRvm5WYrB';
     const EMAILJS_SERVICE_ID = 'service_2adxbmy'; 
     const EMAILJS_TEMPLATE_ID = 'template_s6ss6lg';
