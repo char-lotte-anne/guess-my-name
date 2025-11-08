@@ -948,6 +948,8 @@ body::after {
     box-shadow: 
         0 6px 15px rgba(138, 43, 226, 0.4),
         0 0 20px rgba(255, 215, 0, 0.3);
+    position: relative;
+    z-index: 1000; /* Ensure buttons are always on top of maps */
 }
 
 .slider-continue-btn:hover {
@@ -956,6 +958,13 @@ body::after {
     box-shadow: 
         0 8px 20px rgba(138, 43, 226, 0.6),
         0 0 30px rgba(255, 215, 0, 0.5);
+}
+
+/* Ensure continue container is always on top */
+#continueContainer {
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto;
 }
 
 /* Map Styles */
@@ -994,6 +1003,8 @@ body::after {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 1; /* Keep maps below buttons */
 }
 
 /* Continent Selection Styles */
@@ -1217,6 +1228,24 @@ body::after {
     transform: translateX(-30%) translateY(30%) scale(165%);
 }
 
+/* Thinner strokes for Asia since it's scaled up */
+.continent-map-container[data-continent="asia"] .country-path,
+.continent-map-container[data-continent="asia"] .state-path {
+    stroke-width: 0.05 !important;
+}
+
+.continent-map-container[data-continent="asia"] .country-path:hover:not(.selected),
+.continent-map-container[data-continent="asia"] .state-path:hover:not(.selected) {
+    stroke-width: 0.1 !important;
+}
+
+.continent-map-container[data-continent="asia"] .country-path:active:not(.selected),
+.continent-map-container[data-continent="asia"] .state-path:active:not(.selected),
+.continent-map-container[data-continent="asia"] .country-path.selected,
+.continent-map-container[data-continent="asia"] .state-path.selected {
+    stroke-width: 0.3 !important;
+}
+
 /* Europe - wide map */
 .continent-map-container[data-continent="europe"] .continent-map-svg,
 .continent-map-container svg[data-continent="europe"] {
@@ -1388,8 +1417,9 @@ body::after {
 }
 
 /* Hover effects for country paths - overriding JavaScript inline styles */
-.continent-map-container .country-path:hover:not(.selected),
-.continent-map-container .state-path:hover:not(.selected) {
+/* EXCEPT for North America which uses JavaScript grouping */
+.continent-map-container:not([data-continent="north-america"]) .country-path:hover:not(.selected),
+.continent-map-container:not([data-continent="north-america"]) .state-path:hover:not(.selected) {
     fill: rgba(255, 215, 0, 0.4) !important;
     stroke: #FFFFFF !important;
     stroke-width: 2.5 !important;
@@ -1398,8 +1428,8 @@ body::after {
 }
 
 /* Active/click effects for country paths */
-.continent-map-container .country-path:active:not(.selected),
-.continent-map-container .state-path:active:not(.selected) {
+.continent-map-container:not([data-continent="north-america"]) .country-path:active:not(.selected),
+.continent-map-container:not([data-continent="north-america"]) .state-path:active:not(.selected) {
     fill: rgba(255, 215, 0, 0.6) !important;
     stroke: #FFA500 !important;
     stroke-width: 3 !important;

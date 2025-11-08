@@ -1738,10 +1738,10 @@ class NameGuessingQuiz {
             }
         });
         
-        // Track hover state
-        const countryHoverCount = { US: 0, CA: 0 };
+        // Track hover state - use Set to track which paths are currently hovered
+        const countryHoveredPaths = { US: new Set(), CA: new Set() };
         otherPaths.forEach(p => {
-            countryHoverCount[p.dataset.country] = 0;
+            countryHoveredPaths[p.dataset.country] = new Set();
         });
         
         // Add event listeners to all paths
@@ -1752,37 +1752,36 @@ class NameGuessingQuiz {
             
             path.addEventListener('mouseenter', (e) => {
                 e.stopPropagation();
-                if (!path.classList.contains('selected')) {
-                    countryHoverCount[country]++;
-                    if (countryHoverCount[country] === 1) {
-                        countryPaths.forEach(p => {
-                            if (!p.classList.contains('selected')) {
-                                p.style.fill = 'rgba(255, 215, 0, 0.4)';
-                                p.style.stroke = '#FFFFFF';
-                                p.style.strokeWidth = '2.5';
-                                p.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
-                                // Removed scale transform
-                            }
-                        });
-                    }
+                const wasEmpty = countryHoveredPaths[country].size === 0;
+                countryHoveredPaths[country].add(path);
+                
+                // Only apply hover effect when first path in country is hovered
+                if (wasEmpty) {
+                    countryPaths.forEach(p => {
+                        if (!p.classList.contains('selected')) {
+                            p.style.fill = 'rgba(255, 215, 0, 0.4)';
+                            p.style.stroke = '#FFFFFF';
+                            p.style.strokeWidth = '2.5';
+                            p.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                        }
+                    });
                 }
             });
             
             path.addEventListener('mouseleave', (e) => {
                 e.stopPropagation();
-                if (!path.classList.contains('selected')) {
-                    countryHoverCount[country] = Math.max(0, countryHoverCount[country] - 1);
-                    if (countryHoverCount[country] === 0) {
-                        countryPaths.forEach(p => {
-                            if (!p.classList.contains('selected')) {
-                                p.style.fill = 'rgba(255, 215, 0, 0.1)';
-                                p.style.stroke = '#FFD700';
-                                p.style.strokeWidth = '1.5';
-                                p.style.filter = 'none';
-                                // Removed scale transform
-                            }
-                        });
-                    }
+                countryHoveredPaths[country].delete(path);
+                
+                // Only remove hover effect when last path in country is left
+                if (countryHoveredPaths[country].size === 0) {
+                    countryPaths.forEach(p => {
+                        if (!p.classList.contains('selected')) {
+                            p.style.fill = 'rgba(255, 215, 0, 0.1)';
+                            p.style.stroke = '#FFD700';
+                            p.style.strokeWidth = '1.5';
+                            p.style.filter = 'none';
+                        }
+                    });
                 }
             });
             
