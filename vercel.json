@@ -6,7 +6,15 @@
   },
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
+      "source": "/",
+      "destination": "/src/index.html"
+    },
+    {
+      "source": "/(.*\\.(html|css|js|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|otf|pdf))",
+      "destination": "/src/$1"
+    },
+    {
+      "source": "/((?!api/)(?!src/).*)",
       "destination": "/src/$1"
     }
   ],
