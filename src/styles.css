@@ -981,14 +981,19 @@ body::after {
     padding: 20px;
     overflow: visible; /* Allow scaled/transformed elements to extend beyond container */
     max-height: calc(100vh - 150px);
+    min-height: 400px; /* Ensure minimum height for maps */
     box-sizing: border-box;
 }
 
 .continent-map-container {
     width: 100% !important;
     max-width: 100% !important;
-    overflow: visible !important;
+    max-height: 450px; /* Constrain container height */
+    overflow: visible; /* Contain maps within their bounds */
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Continent Selection Styles */
@@ -1025,7 +1030,7 @@ body::after {
         0 4px 8px rgba(138, 43, 226, 0.3),
         inset 0 0 8px rgba(255, 215, 0, 0.2);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     min-height: 80px;
     display: flex;
     flex-direction: column;
@@ -1140,6 +1145,7 @@ body::after {
     height: auto;
     display: block;
     max-width: 100%;
+    max-height: 1000px;
     margin: 0 auto;
     overflow: visible;
 }
@@ -1149,6 +1155,7 @@ body::after {
     height: auto;
     display: block;
     max-width: 100%;
+    max-height: 1000px;
     margin: 0 auto;
     border-radius: 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -1167,8 +1174,82 @@ body::after {
     width: 100%;
     height: auto;
     display: block;
-    max-width: 800px;
+    max-width: 1000px;
     overflow: visible; /* Allow transforms to extend beyond bounds */
+}
+
+/* Continent-specific map sizing to fit within question bounds */
+/* Conservative sizing to prevent overflow over continue button and footer */
+
+/* Africa - tall map */
+.continent-map-container[data-continent="africa"] .continent-map-svg,
+.continent-map-container svg[data-continent="africa"] {
+    max-width: 500px;
+    max-height: 1000px;
+    width: 500px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform: translateY(-6%) scale(90%);
+}
+
+/* North America - tall map */
+.continent-map-container[data-continent="north-america"] .continent-map-svg,
+.continent-map-container svg[data-continent="north-america"] {
+    max-width: 500px;
+    max-height: 1000px;
+    width: 500px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform: translateX(-40%) translateY(-35%) scale(50%);
+}
+
+/* Asia - square-ish map */
+.continent-map-container[data-continent="asia"] .continent-map-svg,
+.continent-map-container svg[data-continent="asia"] {
+    max-width: 500px;
+    max-height: 1000px;
+    width: 500px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform: translateX(-30%) translateY(30%) scale(165%);
+}
+
+/* Europe - wide map */
+.continent-map-container[data-continent="europe"] .continent-map-svg,
+.continent-map-container svg[data-continent="europe"] {
+    max-width: 600px;
+    max-height: 1000px;
+    width: 600px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform: translateX(-25%) translateY(-28%) scale(70%);
+}
+
+/* Oceania - very wide map */
+.continent-map-container[data-continent="oceania"] .continent-map-svg,
+.continent-map-container svg[data-continent="oceania"] {
+    max-width: 650px;
+    max-height: 1000px;
+    width: 650px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+}
+
+/* South America - tall map */
+.continent-map-container[data-continent="south-america"] .continent-map-svg,
+.continent-map-container svg[data-continent="south-america"] {
+    max-width: 600px;
+    max-height: 1000px;
+    width: 500px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    transform: translateX(5%) translateY(-4%) scale(55%);
 }
 
 /* World map now uses same styling as state map (us-map and state-path classes) */
@@ -1294,23 +1375,55 @@ body::after {
     transform: none !important;
 }
 
-/* Disable CSS hover for continent country selection maps - JavaScript handles hover */
-.continent-map-container .country-path:hover,
-.continent-map-container .state-path:hover {
-    fill: rgba(255, 215, 0, 0.1) !important;
-    stroke: #FFD700 !important;
-    stroke-width: 1.5 !important;
-    filter: none !important;
-    transform: none !important;
+/* Country path styling for continent maps - enhanced with hover effects */
+.continent-map-container .country-path,
+.continent-map-container .state-path {
+    fill: rgba(255, 215, 0, 0.1);
+    stroke: #FFD700;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke; /* Keep stroke width consistent regardless of zoom/scale */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.2));
 }
 
-.continent-map-container .country-path:active,
-.continent-map-container .state-path:active {
-    fill: rgba(255, 215, 0, 0.1) !important;
-    stroke: #FFD700 !important;
-    stroke-width: 1.5 !important;
-    filter: none !important;
-    transform: none !important;
+/* Hover effects for country paths - overriding JavaScript inline styles */
+.continent-map-container .country-path:hover:not(.selected),
+.continent-map-container .state-path:hover:not(.selected) {
+    fill: rgba(255, 215, 0, 0.4) !important;
+    stroke: #FFFFFF !important;
+    stroke-width: 2.5 !important;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) !important;
+    transform: scale(1.02);
+}
+
+/* Active/click effects for country paths */
+.continent-map-container .country-path:active:not(.selected),
+.continent-map-container .state-path:active:not(.selected) {
+    fill: rgba(255, 215, 0, 0.6) !important;
+    stroke: #FFA500 !important;
+    stroke-width: 3 !important;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1)) !important;
+    transform: scale(0.98);
+}
+
+/* Selected state for country paths */
+.continent-map-container .country-path.selected,
+.continent-map-container .state-path.selected {
+    fill: rgba(255, 215, 0, 0.7) !important;
+    stroke: #FFA500 !important;
+    stroke-width: 3 !important;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1)) !important;
+    animation: countryPulse 2s ease-in-out infinite;
+}
+
+@keyframes countryPulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1));
+    }
+    50% {
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1.2));
+    }
 }
 
 .state-path:active {
@@ -3069,6 +3182,31 @@ body::after {
         padding: 60px 15px;
     }
     
+    /* Responsive continent maps for tablets */
+    .continent-map-container[data-continent="africa"] .continent-map-svg,
+    .continent-map-container svg[data-continent="africa"],
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"],
+    .continent-map-container[data-continent="asia"] .continent-map-svg,
+    .continent-map-container svg[data-continent="asia"] {
+        max-width: 350px;
+        max-height: 320px;
+    }
+    
+    .continent-map-container[data-continent="europe"] .continent-map-svg,
+    .continent-map-container svg[data-continent="europe"],
+    .continent-map-container[data-continent="oceania"] .continent-map-svg,
+    .continent-map-container svg[data-continent="oceania"] {
+        max-width: 450px;
+        max-height: 300px;
+    }
+    
+    .continent-map-container[data-continent="south-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="south-america"] {
+        max-width: 280px;
+        max-height: 350px;
+    }
+    
     .main-footer {
         padding: 40px 15px 20px;
         margin-top: 60px;
@@ -3123,6 +3261,32 @@ body::after {
     
     .method-item {
         padding: 20px;
+    }
+    
+    /* Tablet-specific continent map sizing */
+    /* Mobile continent maps - smaller to fit screen */
+    .continent-map-container[data-continent="africa"] .continent-map-svg,
+    .continent-map-container svg[data-continent="africa"],
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"],
+    .continent-map-container[data-continent="asia"] .continent-map-svg,
+    .continent-map-container svg[data-continent="asia"] {
+        max-width: 280px;
+        max-height: 280px;
+    }
+    
+    .continent-map-container[data-continent="europe"] .continent-map-svg,
+    .continent-map-container svg[data-continent="europe"],
+    .continent-map-container[data-continent="oceania"] .continent-map-svg,
+    .continent-map-container svg[data-continent="oceania"] {
+        max-width: 320px;
+        max-height: 250px;
+    }
+    
+    .continent-map-container[data-continent="south-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="south-america"] {
+        max-width: 220px;
+        max-height: 300px;
     }
 }
 
@@ -3235,6 +3399,43 @@ body::after {
     .continent-map-title {
         font-size: 1.4rem;
         margin-bottom: 15px;
+    }
+    
+    /* Mobile-specific continent map sizing */
+    .continent-map-container[data-continent="africa"] .continent-map-svg,
+    .continent-map-container svg[data-continent="africa"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="asia"] .continent-map-svg,
+    .continent-map-container svg[data-continent="asia"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="europe"] .continent-map-svg,
+    .continent-map-container svg[data-continent="europe"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="oceania"] .continent-map-svg,
+    .continent-map-container svg[data-continent="oceania"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="south-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="south-america"] {
+        max-width: 90vw;
+        max-height: 50vh;
     }
 }
 

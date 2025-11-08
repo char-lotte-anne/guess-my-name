@@ -231,6 +231,7 @@ class NameGuessingQuiz {
         this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.mlModel = new NamePredictionML();
         this.questions = [
+            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What's your gender identity?",
                 type: "multi_select",
@@ -257,6 +258,8 @@ class NameGuessingQuiz {
                 type: "map",
                 key: "state"
             },
+            */
+            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "How many letters are in your first name?",
                 type: "slider",
@@ -285,6 +288,8 @@ class NameGuessingQuiz {
                 labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
                 key: "popularity"
             },
+            */
+            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What political values matter most to you?",
                 type: "multi_select",
@@ -556,6 +561,7 @@ class NameGuessingQuiz {
                 ],
                 key: "religious_tradition"
             },
+            */ // END COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What continents does your family come from? (Select all that apply)",
                 type: "continent_selection",
@@ -1609,7 +1615,7 @@ class NameGuessingQuiz {
     loadContinentMapForSelection(continent) {
         const continentMapFiles = {
             'north-america': '../assets/north-america.svg',
-            'south-america': '../assets/South_America_political_map_Aruba.png',
+            'south-america': '../assets/south-america.svg',
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
             'asia': '../assets/asia.svg',
@@ -1625,24 +1631,12 @@ class NameGuessingQuiz {
         const mapContainer = document.getElementById('mapContainer');
         const continentMapDiv = document.createElement('div');
         continentMapDiv.className = 'continent-map-container';
+        continentMapDiv.dataset.continent = continent; // Add data-continent attribute for CSS targeting
         continentMapDiv.style.width = '100%';
         continentMapDiv.style.maxWidth = '800px';
         continentMapDiv.style.margin = '0 auto';
         
-        // Handle PNG files
-        if (mapFile.endsWith('.png')) {
-            const img = document.createElement('img');
-            img.src = mapFile;
-            img.className = 'continent-map-image';
-            img.style.width = '100%';
-            img.style.height = 'auto';
-            img.style.display = 'block';
-            continentMapDiv.appendChild(img);
-            mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
-            return;
-        }
-
-        // Handle SVG files
+        // All continent maps are now SVG files
         fetch(mapFile)
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1651,15 +1645,33 @@ class NameGuessingQuiz {
             .then(svgText => {
                 const parser = new DOMParser();
                 const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-                const svgElement = svgDoc.documentElement;
+                let svgElement = svgDoc.documentElement;
+
+                // Check for parsing errors
+                if (!svgElement || svgElement.nodeName === 'parsererror') {
+                    throw new Error('Failed to parse SVG file');
+                }
+
+                // Some SVGs have a wrapper element, get the actual SVG if needed
+                if (svgElement.nodeName !== 'svg') {
+                    svgElement = svgElement.querySelector('svg') || svgElement;
+                }
+
+                // Verify we have a valid SVG element
+                if (!svgElement || typeof svgElement.classList === 'undefined') {
+                    throw new Error('Invalid SVG element structure');
+                }
 
                 svgElement.classList.add('continent-map-svg');
-                svgElement.style.width = '100%';
-                svgElement.style.height = 'auto';
-                svgElement.style.maxWidth = '100%';
+                if (svgElement.dataset) {
+                    svgElement.dataset.continent = continent; // Add data-continent attribute for CSS targeting
+                } else {
+                    svgElement.setAttribute('data-continent', continent);
+                }
+                // Let CSS handle sizing - remove inline styles that override CSS
+                // Only set essential attributes
                 svgElement.style.display = 'block';
                 svgElement.style.margin = '0 auto';
-                svgElement.style.overflow = 'visible';
 
                 // Special handling for North America - group US states and Canadian provinces
                 if (continent === 'north-america') {
@@ -1709,6 +1721,7 @@ class NameGuessingQuiz {
             path.style.fill = 'rgba(255, 215, 0, 0.1)';
             path.style.stroke = '#FFD700';
             path.style.strokeWidth = '1.5';
+            path.style.setProperty('vector-effect', 'non-scaling-stroke', 'important');
             path.style.cursor = 'pointer';
             path.style.transition = 'all 0.3s ease';
             
@@ -1871,6 +1884,7 @@ class NameGuessingQuiz {
             path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
             path.style.setProperty('stroke', '#FFD700', 'important');
             path.style.setProperty('stroke-width', '1.5', 'important');
+            path.style.setProperty('vector-effect', 'non-scaling-stroke', 'important');
             path.style.cursor = 'pointer';
             path.style.transition = 'all 0.3s ease';
             
@@ -2251,7 +2265,7 @@ class NameGuessingQuiz {
         // Map continent IDs to their SVG file names
         const continentMapFiles = {
             'north-america': '../assets/north-america.svg',
-            'south-america': '../assets/South_America_political_map_Aruba.png', // This is a PNG, we'll handle it differently
+            'south-america': '../assets/south-america.svg',
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
             'asia': '../assets/asia.svg',
