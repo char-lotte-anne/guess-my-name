@@ -223,16 +223,16 @@ class NameGuessingQuiz {
         this.continentToCountries = {
             'north-america': ['us', 'ca', 'mx', 'gt', 'bz', 'sv', 'hn', 'ni', 'cr', 'pa', 'cu', 'jm', 'ht', 'do', 'pr', 'tt', 'bb', 'gd', 'lc', 'vc', 'ag', 'kn', 'dm', 'bs', 'gl'],
             'south-america': ['ar', 'bo', 'br', 'cl', 'co', 'ec', 'fk', 'gf', 'gy', 'py', 'pe', 'sr', 'uy', 've'],
-            'europe': ['ad', 'al', 'at', 'by', 'be', 'ba', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr', 'de', 'gr', 'hu', 'is', 'ie', 'it', 'xk', 'lv', 'li', 'lt', 'lu', 'mk', 'mt', 'md', 'mc', 'me', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sm', 'rs', 'sk', 'si', 'es', 'se', 'ch', 'ua', 'gb', 'va'],
+            'europe': ['ad', 'al', 'at', 'by', 'be', 'ba', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr', 'de', 'gr', 'hu', 'is', 'ie', 'it', 'xk', 'lv', 'li', 'lt', 'lu', 'mk', 'mt', 'md', 'mc', 'me', 'nl', 'no', 'pl', 'pt', 'ro', 'sm', 'rs', 'sk', 'si', 'es', 'se', 'ch', 'ua', 'gb', 'va'],
             'africa': ['dz', 'ao', 'bw', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'dj', 'eg', 'gq', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ci', 'ke', 'ls', 'lr', 'ly', 'mg', 'mw', 'ml', 'mr', 'mu', 'ma', 'mz', 'na', 'ne', 'ng', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz', 'tg', 'tn', 'ug', 'zm', 'zw', 'bf', 'bj', 'eh'],
-            'asia': ['af', 'am', 'az', 'bh', 'bd', 'bt', 'bn', 'kh', 'cn', 'ge', 'in', 'id', 'ir', 'iq', 'il', 'jp', 'jo', 'kz', 'kw', 'kg', 'la', 'lb', 'my', 'mv', 'mn', 'mm', 'np', 'kp', 'om', 'pk', 'ps', 'ph', 'qa', 'sa', 'sg', 'kr', 'lk', 'sy', 'tw', 'tj', 'th', 'tl', 'tr', 'tm', 'ae', 'uz', 'vn', 'ye'],
+            'asia': ['af', 'am', 'az', 'bh', 'bd', 'bt', 'bn', 'kh', 'cn', 'ge', 'in', 'id', 'ir', 'iq', 'il', 'jp', 'jo', 'kz', 'kw', 'kg', 'la', 'lb', 'my', 'mv', 'mn', 'mm', 'np', 'kp', 'om', 'pk', 'ps', 'ph', 'qa', 'sa', 'sg', 'kr', 'lk', 'sy', 'tw', 'tj', 'th', 'tl', 'tr', 'tm', 'ae', 'uz', 'vn', 'ye', 'ru'],
             'oceania': ['au', 'fj', 'ki', 'mh', 'fm', 'nr', 'nz', 'pw', 'pg', 'ws', 'sb', 'to', 'tv', 'vu', 'nc']
         };
         this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.mlModel = new NamePredictionML();
         this.questions = [
             {
-                text: "🌈 What's your gender identity?",
+                text: "What's your gender identity?",
                 type: "multi_select",
                 options: [
                     { text: "👨 Male", value: "M" },
@@ -243,7 +243,7 @@ class NameGuessingQuiz {
                 key: "gender"
             },
             {
-                text: "🎂 What decade were you born in?",
+                text: "What decade were you born in?",
                 type: "slider",
                 min: 1900,
                 max: 2020,
@@ -253,7 +253,7 @@ class NameGuessingQuiz {
                 key: "decade"
             },
             {
-                text: "🗺️ What state were you born in?",
+                text: "What state were you born in?",
                 type: "map",
                 key: "state"
             },
@@ -268,7 +268,7 @@ class NameGuessingQuiz {
                 key: "length"
             },
             {
-                text: "🔤 Does your name start with a vowel?",
+                text: "Does your name start with a vowel?",
                 options: [
                     { text: "✅ Yes (A, E, I, O, U)", value: "vowel" },
                     { text: "❌ No", value: "consonant" }
@@ -276,7 +276,7 @@ class NameGuessingQuiz {
                 key: "starts_with"
             },
             {
-                text: "⭐ How popular is your name?",
+                text: "How popular is your name?",
                 type: "slider",
                 min: 1,
                 max: 3,
@@ -286,7 +286,7 @@ class NameGuessingQuiz {
                 key: "popularity"
             },
             {
-                text: "🗳️ What political values matter most to you?",
+                text: "What political values matter most to you?",
                 type: "multi_select",
                 options: [
                     { text: "🏛️ Traditional values and heritage", value: "traditional" },
@@ -303,7 +303,7 @@ class NameGuessingQuiz {
                 key: "political_values"
             },
             {
-                text: "🗣️ What languages do you speak or value?",
+                text: "What languages do you speak or value?",
                 type: "multi_select",
                 options: [
                     { text: "🇺🇸 English only", value: "english_only" },
@@ -328,11 +328,12 @@ class NameGuessingQuiz {
                     { text: "🇪🇹 Amharic", value: "amharic" },
                     { text: "🇭🇹 Haitian Creole", value: "haitian_creole" },
                     { text: "🇵🇷 Portuguese", value: "portuguese" },
+                    { text: "🏳️ Other ", value: "other" },
                 ],
                 key: "language_preference"
             },
             {
-                text: "🏠 What type of community do you prefer?",
+                text: "What type of community do you prefer?",
                 type: "multi_select",
                 options: [
                     { text: "🏘️ Small town or rural", value: "rural" },
@@ -351,7 +352,7 @@ class NameGuessingQuiz {
                 key: "community_type"
             },
             {
-                text: "🌍 Where did you grow up?",
+                text: "Where did you grow up?",
                 type: "multi_select",
                 options: [
                     { text: "🏘️ Rural area or small town", value: "rural_grew_up" },
@@ -368,7 +369,7 @@ class NameGuessingQuiz {
                 key: "grew_up_location"
             },
             {
-                text: "👨‍👩‍👧‍👦 How important is family tradition to you?",
+                text: "How important is family tradition to you?",
                 type: "slider",
                 min: 1,
                 max: 3,
@@ -378,7 +379,7 @@ class NameGuessingQuiz {
                 key: "family_tradition"
             },
             {
-                text: "🌍 How do you view cultural diversity?",
+                text: "How do you view cultural diversity?",
                 type: "slider",
                 min: 1,
                 max: 3,
@@ -388,13 +389,12 @@ class NameGuessingQuiz {
                 key: "diversity_attitude"
             },
             {
-                text: "🏛️ What type of name meaning appeals to you most?",
+                text: "What type of name meaning appeals to you most?",
                 type: "multi_select",
                 options: [
                     { text: "👑 Royal or noble meaning", value: "royal" },
                     { text: "🌿 Nature-inspired", value: "nature" },
                     { text: "⚔️ Warrior or strength", value: "warrior" },
-                    { text: "💎 Precious or valuable", value: "precious" },
                     { text: "🌟 Light or brightness", value: "light" },
                     { text: "❤️ Love or compassion", value: "love" },
                     { text: "🧠 Wisdom or knowledge", value: "wisdom" },
@@ -404,12 +404,13 @@ class NameGuessingQuiz {
                     { text: "🌙 Moon or night", value: "moon" },
                     { text: "☀️ Sun or day", value: "sun" },
                     { text: "🕊️ Peace or freedom", value: "peace" },
-                    { text: "🎭 Creative or artistic", value: "creative" }
+                    { text: "🎭 Creative or artistic", value: "creative" },
+                    { text: "🤷 Sounds good", value: "sound" },
                 ],
                 key: "name_meaning_preference"
             },
             {
-                text: "👥 How do people typically perceive your name?",
+                text: "How do people typically perceive your name?",
                 type: "multi_select",
                 options: [
                     { text: "👑 Elegant and sophisticated", value: "elegant" },
@@ -421,42 +422,36 @@ class NameGuessingQuiz {
                     { text: "🏛️ Traditional and classic", value: "traditional_perceived" },
                     { text: "🚀 Modern and trendy", value: "modern" },
                     { text: "🌿 Natural and earthy", value: "natural" },
-                    { text: "💎 Precious and special", value: "precious_perceived" },
-                    { text: "🎭 Dramatic and expressive", value: "dramatic" },
                     { text: "🤝 Trustworthy and reliable", value: "trustworthy" }
                 ],
                 key: "name_perception"
             },
             {
-                text: "🎯 What impression do you want your name to give?",
+                text: "What impression do you want your name to give?",
                 type: "multi_select",
                 options: [
                     { text: "👑 Authority and leadership", value: "authority" },
                     { text: "💪 Strength and confidence", value: "strength_desired" },
                     { text: "😊 Warmth and kindness", value: "warmth" },
                     { text: "🧠 Intelligence and wisdom", value: "intelligence_desired" },
-                    { text: "🎨 Creativity and originality", value: "creativity_desired" },
+                    { text: "🎨 Creativity and expressiveness", value: "creativity_desired" },
                     { text: "🌟 Uniqueness and distinction", value: "uniqueness_desired" },
                     { text: "🏛️ Tradition and heritage", value: "tradition_desired" },
-                    { text: "🚀 Innovation and progress", value: "innovation" },
                     { text: "🌿 Connection to nature", value: "nature_connection" },
-                    { text: "💎 Value and worth", value: "value" },
-                    { text: "🎭 Expressiveness and personality", value: "expressiveness" },
-                    { text: "🤝 Trust and reliability", value: "trust_desired" }
                 ],
                 key: "desired_impression"
             },
             {
-                text: "😮 How do people typically react when they hear your name?",
+                text: "How do people typically react when they hear your name?",
                 type: "multi_select",
                 options: [
                     { text: "😍 They love it and compliment it", value: "loved" },
                     { text: "🤔 They ask how to spell it", value: "spelling_questions" },
-                    { text: "😮 They're surprised or impressed", value: "surprised" },
                     { text: "😊 They smile and remember it easily", value: "memorable" },
                     { text: "🤷 They're neutral about it", value: "neutral" },
                     { text: "😅 They make jokes or puns about it", value: "jokes" },
                     { text: "🤝 They find it trustworthy", value: "trustworthy_reaction" },
+                    { text: "👵 They view it as old-fashioned", value: "old_fashioned" },
                     { text: "🎨 They comment on its uniqueness", value: "unique_reaction" },
                     { text: "🏛️ They recognize it as traditional", value: "traditional_reaction" },
                     { text: "🚀 They see it as modern/trendy", value: "modern_reaction" },
@@ -466,7 +461,7 @@ class NameGuessingQuiz {
                 key: "name_reactions"
             },
             {
-                text: "🔤 What's your favorite letter of the alphabet?",
+                text: "What's your favorite letter of the alphabet?",
                 options: [
                     { text: "A - First and foremost", value: "A" },
                     { text: "B - Bold and brave", value: "B" },
@@ -498,7 +493,7 @@ class NameGuessingQuiz {
                 key: "favorite_letter"
             },
             {
-                text: "🎯 What career paths interest you?",
+                text: "What career paths interest you?",
                 type: "multi_select",
                 options: [
                     { text: "⚖️ Law and justice", value: "legal" },
@@ -526,7 +521,7 @@ class NameGuessingQuiz {
                 key: "career_path"
             },
             {
-                text: "⛪ What religious ceremonies were you part of as a child?",
+                text: "What religious ceremonies were you part of as a child?",
                 type: "multi_select",
                 options: [
                     { text: "✝️ Christian baptism", value: "christian_baptized" },
@@ -543,7 +538,7 @@ class NameGuessingQuiz {
                 key: "baptism_status"
             },
             {
-                text: "🕊️ What religious or spiritual traditions does your family follow?",
+                text: "What religious or spiritual traditions does your family follow?",
                 type: "multi_select",
                 options: [
                     { text: "✝️ Christianity", value: "christianity" },
@@ -562,7 +557,7 @@ class NameGuessingQuiz {
                 key: "religious_tradition"
             },
             {
-                text: "🌍 What continents does your family come from? (Select all that apply)",
+                text: "What continents does your family come from? (Select all that apply)",
                 type: "continent_selection",
                 key: "cultural_background"
             }
@@ -1039,7 +1034,7 @@ class NameGuessingQuiz {
                  path.style.stroke = '#FFFFFF';
                  path.style.strokeWidth = '2.5';
                  path.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
-                 path.style.transform = 'scale(1.02)';
+                 // Removed scale transform
                });
                
                path.addEventListener('mouseleave', () => {
@@ -1048,7 +1043,7 @@ class NameGuessingQuiz {
                    path.style.stroke = '#FFD700';
                    path.style.strokeWidth = '1.5';
                    path.style.filter = 'none';
-                   path.style.transform = 'scale(1)';
+                   // Removed scale transform
                  }
                });
                
@@ -1059,7 +1054,7 @@ class NameGuessingQuiz {
                    p.style.stroke = '#FFD700';
                    p.style.strokeWidth = '1.5';
                    p.style.filter = 'none';
-                   p.style.transform = 'scale(1)';
+                   // Removed scale transform
                  });
                  
                  path.classList.add('selected');
@@ -1435,7 +1430,7 @@ class NameGuessingQuiz {
                          p.style.stroke = '#FFD700';
                          p.style.strokeWidth = '1.5';
                          p.style.filter = 'none';
-                         p.style.transform = 'scale(1)';
+                         // Removed scale transform
                        });
                      } else {
                        // Select continent - highlight all countries in that continent (matching state map selected style)
@@ -1538,7 +1533,18 @@ class NameGuessingQuiz {
             this.showContinentCountryQuestion(this.selectedContinents[0]);
         } else {
             // No continents selected, move to next question
-            this.nextQuestion();
+            this.hideMap();
+            document.getElementById('characterThinking').style.display = 'block';
+            setTimeout(() => {
+                this.currentQuestion++;
+                if (this.currentQuestion < this.questions.length) {
+                    this.showQuestion();
+                    history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                } else {
+                    this.makeGuess();
+                }
+                document.getElementById('characterThinking').style.display = 'none';
+            }, 800);
         }
     }
     
@@ -1584,7 +1590,19 @@ class NameGuessingQuiz {
         if (this.currentContinentIndex < this.selectedContinents.length) {
             this.showContinentCountryQuestion(this.selectedContinents[this.currentContinentIndex]);
         } else {
-            this.nextQuestion();
+            // All continents processed, move to next quiz question
+            this.hideMap();
+            document.getElementById('characterThinking').style.display = 'block';
+            setTimeout(() => {
+                this.currentQuestion++;
+                if (this.currentQuestion < this.questions.length) {
+                    this.showQuestion();
+                    history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                } else {
+                    this.makeGuess();
+                }
+                document.getElementById('characterThinking').style.display = 'none';
+            }, 800);
         }
     }
     
@@ -1594,7 +1612,7 @@ class NameGuessingQuiz {
             'south-america': '../assets/South_America_political_map_Aruba.png',
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
-            'asia': '../assets/as-c-04/as-c-04.svg',
+            'asia': '../assets/asia.svg',
             'oceania': '../assets/Blank_Map_Oceania.svg'
         };
 
@@ -1646,9 +1664,6 @@ class NameGuessingQuiz {
                 // Special handling for North America - group US states and Canadian provinces
                 if (continent === 'north-america') {
                     this.loadNorthAmericaMapGrouped(svgElement, continent, continentMapDiv, mapContainer);
-                } else if (continent === 'europe') {
-                    // Special handling for Europe - load both Europe and Russia maps
-                    this.loadEuropeWithRussia(svgElement, continent, continentMapDiv, mapContainer);
                 } else {
                     // Regular country selection for other continents
                     this.loadContinentMapRegular(svgElement, continent, continentMapDiv, mapContainer);
@@ -1733,7 +1748,7 @@ class NameGuessingQuiz {
                                 p.style.stroke = '#FFFFFF';
                                 p.style.strokeWidth = '2.5';
                                 p.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
-                                p.style.transform = 'scale(1.02)';
+                                // Removed scale transform
                             }
                         });
                     }
@@ -1751,7 +1766,7 @@ class NameGuessingQuiz {
                                 p.style.stroke = '#FFD700';
                                 p.style.strokeWidth = '1.5';
                                 p.style.filter = 'none';
-                                p.style.transform = 'scale(1)';
+                                // Removed scale transform
                             }
                         });
                     }
@@ -1771,7 +1786,7 @@ class NameGuessingQuiz {
                         p.style.stroke = '#FFD700';
                         p.style.strokeWidth = '1.5';
                         p.style.filter = 'none';
-                        p.style.transform = 'scale(1)';
+                        // Removed scale transform
                     });
                     this.selectedCountries = this.selectedCountries.filter(c => c !== country);
                 } else {
@@ -1797,6 +1812,22 @@ class NameGuessingQuiz {
     }
     
     loadContinentMapRegular(svgElement, continent, continentMapDiv, mapContainer) {
+        // Make SVG background transparent
+        svgElement.style.background = 'transparent';
+        svgElement.removeAttribute('fill');
+        svgElement.removeAttribute('style');
+        
+        // Remove any background rectangles that might exist
+        svgElement.querySelectorAll('rect').forEach(rect => {
+            rect.remove();
+        });
+        
+        // Remove fills from all groups
+        svgElement.querySelectorAll('g').forEach(group => {
+            group.removeAttribute('fill');
+            group.removeAttribute('style');
+        });
+        
         // Collect all paths including those in groups (like some maps might have)
         const allPaths = [];
         const processedPaths = new Set();
@@ -1821,14 +1852,22 @@ class NameGuessingQuiz {
         
         // Apply golden styling like state map
         allPaths.forEach(path => {
-            path.classList.add('country-path');
-            
-            // Remove any existing attributes
+            // FIRST: Remove ALL existing styling attributes and classes
             path.removeAttribute('fill');
             path.removeAttribute('stroke');
             path.removeAttribute('stroke-width');
+            path.removeAttribute('fill-opacity');
+            path.removeAttribute('stroke-opacity');
+            path.removeAttribute('class');
+            path.removeAttribute('style');
             
-            // Golden styling like state map - use setProperty to ensure it sticks
+            // Clear any inline styles
+            path.style.cssText = '';
+            
+            // Add our class
+            path.classList.add('country-path');
+            
+            // THEN: Apply golden styling like state map - use setProperty to ensure it sticks
             path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
             path.style.setProperty('stroke', '#FFD700', 'important');
             path.style.setProperty('stroke-width', '1.5', 'important');
@@ -1842,7 +1881,7 @@ class NameGuessingQuiz {
                     path.style.setProperty('stroke', '#FFFFFF', 'important');
                     path.style.setProperty('stroke-width', '2.5', 'important');
                     path.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
-                    path.style.setProperty('transform', 'scale(1.02)', 'important');
+                    // Removed scale transform
                 }
             });
             
@@ -1852,7 +1891,7 @@ class NameGuessingQuiz {
                     path.style.setProperty('stroke', '#FFD700', 'important');
                     path.style.setProperty('stroke-width', '1.5', 'important');
                     path.style.setProperty('filter', 'none', 'important');
-                    path.style.setProperty('transform', 'scale(1)', 'important');
+                    // Removed scale transform
                 }
             });
             
@@ -1875,7 +1914,7 @@ class NameGuessingQuiz {
                     path.style.setProperty('stroke', '#FFD700', 'important');
                     path.style.setProperty('stroke-width', '1.5', 'important');
                     path.style.setProperty('filter', 'none', 'important');
-                    path.style.setProperty('transform', 'scale(1)', 'important');
+                    // Removed scale transform
                     
                     this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
                 } else {
@@ -1997,7 +2036,7 @@ class NameGuessingQuiz {
                             path.style.setProperty('stroke', '#FFFFFF', 'important');
                             path.style.setProperty('stroke-width', '2.5', 'important');
                             path.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
-                            path.style.setProperty('transform', 'scale(1.02)', 'important');
+                            // Removed scale transform
                         }
                     });
                     
@@ -2007,7 +2046,7 @@ class NameGuessingQuiz {
                             path.style.setProperty('stroke', '#FFD700', 'important');
                             path.style.setProperty('stroke-width', '1.5', 'important');
                             path.style.setProperty('filter', 'none', 'important');
-                            path.style.setProperty('transform', 'scale(1)', 'important');
+                            // Removed scale transform
                         }
                     });
                     
@@ -2030,7 +2069,7 @@ class NameGuessingQuiz {
                             path.style.setProperty('stroke', '#FFD700', 'important');
                             path.style.setProperty('stroke-width', '1.5', 'important');
                             path.style.setProperty('filter', 'none', 'important');
-                            path.style.setProperty('transform', 'scale(1)', 'important');
+                            // Removed scale transform
                             
                             this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
                         } else {
@@ -2086,7 +2125,19 @@ class NameGuessingQuiz {
                 if (this.currentContinentIndex < this.selectedContinents.length) {
                     this.showContinentCountryQuestion(this.selectedContinents[this.currentContinentIndex]);
                 } else {
-                    this.nextQuestion();
+                    // All continents processed, move to next quiz question
+                    this.hideMap();
+                    document.getElementById('characterThinking').style.display = 'block';
+                    setTimeout(() => {
+                        this.currentQuestion++;
+                        if (this.currentQuestion < this.questions.length) {
+                            this.showQuestion();
+                            history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                        } else {
+                            this.makeGuess();
+                        }
+                        document.getElementById('characterThinking').style.display = 'none';
+                    }, 800);
                 }
             });
             continueContainer.appendChild(continueBtn);
@@ -2203,7 +2254,7 @@ class NameGuessingQuiz {
             'south-america': '../assets/South_America_political_map_Aruba.png', // This is a PNG, we'll handle it differently
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
-            'asia': '../assets/as-c-04/as-c-04.svg', // Using the available Asia map
+            'asia': '../assets/asia.svg',
             'oceania': '../assets/Blank_Map_Oceania.svg'
         };
 
@@ -2266,7 +2317,7 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFFFFF';
                             path.style.strokeWidth = '2.5';
                             path.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
-                            path.style.transform = 'scale(1.02)';
+                            // Removed scale transform
                         }
                     });
                     
@@ -2276,7 +2327,7 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFD700';
                             path.style.strokeWidth = '1.5';
                             path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
-                            path.style.transform = 'scale(1)';
+                            // Removed scale transform
                         }
                     });
                     
@@ -2290,7 +2341,7 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFD700';
                             path.style.strokeWidth = '1.5';
                             path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
-                            path.style.transform = 'scale(1)';
+                            // Removed scale transform
                             
                             // Remove from selected countries
                             this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
@@ -2301,7 +2352,7 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFA500';
                             path.style.strokeWidth = '3';
                             path.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
-                            path.style.transform = 'scale(1.02)';
+                            // Removed scale transform
                             path.style.animation = 'statePulse 2s ease-in-out infinite';
                             
                             // Add to selected countries
@@ -4338,6 +4389,142 @@ document.addEventListener('DOMContentLoaded', () => {
             quiz.currentQuestion = 0;
             quiz.answers = {};
             quiz.updateProgress();
+        }
+    });
+    
+    // ============================================
+    // FEEDBACK FORM FUNCTIONALITY
+    // ============================================
+    
+    const EMAILJS_PUBLIC_KEY = 'qZJaIaRbwRvm5WYrB';
+    const EMAILJS_SERVICE_ID = 'service_2adxbmy'; 
+    const EMAILJS_TEMPLATE_ID = 'template_s6ss6lg';
+    
+    // Initialize EmailJS
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+    
+    // Feedback modal elements
+    const feedbackFloatBtn = document.getElementById('feedbackFloatBtn');
+    const feedbackModal = document.getElementById('feedbackModal');
+    const feedbackCloseBtn = document.getElementById('feedbackCloseBtn');
+    const feedbackForm = document.getElementById('feedbackForm');
+    const feedbackStatus = document.getElementById('feedbackStatus');
+    const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
+    
+    // Open feedback modal
+    feedbackFloatBtn.addEventListener('click', () => {
+        feedbackModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+    });
+    
+    // Close feedback modal
+    function closeFeedbackModal() {
+        feedbackModal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        feedbackForm.reset();
+        feedbackStatus.textContent = '';
+        feedbackStatus.className = 'feedback-status';
+    }
+    
+    feedbackCloseBtn.addEventListener('click', closeFeedbackModal);
+    
+    // Close modal when clicking outside of it
+    feedbackModal.addEventListener('click', (e) => {
+        if (e.target === feedbackModal) {
+            closeFeedbackModal();
+        }
+    });
+    
+    // Handle form submission
+    feedbackForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Get form values
+        const name = document.getElementById('feedbackName').value || 'Anonymous';
+        const email = document.getElementById('feedbackEmail').value || 'No email provided';
+        const type = document.getElementById('feedbackType').value;
+        const message = document.getElementById('feedbackMessage').value;
+        
+        // Disable submit button
+        feedbackSubmitBtn.disabled = true;
+        feedbackSubmitBtn.textContent = '✨ Sending... ✨';
+        
+        // Show loading status
+        feedbackStatus.textContent = '🔮 Sending your message through the mystical realm...';
+        feedbackStatus.className = 'feedback-status feedback-status-loading';
+        
+        // Check if EmailJS is configured
+        if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+            // If EmailJS is not configured, show instructions
+            feedbackStatus.textContent = '⚠️ EmailJS is not configured yet. Please check the console for setup instructions.';
+            feedbackStatus.className = 'feedback-status feedback-status-warning';
+            console.log(`
+================================================================================
+FEEDBACK RECEIVED (EmailJS not configured):
+================================================================================
+Name: ${name}
+Email: ${email}
+Type: ${type}
+Message: ${message}
+--------------------------------------------------------------------------------
+To enable email functionality:
+1. Sign up at https://www.emailjs.com/ (free tier available)
+2. Create an email service
+3. Create an email template with these placeholders:
+   - {{from_name}}
+   - {{from_email}}
+   - {{feedback_type}}
+   - {{message}}
+4. Replace these values in script.js:
+   - EMAILJS_PUBLIC_KEY (your public key)
+   - EMAILJS_SERVICE_ID (your service ID)
+   - EMAILJS_TEMPLATE_ID (your template ID)
+================================================================================
+            `);
+            
+            feedbackSubmitBtn.disabled = false;
+            feedbackSubmitBtn.textContent = '✨ Send Feedback ✨';
+            
+            return;
+        }
+        
+        try {
+            // Send email using EmailJS
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    from_name: name,
+                    from_email: email,
+                    feedback_type: type,
+                    message: message,
+                    to_email: 'charlottelf@protonmail.com'
+                }
+            );
+            
+            console.log('Feedback sent successfully!', response);
+            
+            // Show success message
+            feedbackStatus.textContent = '✨ Thank you! Your feedback has been sent successfully! ✨';
+            feedbackStatus.className = 'feedback-status feedback-status-success';
+            
+            // Reset form after 2 seconds
+            setTimeout(() => {
+                closeFeedbackModal();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Failed to send feedback:', error);
+            
+            // Show error message
+            feedbackStatus.textContent = '❌ Oops! Something went wrong. Please try again or email charlottelf@protonmail.com directly.';
+            feedbackStatus.className = 'feedback-status feedback-status-error';
+            
+            // Re-enable submit button
+            feedbackSubmitBtn.disabled = false;
+            feedbackSubmitBtn.textContent = '✨ Send Feedback ✨';
         }
     });
 });
