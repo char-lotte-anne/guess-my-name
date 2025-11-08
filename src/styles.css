@@ -970,12 +970,187 @@ body::after {
 .map-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
-    max-width: 900px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 20px;
+    overflow-y: auto;
+    overflow-x: visible;
+    max-height: calc(100vh - 150px);
+    box-sizing: border-box;
+}
+
+.continent-map-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    margin: 0 auto;
+}
+
+/* Continent Selection Styles */
+.continent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    background: linear-gradient(145deg, #1A0033, #4A148C);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 
+        0 12px 35px rgba(138, 43, 226, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.continent-button {
+    font-family: 'Bohemian Typewriter', monospace;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 215, 0, 0.1));
+    color: #FFFFFF;
+    border: 2px solid #FFD700;
+    padding: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 
+        0 4px 8px rgba(138, 43, 226, 0.3),
+        inset 0 0 8px rgba(255, 215, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.continent-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+    transition: left 0.4s;
+}
+
+.continent-button:hover {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 255, 255, 0.2));
+    border-color: #FFFFFF;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+        0 8px 16px rgba(138, 43, 226, 0.5),
+        0 0 20px rgba(255, 215, 0, 0.6),
+        inset 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+.continent-button:hover::before {
+    left: 100%;
+}
+
+.continent-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 
+        0 2px 4px rgba(138, 43, 226, 0.4),
+        inset 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.continent-button.selected {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.7), rgba(255, 255, 255, 0.3));
+    border-color: #FFA500;
+    box-shadow: 
+        0 8px 16px rgba(138, 43, 226, 0.6),
+        0 0 25px rgba(255, 215, 0, 0.8),
+        inset 0 0 15px rgba(255, 255, 255, 0.4);
+    animation: continentPulse 2s ease-in-out infinite;
+}
+
+.continent-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes continentPulse {
+    0%, 100% {
+        box-shadow: 
+            0 8px 16px rgba(138, 43, 226, 0.6),
+            0 0 25px rgba(255, 215, 0, 0.8),
+            inset 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+    50% {
+        box-shadow: 
+            0 8px 20px rgba(138, 43, 226, 0.8),
+            0 0 35px rgba(255, 215, 0, 1),
+            inset 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+}
+
+/* Country Maps Container Styles */
+.country-maps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    padding: 20px;
+}
+
+.continent-map-section {
+    background: linear-gradient(145deg, #1A0033, #4A148C);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 
+        0 12px 35px rgba(138, 43, 226, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    overflow: visible;
+    min-height: fit-content;
+}
+
+.continent-map-title {
+    font-family: 'Grand Paradiso Italic', serif;
+    font-size: 1.8rem;
+    font-weight: normal;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+    text-shadow: 
+        1px 1px 3px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.continent-map-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+.continent-map-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    overflow: visible;
 }
 
 .us-map {
@@ -991,6 +1166,8 @@ body::after {
     display: block;
     max-width: 800px;
 }
+
+/* World map now uses same styling as state map (us-map and state-path classes) */
   
 
 .map-title {
@@ -1092,6 +1269,44 @@ body::after {
     stroke-width: 2.5;
     filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
     transform: scale(1.02);
+}
+
+/* Disable CSS hover for world map - JavaScript handles continent-wide hover */
+.world-map-continent-selector .state-path:hover {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+}
+
+/* Also disable active state for world map */
+.world-map-continent-selector .state-path:active {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+/* Disable CSS hover for continent country selection maps - JavaScript handles hover */
+.continent-map-container .country-path:hover,
+.continent-map-container .state-path:hover {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+.continent-map-container .country-path:active,
+.continent-map-container .state-path:active {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
 }
 
 .state-path:active {
@@ -2992,5 +3207,29 @@ body::after {
     
     .state-path:hover + .state-label {
         font-size: 9px;
+    }
+    
+    .continent-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .continent-button {
+        padding: 15px;
+        min-height: 70px;
+    }
+    
+    .continent-name {
+        font-size: 1.1rem;
+    }
+    
+    .continent-map-section {
+        padding: 15px;
+    }
+    
+    .continent-map-title {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
     }
 }

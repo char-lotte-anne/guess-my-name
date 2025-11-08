@@ -254,6 +254,8 @@ class EnhancedNameDatabase {
         const religions = [];
         const nameLower = name.toLowerCase();
         
+        if (!gender) return religions;
+        
         for (const [religion, data] of Object.entries(this.religiousAssociations)) {
             const genderNames = data[gender.toLowerCase()] || [];
             if (genderNames.some(relName => relName.toLowerCase() === nameLower)) {
@@ -359,14 +361,16 @@ class EnhancedNameDatabase {
                 lines.forEach(line => {
                     if (line.trim()) {
                         const [name, gender, count] = line.split(',');
+                        // Skip if name or gender is missing
+                        if (!name || !gender) return;
                         const key = `${name.toLowerCase()}_${gender}`;
                         
                         if (!allNames[key]) {
                             allNames[key] = this.createEnhancedNameEntry(name, gender, 0, year);
                         }
                         
-                        allNames[key].totalCount += parseInt(count);
-                        allNames[key].years.push({ year, count: parseInt(count) });
+                        allNames[key].totalCount += parseInt(count || 0);
+                        allNames[key].years.push({ year, count: parseInt(count || 0) });
                     }
                 });
             }

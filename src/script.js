@@ -31,7 +31,6 @@ class NamePredictionML {
             });
 
             this.isModelLoaded = true;
-            console.log('🧠 Neural network initialized successfully');
         } catch (error) {
             console.error('Error initializing neural network:', error);
             this.isModelLoaded = false;
@@ -123,7 +122,6 @@ class NamePredictionML {
 
     async predict(answers) {
         if (!this.isModelLoaded) {
-            console.log('🧠 ML model not loaded, using rule-based fallback');
             return null;
         }
 
@@ -146,13 +144,10 @@ class NamePredictionML {
 
     async train(trainingData) {
         if (!this.isModelLoaded || trainingData.length < 10) {
-            console.log('🧠 Not enough training data or model not loaded');
             return;
         }
 
         try {
-            console.log(`🧠 Training neural network with ${trainingData.length} examples...`);
-            
             // Prepare training data
             const features = [];
             const labels = [];
@@ -172,7 +167,6 @@ class NamePredictionML {
             }
             
             if (features.length === 0) {
-                console.log('🧠 No valid training examples found');
                 return;
             }
             
@@ -189,8 +183,6 @@ class NamePredictionML {
             
             xs.dispose();
             ys.dispose();
-            
-            console.log('🧠 Neural network training completed');
         } catch (error) {
             console.error('Error training neural network:', error);
         }
@@ -224,14 +216,19 @@ class NameGuessingQuiz {
         this.answers = {};
         this.realName = null; // Store user's real name for training
         this.selectedCountries = []; // Store selected countries for world map
+        this.selectedContinents = []; // Store selected continents
+        this.selectedState = null; // Store selected state
+        this.continentToCountries = {
+            'north-america': ['US', 'CA', 'MX', 'GT', 'BZ', 'SV', 'HN', 'NI', 'CR', 'PA', 'CU', 'JM', 'HT', 'DO', 'PR', 'TT', 'BB', 'GD', 'LC', 'VC', 'AG', 'KN', 'DM', 'BS', 'GL'],
+            'south-america': ['AR', 'BO', 'BR', 'CL', 'CO', 'EC', 'FK', 'GF', 'GY', 'PY', 'PE', 'SR', 'UY', 'VE'],
+            'europe': ['AD', 'AL', 'AT', 'BY', 'BE', 'BA', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IS', 'IE', 'IT', 'XK', 'LV', 'LI', 'LT', 'LU', 'MK', 'MT', 'MD', 'MC', 'ME', 'NL', 'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'RS', 'SK', 'SI', 'ES', 'SE', 'CH', 'UA', 'GB', 'VA'],
+            'africa': ['DZ', 'AO', 'BW', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'DJ', 'EG', 'GQ', 'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'CI', 'KE', 'LS', 'LR', 'LY', 'MG', 'MW', 'ML', 'MR', 'MU', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 'SZ', 'TZ', 'TG', 'TN', 'UG', 'ZM', 'ZW'],
+            'asia': ['AF', 'AM', 'AZ', 'BH', 'BD', 'BT', 'BN', 'KH', 'CN', 'GE', 'IN', 'ID', 'IR', 'IQ', 'IL', 'JP', 'JO', 'KZ', 'KW', 'KG', 'LA', 'LB', 'MY', 'MV', 'MN', 'MM', 'NP', 'KP', 'OM', 'PK', 'PS', 'PH', 'QA', 'SA', 'SG', 'KR', 'LK', 'SY', 'TW', 'TJ', 'TH', 'TL', 'TR', 'TM', 'AE', 'UZ', 'VN', 'YE'],
+            'oceania': ['AU', 'FJ', 'KI', 'MH', 'FM', 'NR', 'NZ', 'PW', 'PG', 'WS', 'SB', 'TO', 'TV', 'VU']
+        };
         this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.mlModel = new NamePredictionML();
         this.questions = [
-            {
-                text: "🗺️ What state were you born in?",
-                type: "map",
-                key: "state"
-            },
             {
                 text: "🌈 What's your gender identity?",
                 type: "multi_select",
@@ -249,9 +246,14 @@ class NameGuessingQuiz {
                 min: 1900,
                 max: 2020,
                 step: 10,
-                default: 1990,
+                default: 1960,
                 labels: ["📜 1900s", "🎵 1950s", "🌈 2000s", "✨ 2020s"],
                 key: "decade"
+            },
+            {
+                text: "🗺️ What state were you born in?",
+                type: "map",
+                key: "state"
             },
             {
                 text: "📏 How many letters are in your first name?",
@@ -324,7 +326,6 @@ class NameGuessingQuiz {
                     { text: "🇪🇹 Amharic", value: "amharic" },
                     { text: "🇭🇹 Haitian Creole", value: "haitian_creole" },
                     { text: "🇵🇷 Portuguese", value: "portuguese" },
-                    { text: "🌍 Multiple languages", value: "multilingual" }
                 ],
                 key: "language_preference"
             },
@@ -559,8 +560,8 @@ class NameGuessingQuiz {
                 key: "religious_tradition"
             },
             {
-                text: "🌍 What cultural backgrounds does your family come from? (Select all that apply)",
-                type: "world_map",
+                text: "🌍 What continents does your family come from? (Select all that apply)",
+                type: "continent_selection",
                 key: "cultural_background"
             }
         ];
@@ -648,12 +649,9 @@ class NameGuessingQuiz {
     }
 
     showQuestion() {
-        console.log('🔍 Showing question:', this.currentQuestion, 'of', this.questions.length);
         const question = this.questions[this.currentQuestion];
         if (!question) {
-            console.error('❌ Question not found at index:', this.currentQuestion);
-            console.error('❌ Questions array length:', this.questions.length);
-            console.error('❌ Questions array:', this.questions);
+            console.error('Question not found at index:', this.currentQuestion);
             return;
         }
         document.getElementById('questionText').textContent = question.text;
@@ -665,6 +663,8 @@ class NameGuessingQuiz {
             this.createSlider(question, optionsContainer);
         } else if (question.type === 'map') {
             this.createMap();
+        } else if (question.type === 'continent_selection') {
+            this.createContinentSelection();
         } else if (question.type === 'world_map') {
             this.createWorldMap();
         } else if (question.type === 'multi_select') {
@@ -713,19 +713,24 @@ class NameGuessingQuiz {
             
             // Special handling for decade slider to align with actual years
             if (question.key === 'decade') {
-                const decadeYears = [1900, 1950, 2000, 2020];
-                question.labels.forEach((label, index) => {
+                const decadeYears = [
+                    { label: "🚂1900", year: 1900 },
+                    { label: "🪖1930", year: 1930 },
+                    { label: "🌈1960", year: 1960 },
+                    { label: "🛹1990", year: 1990 },
+                    { label: "📱2020", year: 2020 }
+                ];
+                decadeYears.forEach((item) => {
                     const labelElement = document.createElement('div');
                     labelElement.className = 'slider-label';
-                    labelElement.textContent = label;
+                    labelElement.textContent = item.label;
                     labelElement.style.position = 'absolute';
                     labelElement.style.transform = 'translateX(-50%)';
                     labelElement.style.whiteSpace = 'nowrap';
                     labelElement.style.textAlign = 'center';
                     
                     // Calculate position based on actual year values
-                    const year = decadeYears[index];
-                    const position = ((year - question.min) / (question.max - question.min)) * 100;
+                    const position = ((item.year - question.min) / (question.max - question.min)) * 100;
                     labelElement.style.left = `${position}%`;
                     labelElement.style.top = '0';
                     
@@ -786,6 +791,11 @@ class NameGuessingQuiz {
             return '✨ Extra Long (10+ letters)';
         } else if (question.key === 'popularity') {
             return question.labels[value - 1];
+        } else if (question.key === 'family_tradition' || question.key === 'diversity_attitude') {
+            // Map value (1-3) to label index
+            if (value <= 1.5) return question.labels[0];
+            if (value <= 2.5) return question.labels[1];
+            return question.labels[2];
         }
         return value;
     }
@@ -1050,7 +1060,10 @@ class NameGuessingQuiz {
                  path.style.strokeWidth = '3';
                  path.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
                  
-                 console.log("State selected:", path.id || path.getAttribute('name'));
+                 const stateId = path.id || path.getAttribute('name');
+                 
+                 // Store the selected state
+                 this.selectedState = stateId;
                  
                  // Show continue button using existing system
                  this.showMapContinueButton();
@@ -1077,12 +1090,10 @@ class NameGuessingQuiz {
       
         fetch('../assets/world-map/world-map.svg')
           .then(response => {
-            console.log('World map fetch response:', response.status, response.statusText);
             if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             return response.text();
           })
           .then(svgText => {
-            console.log('World map SVG loaded successfully, length:', svgText.length);
             const parser = new DOMParser();
             const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
             const svgElement = svgDoc.documentElement;
@@ -1148,8 +1159,6 @@ class NameGuessingQuiz {
                    this.selectedCountries.push(countryId);
                  }
                  
-                 console.log("Selected countries:", this.selectedCountries);
-                 
                  // Show continue button if any countries are selected
                  if (this.selectedCountries.length > 0) {
                    this.showWorldMapContinueButton();
@@ -1178,7 +1187,6 @@ class NameGuessingQuiz {
        }
 
     showWorldMapContinueButton() {
-        console.log('showWorldMapContinueButton called');
         const continueContainer = document.getElementById('continueContainer');
         if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
             // Use the same continue button system as sliders
@@ -1186,7 +1194,6 @@ class NameGuessingQuiz {
             continueBtn.className = 'slider-continue-btn';
             continueBtn.textContent = `Continue (${this.selectedCountries.length} selected)`;
             continueBtn.addEventListener('click', () => {
-                console.log('Continuing with countries:', this.selectedCountries);
                 this.selectAnswer(this.selectedCountries);
             });
             continueContainer.appendChild(continueBtn);
@@ -1206,9 +1213,1142 @@ class NameGuessingQuiz {
             }
         }
     }
+
+    createContinentSelection() {
+        const mapContainer = document.getElementById('mapContainer');
+        if (!mapContainer) {
+            console.error("Map container not found!");
+            return;
+        }
+      
+        mapContainer.style.display = 'block';
+        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        
+        // Initialize selected continents array
+        this.selectedContinents = [];
+        this.continentSelectedCountries = {}; // Track which countries are selected per continent
+        
+        // Create skip button
+        this.createSkipButton(mapContainer, () => {
+            this.selectAnswer([]); // Skip continent selection
+        });
+        
+        // Load world map for continent selection
+        this.createWorldMapForContinentSelection();
+    }
+    
+    getContinentFromCountry(countryId) {
+        if (!countryId) return null;
+        
+        // Normalize country ID (uppercase)
+        const normalizedId = countryId.toString().toUpperCase().trim();
+        
+        // Map country codes to continents
+        for (const [continent, countries] of Object.entries(this.continentToCountries)) {
+            // Check both exact match and if any country code is contained in the ID
+            if (countries.includes(normalizedId) || 
+                countries.some(code => normalizedId.includes(code) || code.includes(normalizedId))) {
+                return continent;
+            }
+        }
+        return null;
+    }
+    
+    createWorldMapForContinentSelection() {
+        const mapContainer = document.getElementById('mapContainer');
+        if (!mapContainer) {
+            return;
+        }
+        
+        // Don't add extra styling - let it match state map container styling
+        mapContainer.style.display = 'block';
+        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        
+        fetch('../assets/world-map/world-map.svg')
+          .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            return response.text();
+          })
+          .then(svgText => {
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+            const svgElement = svgDoc.documentElement;
+      
+            svgElement.classList.add('us-map', 'world-map-continent-selector'); // Use same class as state map + identifier
+            svgElement.style.width = '100%';
+            svgElement.style.height = 'auto';
+            svgElement.style.maxWidth = '800px';
+            svgElement.style.display = 'block';
+            svgElement.style.margin = '0 auto';
+      
+            // Track which paths belong to which continents
+            const continentPaths = {};
+            Object.keys(this.continentToCountries).forEach(continent => {
+                continentPaths[continent] = [];
+            });
+            
+            // Track hover state to prevent flickering when moving between countries in same continent
+            const continentHoverCount = {};
+            Object.keys(this.continentToCountries).forEach(continent => {
+                continentHoverCount[continent] = 0;
+            });
+      
+            // First pass: collect all paths and their continents
+            // Handle both direct path IDs and paths inside groups with country IDs
+            const allPaths = [];
+            const pathToContinent = new Map();
+            
+            // Get all groups with country IDs
+            svgElement.querySelectorAll('g[id]').forEach(group => {
+                const groupId = group.id.toUpperCase().trim();
+                if (groupId && !groupId.startsWith('_')) {
+                    const continent = this.getContinentFromCountry(groupId);
+                    if (continent) {
+                        // All paths in this group belong to this continent
+                        group.querySelectorAll('path').forEach(path => {
+                            allPaths.push(path);
+                            pathToContinent.set(path, continent);
+                        });
+                    }
+                }
+            });
+            
+            // Get all paths with direct IDs (not in groups we already processed)
+            svgElement.querySelectorAll('path[id]').forEach(path => {
+                // Skip if already processed (in a group)
+                if (!pathToContinent.has(path)) {
+                    allPaths.push(path);
+                    
+                    let countryId = path.id;
+                    
+                    // Normalize country ID (uppercase, trim, remove any prefixes)
+                    if (countryId) {
+                        countryId = countryId.toString().toUpperCase().trim();
+                        // Remove underscore prefix if present (e.g., "_somaliland" -> "SOMALILAND")
+                        if (countryId.startsWith('_')) {
+                            countryId = countryId.substring(1);
+                        }
+                    }
+                    
+                    const continent = countryId ? this.getContinentFromCountry(countryId) : null;
+                    if (continent) {
+                        pathToContinent.set(path, continent);
+                    }
+                }
+            });
+            
+            // Remove attributes from all paths
+            allPaths.forEach(path => {
+               path.removeAttribute('fill');
+               path.removeAttribute('stroke');
+               path.removeAttribute('stroke-width');
+               path.removeAttribute('fill-opacity');
+               path.removeAttribute('stroke-opacity');
+            });
+            
+            // Second pass: apply styling and event listeners
+            allPaths.forEach(path => {
+               const continent = pathToContinent.get(path);
+               
+               // Match state map styling exactly - use same approach as state map
+               path.classList.add('state-path');
+               
+               // Apply exact same styling as state map (matching createMap function)
+               // Don't use !important - let CSS handle it, but set inline styles
+               path.style.fill = 'rgba(255, 215, 0, 0.1)';
+               path.style.stroke = '#FFD700';
+               path.style.strokeWidth = '1.5';
+               path.style.cursor = continent ? 'pointer' : 'default';
+               path.style.transition = 'all 0.3s ease';
+               path.style.pointerEvents = 'auto'; // Ensure paths are clickable
+               
+               if (continent) {
+                   path.dataset.continent = continent;
+                   continentPaths[continent].push(path);
+                   
+                   // Add hover effects - highlight all countries in the continent (matching state map hover)
+                   path.addEventListener('mouseenter', (e) => {
+                     e.stopPropagation();
+                     const hoverContinent = path.dataset.continent;
+                     if (!this.selectedContinents.includes(hoverContinent)) {
+                       // Increment hover count for this continent
+                       continentHoverCount[hoverContinent]++;
+                       
+                       // Only highlight if this is the first country in the continent being hovered
+                       if (continentHoverCount[hoverContinent] === 1) {
+                         // Highlight all countries in this continent on hover
+                         continentPaths[hoverContinent].forEach(p => {
+                           if (!p.classList.contains('continent-selected')) {
+                             // Use setProperty to ensure styles override CSS
+                             p.style.setProperty('fill', 'rgba(255, 215, 0, 0.4)', 'important');
+                             p.style.setProperty('stroke', '#FFFFFF', 'important');
+                             p.style.setProperty('stroke-width', '2.5', 'important');
+                             p.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
+                             p.style.setProperty('transform', 'scale(1.02)', 'important');
+                           }
+                         });
+                       }
+                     }
+                   });
+                   
+                   path.addEventListener('mouseleave', (e) => {
+                     e.stopPropagation();
+                     const hoverContinent = path.dataset.continent;
+                     if (!this.selectedContinents.includes(hoverContinent)) {
+                       // Decrement hover count for this continent
+                       continentHoverCount[hoverContinent] = Math.max(0, continentHoverCount[hoverContinent] - 1);
+                       
+                       // Only reset if no countries in this continent are being hovered
+                       if (continentHoverCount[hoverContinent] === 0) {
+                         // Reset all countries in this continent on mouse leave
+                         continentPaths[hoverContinent].forEach(p => {
+                           if (!p.classList.contains('continent-selected')) {
+                             p.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                             p.style.setProperty('stroke', '#FFD700', 'important');
+                             p.style.setProperty('stroke-width', '1.5', 'important');
+                             p.style.setProperty('filter', 'none', 'important');
+                             p.style.setProperty('transform', 'scale(1)', 'important');
+                           }
+                         });
+                       }
+                     }
+                   });
+                   
+                   path.addEventListener('click', (e) => {
+                     e.stopPropagation();
+                     const clickedContinent = path.dataset.continent;
+                     
+                     if (this.selectedContinents.includes(clickedContinent)) {
+                       // Deselect continent - unhighlight all countries in that continent
+                       this.selectedContinents = this.selectedContinents.filter(c => c !== clickedContinent);
+                       continentPaths[clickedContinent].forEach(p => {
+                         p.classList.remove('continent-selected');
+                         p.style.fill = 'rgba(255, 215, 0, 0.1)';
+                         p.style.stroke = '#FFD700';
+                         p.style.strokeWidth = '1.5';
+                         p.style.filter = 'none';
+                         p.style.transform = 'scale(1)';
+                       });
+                     } else {
+                       // Select continent - highlight all countries in that continent (matching state map selected style)
+                       this.selectedContinents.push(clickedContinent);
+                       continentPaths[clickedContinent].forEach(p => {
+                         p.classList.add('continent-selected');
+                         p.style.fill = 'rgba(255, 215, 0, 0.7)';
+                         p.style.stroke = '#FFA500';
+                         p.style.strokeWidth = '3';
+                         p.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
+                       });
+                     }
+                     
+                     // Show continue button if any continents are selected
+                     if (this.selectedContinents.length > 0) {
+                       this.showContinentSelectionContinueButton();
+                     } else {
+                       this.hideContinentSelectionContinueButton();
+                     }
+                   });
+               }
+             });
+      
+            mapContainer.appendChild(svgElement);
+          })
+          .catch(err => {
+            console.error("Error loading world map:", err);
+            const mapContainer = document.getElementById('mapContainer');
+            if (mapContainer) {
+              mapContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #FFD700;">
+                  <h3>🗺️ World Map Loading Error</h3>
+                  <p>Unable to load the world map. Please refresh the page and try again.</p>
+                  <p style="font-size: 0.9em; color: #ccc;">Error: ${err.message}</p>
+                </div>
+              `;
+            }
+          });
+    }
+    
+    showContinentSelectionContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (!continueContainer) return;
+        
+        let existingBtn = continueContainer.querySelector('.continent-selection-continue-btn');
+        if (!existingBtn) {
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'slider-continue-btn continent-selection-continue-btn';
+            continueBtn.textContent = `Continue (${this.selectedContinents.length} continent${this.selectedContinents.length > 1 ? 's' : ''} selected)`;
+            continueBtn.addEventListener('click', () => {
+                this.showIndividualContinentQuestions();
+            });
+            continueContainer.appendChild(continueBtn);
+        } else {
+            existingBtn.textContent = `Continue (${this.selectedContinents.length} continent${this.selectedContinents.length > 1 ? 's' : ''} selected)`;
+        }
+    }
+    
+    hideContinentSelectionContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer) {
+            const existingBtn = continueContainer.querySelector('.continent-selection-continue-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+        }
+    }
+    
+    createSkipButton(container, skipCallback) {
+        const continueContainer = document.getElementById('continueContainer');
+        if (!continueContainer) {
+            const newContainer = document.createElement('div');
+            newContainer.id = 'continueContainer';
+            container.appendChild(newContainer);
+        }
+        
+        // Remove existing skip button if any
+        const existingSkip = continueContainer.querySelector('.skip-btn');
+        if (existingSkip) {
+            existingSkip.remove();
+        }
+        
+        const skipBtn = document.createElement('button');
+        skipBtn.className = 'slider-continue-btn skip-btn';
+        skipBtn.style.marginTop = '10px';
+        skipBtn.style.background = 'linear-gradient(145deg, #4A148C, #6A1B9A)';
+        skipBtn.textContent = '⏭️ Skip';
+        skipBtn.addEventListener('click', skipCallback);
+        
+        continueContainer.appendChild(skipBtn);
+    }
+    
+    showIndividualContinentQuestions() {
+        // Store continent selection
+        this.answers.cultural_background = this.selectedContinents;
+        
+        // Show first continent question
+        if (this.selectedContinents.length > 0) {
+            this.currentContinentIndex = 0;
+            this.showContinentCountryQuestion(this.selectedContinents[0]);
+        } else {
+            // No continents selected, move to next question
+            this.nextQuestion();
+        }
+    }
+    
+    showContinentCountryQuestion(continent) {
+        const mapContainer = document.getElementById('mapContainer');
+        if (!mapContainer) {
+            return;
+        }
+        
+        mapContainer.style.display = 'block';
+        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        
+        // Update question text
+        const questionText = document.getElementById('questionText');
+        if (questionText) {
+            questionText.textContent = `🗺️ Which countries in ${this.getContinentDisplayName(continent)} does your family come from?`;
+        }
+        
+        // Initialize selected countries for this continent
+        this.selectedCountries = [];
+        
+        // Create skip button
+        this.createSkipButton(mapContainer, () => {
+            this.handleContinentCountrySkip(continent);
+        });
+        
+        // Show continue button immediately (allows skipping by clicking continue with no selection)
+        this.showContinentCountryContinueButton(continent);
+        
+        // Load the continent map
+        this.loadContinentMapForSelection(continent);
+    }
+    
+    handleContinentCountrySkip(continent) {
+        // Store empty array for this continent
+        if (!this.answers.country_selections) {
+            this.answers.country_selections = {};
+        }
+        this.answers.country_selections[continent] = [];
+        
+        // Move to next continent or next question
+        this.currentContinentIndex++;
+        if (this.currentContinentIndex < this.selectedContinents.length) {
+            this.showContinentCountryQuestion(this.selectedContinents[this.currentContinentIndex]);
+        } else {
+            this.nextQuestion();
+        }
+    }
+    
+    loadContinentMapForSelection(continent) {
+        const continentMapFiles = {
+            'north-america': '../assets/north-america.svg',
+            'south-america': '../assets/South_America_political_map_Aruba.png',
+            'europe': '../assets/europe.svg',
+            'africa': '../assets/africa.svg',
+            'asia': '../assets/as-c-04/as-c-04.svg',
+            'oceania': '../assets/Blank_Map_Oceania.svg'
+        };
+
+        const mapFile = continentMapFiles[continent];
+        if (!mapFile) {
+            console.error(`No map file found for continent: ${continent}`);
+            return;
+        }
+        
+        const mapContainer = document.getElementById('mapContainer');
+        const continentMapDiv = document.createElement('div');
+        continentMapDiv.className = 'continent-map-container';
+        continentMapDiv.style.width = '100%';
+        continentMapDiv.style.maxWidth = '800px';
+        continentMapDiv.style.margin = '0 auto';
+        
+        // Handle PNG files
+        if (mapFile.endsWith('.png')) {
+            const img = document.createElement('img');
+            img.src = mapFile;
+            img.className = 'continent-map-image';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            continentMapDiv.appendChild(img);
+            mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+            return;
+        }
+
+        // Handle SVG files
+        fetch(mapFile)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                return response.text();
+            })
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svgElement = svgDoc.documentElement;
+
+                svgElement.classList.add('continent-map-svg');
+                svgElement.style.width = '100%';
+                svgElement.style.height = 'auto';
+                svgElement.style.maxWidth = '100%';
+                svgElement.style.display = 'block';
+                svgElement.style.margin = '0 auto';
+                svgElement.style.overflow = 'visible';
+
+                // Special handling for North America - group US states and Canadian provinces
+                if (continent === 'north-america') {
+                    this.loadNorthAmericaMapGrouped(svgElement, continent, continentMapDiv, mapContainer);
+                } else if (continent === 'europe') {
+                    // Special handling for Europe - load both Europe and Russia maps
+                    this.loadEuropeWithRussia(svgElement, continent, continentMapDiv, mapContainer);
+                } else {
+                    // Regular country selection for other continents
+                    this.loadContinentMapRegular(svgElement, continent, continentMapDiv, mapContainer);
+                }
+            })
+            .catch(err => {
+                console.error(`Error loading ${continent} map:`, err);
+                continentMapDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #FFD700;">
+                        <h3>🗺️ Map Loading Error</h3>
+                        <p>Unable to load the ${this.getContinentDisplayName(continent)} map.</p>
+                    </div>
+                `;
+                mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+            });
+    }
+    
+    loadNorthAmericaMapGrouped(svgElement, continent, continentMapDiv, mapContainer) {
+        // US state codes (50 states + DC)
+        const usStates = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 
+                         'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 
+                         'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 
+                         'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 
+                         'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC'];
+        
+        // Canadian province/territory codes
+        const canadaProvinces = ['AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT'];
+        
+        // Group paths by country
+        const usPaths = [];
+        const canadaPaths = [];
+        const otherPaths = [];
+        
+        svgElement.querySelectorAll('path').forEach(path => {
+            const pathId = (path.id || path.getAttribute('name') || '').toUpperCase();
+            
+            // Remove any existing attributes
+            path.removeAttribute('fill');
+            path.removeAttribute('stroke');
+            path.removeAttribute('stroke-width');
+            
+            path.classList.add('state-path');
+            path.style.fill = 'rgba(255, 215, 0, 0.1)';
+            path.style.stroke = '#FFD700';
+            path.style.strokeWidth = '1.5';
+            path.style.cursor = 'pointer';
+            path.style.transition = 'all 0.3s ease';
+            
+            if (usStates.includes(pathId)) {
+                usPaths.push(path);
+                path.dataset.country = 'US';
+            } else if (canadaProvinces.includes(pathId)) {
+                canadaPaths.push(path);
+                path.dataset.country = 'CA';
+            } else {
+                otherPaths.push(path);
+                const countryId = pathId || path.getAttribute('name') || path.getAttribute('data-name');
+                path.dataset.country = countryId; // Use path ID as country code for other countries
+            }
+        });
+        
+        // Track hover state
+        const countryHoverCount = { US: 0, CA: 0 };
+        otherPaths.forEach(p => {
+            countryHoverCount[p.dataset.country] = 0;
+        });
+        
+        // Add event listeners to all paths
+        const allPaths = [...usPaths, ...canadaPaths, ...otherPaths];
+        allPaths.forEach(path => {
+            const country = path.dataset.country;
+            const countryPaths = country === 'US' ? usPaths : (country === 'CA' ? canadaPaths : [path]);
+            
+            path.addEventListener('mouseenter', (e) => {
+                e.stopPropagation();
+                if (!path.classList.contains('selected')) {
+                    countryHoverCount[country]++;
+                    if (countryHoverCount[country] === 1) {
+                        countryPaths.forEach(p => {
+                            if (!p.classList.contains('selected')) {
+                                p.style.fill = 'rgba(255, 215, 0, 0.4)';
+                                p.style.stroke = '#FFFFFF';
+                                p.style.strokeWidth = '2.5';
+                                p.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                                p.style.transform = 'scale(1.02)';
+                            }
+                        });
+                    }
+                }
+            });
+            
+            path.addEventListener('mouseleave', (e) => {
+                e.stopPropagation();
+                if (!path.classList.contains('selected')) {
+                    countryHoverCount[country] = Math.max(0, countryHoverCount[country] - 1);
+                    if (countryHoverCount[country] === 0) {
+                        countryPaths.forEach(p => {
+                            if (!p.classList.contains('selected')) {
+                                p.style.fill = 'rgba(255, 215, 0, 0.1)';
+                                p.style.stroke = '#FFD700';
+                                p.style.strokeWidth = '1.5';
+                                p.style.filter = 'none';
+                                p.style.transform = 'scale(1)';
+                            }
+                        });
+                    }
+                }
+            });
+            
+            path.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const country = path.dataset.country;
+                const countryPaths = country === 'US' ? usPaths : (country === 'CA' ? canadaPaths : [path]);
+                
+                if (path.classList.contains('selected')) {
+                    // Deselect all paths in this country
+                    countryPaths.forEach(p => {
+                        p.classList.remove('selected');
+                        p.style.fill = 'rgba(255, 215, 0, 0.1)';
+                        p.style.stroke = '#FFD700';
+                        p.style.strokeWidth = '1.5';
+                        p.style.filter = 'none';
+                        p.style.transform = 'scale(1)';
+                    });
+                    this.selectedCountries = this.selectedCountries.filter(c => c !== country);
+                } else {
+                    // Select all paths in this country
+                    countryPaths.forEach(p => {
+                        p.classList.add('selected');
+                        p.style.fill = 'rgba(255, 215, 0, 0.7)';
+                        p.style.stroke = '#FFA500';
+                        p.style.strokeWidth = '3';
+                        p.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
+                    });
+                    if (!this.selectedCountries.includes(country)) {
+                        this.selectedCountries.push(country);
+                    }
+                }
+                
+                this.showContinentCountryContinueButton(continent);
+            });
+        });
+        
+        continentMapDiv.appendChild(svgElement);
+        mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+    }
+    
+    loadContinentMapRegular(svgElement, continent, continentMapDiv, mapContainer) {
+        // Collect all paths including those in groups (like some maps might have)
+        const allPaths = [];
+        const processedPaths = new Set();
+        
+        // Get paths in groups first
+        svgElement.querySelectorAll('g[id]').forEach(group => {
+            group.querySelectorAll('path').forEach(path => {
+                if (!processedPaths.has(path)) {
+                    allPaths.push(path);
+                    processedPaths.add(path);
+                }
+            });
+        });
+        
+        // Get direct paths (not in groups we already processed)
+        svgElement.querySelectorAll('path').forEach(path => {
+            if (!processedPaths.has(path)) {
+                allPaths.push(path);
+                processedPaths.add(path);
+            }
+        });
+        
+        // Apply golden styling like state map
+        allPaths.forEach(path => {
+            path.classList.add('country-path');
+            
+            // Remove any existing attributes
+            path.removeAttribute('fill');
+            path.removeAttribute('stroke');
+            path.removeAttribute('stroke-width');
+            
+            // Golden styling like state map - use setProperty to ensure it sticks
+            path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+            path.style.setProperty('stroke', '#FFD700', 'important');
+            path.style.setProperty('stroke-width', '1.5', 'important');
+            path.style.cursor = 'pointer';
+            path.style.transition = 'all 0.3s ease';
+            
+            // Add hover effects - use setProperty with !important to override CSS
+            path.addEventListener('mouseenter', () => {
+                if (!path.classList.contains('selected')) {
+                    path.style.setProperty('fill', 'rgba(255, 215, 0, 0.4)', 'important');
+                    path.style.setProperty('stroke', '#FFFFFF', 'important');
+                    path.style.setProperty('stroke-width', '2.5', 'important');
+                    path.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
+                    path.style.setProperty('transform', 'scale(1.02)', 'important');
+                }
+            });
+            
+            path.addEventListener('mouseleave', () => {
+                if (!path.classList.contains('selected')) {
+                    path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                    path.style.setProperty('stroke', '#FFD700', 'important');
+                    path.style.setProperty('stroke-width', '1.5', 'important');
+                    path.style.setProperty('filter', 'none', 'important');
+                    path.style.setProperty('transform', 'scale(1)', 'important');
+                }
+            });
+            
+            path.addEventListener('click', () => {
+                // Try multiple ways to get country ID (case-insensitive)
+                let countryId = path.id || 
+                               path.getAttribute('name') || 
+                               path.getAttribute('data-name') ||
+                               path.getAttribute('data-id');
+                
+                // Normalize country ID (uppercase, trim)
+                if (countryId) {
+                    countryId = countryId.toString().toUpperCase().trim();
+                }
+                
+                if (path.classList.contains('selected')) {
+                    // Deselect country
+                    path.classList.remove('selected');
+                    path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                    path.style.setProperty('stroke', '#FFD700', 'important');
+                    path.style.setProperty('stroke-width', '1.5', 'important');
+                    path.style.setProperty('filter', 'none', 'important');
+                    path.style.setProperty('transform', 'scale(1)', 'important');
+                    
+                    this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
+                } else {
+                    // Select country
+                    path.classList.add('selected');
+                    path.style.setProperty('fill', 'rgba(255, 215, 0, 0.7)', 'important');
+                    path.style.setProperty('stroke', '#FFA500', 'important');
+                    path.style.setProperty('stroke-width', '3', 'important');
+                    path.style.setProperty('filter', 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))', 'important');
+                    
+                    this.selectedCountries.push(countryId);
+                }
+                
+                // Show continue button
+                this.showContinentCountryContinueButton(continent);
+            });
+        });
+
+        continentMapDiv.appendChild(svgElement);
+        mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+    }
+    
+    loadEuropeWithRussia(europeSvgElement, continent, continentMapDiv, mapContainer) {
+        // First, set up the Europe map
+        europeSvgElement.classList.add('continent-map-svg');
+        europeSvgElement.style.width = '100%';
+        europeSvgElement.style.height = 'auto';
+        europeSvgElement.style.maxWidth = '100%';
+        europeSvgElement.style.display = 'block';
+        europeSvgElement.style.margin = '0 auto';
+        europeSvgElement.style.overflow = 'visible';
+        
+        // Create a container for both maps
+        const mapsWrapper = document.createElement('div');
+        mapsWrapper.style.display = 'flex';
+        mapsWrapper.style.flexDirection = 'column';
+        mapsWrapper.style.gap = '20px';
+        mapsWrapper.style.width = '100%';
+        mapsWrapper.style.alignItems = 'center';
+        
+        // Add Europe map to wrapper
+        mapsWrapper.appendChild(europeSvgElement);
+        
+        // Load Russia map
+        fetch('../assets/ru-03/ru-03.svg')
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                return response.text();
+            })
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const russiaSvgElement = svgDoc.documentElement;
+                
+                russiaSvgElement.classList.add('continent-map-svg');
+                russiaSvgElement.style.width = '100%';
+                russiaSvgElement.style.height = 'auto';
+                russiaSvgElement.style.maxWidth = '100%';
+                russiaSvgElement.style.display = 'block';
+                russiaSvgElement.style.margin = '0 auto';
+                russiaSvgElement.style.overflow = 'visible';
+                
+                // Process both maps together - collect all paths including those in groups
+                const allPaths = [];
+                const processedPaths = new Set();
+                
+                // Process Europe map paths (including those in groups)
+                europeSvgElement.querySelectorAll('g[id]').forEach(group => {
+                    group.querySelectorAll('path').forEach(path => {
+                        if (!processedPaths.has(path)) {
+                            allPaths.push(path);
+                            processedPaths.add(path);
+                        }
+                    });
+                });
+                europeSvgElement.querySelectorAll('path').forEach(path => {
+                    if (!processedPaths.has(path)) {
+                        allPaths.push(path);
+                        processedPaths.add(path);
+                    }
+                });
+                
+                // Process Russia map paths (including those in groups)
+                russiaSvgElement.querySelectorAll('g[id]').forEach(group => {
+                    group.querySelectorAll('path').forEach(path => {
+                        if (!processedPaths.has(path)) {
+                            allPaths.push(path);
+                            processedPaths.add(path);
+                        }
+                    });
+                });
+                russiaSvgElement.querySelectorAll('path').forEach(path => {
+                    if (!processedPaths.has(path)) {
+                        allPaths.push(path);
+                        processedPaths.add(path);
+                    }
+                });
+                
+                // Apply styling and event listeners to all paths
+                allPaths.forEach(path => {
+                    path.classList.add('country-path');
+                    
+                    // Remove any existing attributes
+                    path.removeAttribute('fill');
+                    path.removeAttribute('stroke');
+                    path.removeAttribute('stroke-width');
+                    
+                    // Golden styling like state map - use setProperty to ensure it sticks
+                    path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                    path.style.setProperty('stroke', '#FFD700', 'important');
+                    path.style.setProperty('stroke-width', '1.5', 'important');
+                    path.style.cursor = 'pointer';
+                    path.style.transition = 'all 0.3s ease';
+                    
+                    // Add hover effects - use setProperty with !important to override CSS
+                    path.addEventListener('mouseenter', () => {
+                        if (!path.classList.contains('selected')) {
+                            path.style.setProperty('fill', 'rgba(255, 215, 0, 0.4)', 'important');
+                            path.style.setProperty('stroke', '#FFFFFF', 'important');
+                            path.style.setProperty('stroke-width', '2.5', 'important');
+                            path.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
+                            path.style.setProperty('transform', 'scale(1.02)', 'important');
+                        }
+                    });
+                    
+                    path.addEventListener('mouseleave', () => {
+                        if (!path.classList.contains('selected')) {
+                            path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                            path.style.setProperty('stroke', '#FFD700', 'important');
+                            path.style.setProperty('stroke-width', '1.5', 'important');
+                            path.style.setProperty('filter', 'none', 'important');
+                            path.style.setProperty('transform', 'scale(1)', 'important');
+                        }
+                    });
+                    
+                    path.addEventListener('click', () => {
+                        // Try multiple ways to get country ID (case-insensitive)
+                        let countryId = path.id || 
+                                       path.getAttribute('name') || 
+                                       path.getAttribute('data-name') ||
+                                       path.getAttribute('data-id');
+                        
+                        // Normalize country ID (uppercase, trim)
+                        if (countryId) {
+                            countryId = countryId.toString().toUpperCase().trim();
+                        }
+                        
+                        if (path.classList.contains('selected')) {
+                            // Deselect country
+                            path.classList.remove('selected');
+                            path.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                            path.style.setProperty('stroke', '#FFD700', 'important');
+                            path.style.setProperty('stroke-width', '1.5', 'important');
+                            path.style.setProperty('filter', 'none', 'important');
+                            path.style.setProperty('transform', 'scale(1)', 'important');
+                            
+                            this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
+                        } else {
+                            // Select country
+                            path.classList.add('selected');
+                            path.style.setProperty('fill', 'rgba(255, 215, 0, 0.7)', 'important');
+                            path.style.setProperty('stroke', '#FFA500', 'important');
+                            path.style.setProperty('stroke-width', '3', 'important');
+                            path.style.setProperty('filter', 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))', 'important');
+                            
+                            this.selectedCountries.push(countryId);
+                        }
+                        
+                        // Show continue button
+                        this.showContinentCountryContinueButton(continent);
+                    });
+                });
+                
+                // Add Russia map to wrapper
+                mapsWrapper.appendChild(russiaSvgElement);
+                
+                // Add wrapper to container
+                continentMapDiv.appendChild(mapsWrapper);
+                mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+            })
+            .catch(err => {
+                console.error('Error loading Russia map:', err);
+                // If Russia map fails to load, just show Europe map
+                continentMapDiv.appendChild(europeSvgElement);
+                mapContainer.insertBefore(continentMapDiv, mapContainer.querySelector('#continueContainer'));
+            });
+    }
+    
+    showContinentCountryContinueButton(continent) {
+        const continueContainer = document.getElementById('continueContainer');
+        let existingBtn = continueContainer.querySelector('.continent-country-continue-btn');
+        
+        if (!existingBtn) {
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'slider-continue-btn continent-country-continue-btn';
+            continueBtn.textContent = this.selectedCountries.length > 0 
+                ? `Continue (${this.selectedCountries.length} selected)` 
+                : 'Continue';
+            continueBtn.addEventListener('click', () => {
+                // Store selected countries for this continent
+                if (!this.answers.country_selections) {
+                    this.answers.country_selections = {};
+                }
+                this.answers.country_selections[continent] = this.selectedCountries;
+                
+                // Move to next continent or next question
+                this.currentContinentIndex++;
+                if (this.currentContinentIndex < this.selectedContinents.length) {
+                    this.showContinentCountryQuestion(this.selectedContinents[this.currentContinentIndex]);
+                } else {
+                    this.nextQuestion();
+                }
+            });
+            continueContainer.appendChild(continueBtn);
+        } else {
+            existingBtn.textContent = this.selectedCountries.length > 0 
+                ? `Continue (${this.selectedCountries.length} selected)` 
+                : 'Continue';
+        }
+    }
+
+    toggleContinent(continentId, buttonElement) {
+        if (this.selectedContinents.includes(continentId)) {
+            // Deselect continent
+            this.selectedContinents = this.selectedContinents.filter(c => c !== continentId);
+            buttonElement.classList.remove('selected');
+        } else {
+            // Select continent
+            this.selectedContinents.push(continentId);
+            buttonElement.classList.add('selected');
+        }
+        
+        // Show continue button if any continents are selected
+        if (this.selectedContinents.length > 0) {
+            this.showContinentContinueButton();
+        } else {
+            this.hideContinentContinueButton();
+        }
+    }
+
+    showContinentContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'slider-continue-btn';
+            continueBtn.textContent = `Continue to Country Selection (${this.selectedContinents.length} selected)`;
+            continueBtn.addEventListener('click', () => {
+                this.showCountryMapsForContinents();
+            });
+            continueContainer.appendChild(continueBtn);
+        } else if (continueContainer && continueContainer.querySelector('.slider-continue-btn')) {
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            existingBtn.textContent = `Continue to Country Selection (${this.selectedContinents.length} selected)`;
+        }
+    }
+
+    hideContinentContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer) {
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+        }
+    }
+
+    showCountryMapsForContinents() {
+        const mapContainer = document.getElementById('mapContainer');
+        if (!mapContainer) {
+            console.error("Map container not found!");
+            return;
+        }
+
+        // Clear the container and show country maps for each selected continent
+        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        
+        // Initialize selected countries array
+        this.selectedCountries = [];
+        
+        // Create a container for all country maps
+        const countryMapsContainer = document.createElement('div');
+        countryMapsContainer.className = 'country-maps-container';
+        
+        // Show country maps for each selected continent
+        this.selectedContinents.forEach((continent, index) => {
+            const continentMapDiv = document.createElement('div');
+            continentMapDiv.className = 'continent-map-section';
+            continentMapDiv.innerHTML = `
+                <h3 class="continent-map-title">Select countries in ${this.getContinentDisplayName(continent)}</h3>
+                <div class="continent-map-${continent}" data-continent="${continent}"></div>
+            `;
+            countryMapsContainer.appendChild(continentMapDiv);
+        });
+        
+        mapContainer.appendChild(countryMapsContainer);
+        
+        // Load country maps for each continent
+        this.selectedContinents.forEach(continent => {
+            this.loadContinentMap(continent);
+        });
+    }
+
+    getContinentDisplayName(continentId) {
+        const names = {
+            'north-america': 'North America',
+            'south-america': 'South America', 
+            'europe': 'Europe',
+            'africa': 'Africa',
+            'asia': 'Asia',
+            'oceania': 'Oceania'
+        };
+        return names[continentId] || continentId;
+    }
+
+    loadContinentMap(continent) {
+        const continentMapDiv = document.querySelector(`.continent-map-${continent}`);
+        if (!continentMapDiv) {
+            console.error(`Continent map div not found for ${continent}`);
+            return;
+        }
+
+        // Map continent IDs to their SVG file names
+        const continentMapFiles = {
+            'north-america': '../assets/north-america.svg',
+            'south-america': '../assets/South_America_political_map_Aruba.png', // This is a PNG, we'll handle it differently
+            'europe': '../assets/europe.svg',
+            'africa': '../assets/africa.svg',
+            'asia': '../assets/as-c-04/as-c-04.svg', // Using the available Asia map
+            'oceania': '../assets/Blank_Map_Oceania.svg'
+        };
+
+        const mapFile = continentMapFiles[continent];
+        if (!mapFile) {
+            console.error(`No map file found for continent: ${continent}`);
+            return;
+        }
+
+        // Handle PNG files differently
+        if (mapFile.endsWith('.png')) {
+            const img = document.createElement('img');
+            img.src = mapFile;
+            img.className = 'continent-map-image';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.maxWidth = '100%';
+            img.style.display = 'block';
+            img.style.margin = '0 auto';
+            img.style.overflow = 'visible';
+            continentMapDiv.appendChild(img);
+            return;
+        }
+
+        // Handle SVG files
+        fetch(mapFile)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                return response.text();
+            })
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+                const svgElement = svgDoc.documentElement;
+
+                svgElement.classList.add('continent-map-svg');
+                svgElement.style.width = '100%';
+                svgElement.style.height = 'auto';
+                svgElement.style.maxWidth = '100%';
+                svgElement.style.display = 'block';
+                svgElement.style.margin = '0 auto';
+                svgElement.style.overflow = 'visible';
+
+                // Apply country selection styling to paths
+                svgElement.querySelectorAll('path').forEach(path => {
+                    path.classList.add('country-path');
+                    
+                    // Add golden styling similar to state map
+                    path.style.fill = 'rgba(255, 255, 255, 0.08)';
+                    path.style.stroke = '#FFD700';
+                    path.style.strokeWidth = '1.5';
+                    path.style.cursor = 'pointer';
+                    path.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
+                    
+                    // Add hover effects
+                    path.addEventListener('mouseenter', () => {
+                        if (!path.classList.contains('selected')) {
+                            path.style.fill = 'rgba(255, 215, 0, 0.4)';
+                            path.style.stroke = '#FFFFFF';
+                            path.style.strokeWidth = '2.5';
+                            path.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                            path.style.transform = 'scale(1.02)';
+                        }
+                    });
+                    
+                    path.addEventListener('mouseleave', () => {
+                        if (!path.classList.contains('selected')) {
+                            path.style.fill = 'rgba(255, 255, 255, 0.08)';
+                            path.style.stroke = '#FFD700';
+                            path.style.strokeWidth = '1.5';
+                            path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
+                            path.style.transform = 'scale(1)';
+                        }
+                    });
+                    
+                    path.addEventListener('click', () => {
+                        const countryId = path.id || path.getAttribute('name') || path.getAttribute('data-name');
+                        
+                        if (path.classList.contains('selected')) {
+                            // Deselect country
+                            path.classList.remove('selected');
+                            path.style.fill = 'rgba(255, 255, 255, 0.08)';
+                            path.style.stroke = '#FFD700';
+                            path.style.strokeWidth = '1.5';
+                            path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
+                            path.style.transform = 'scale(1)';
+                            
+                            // Remove from selected countries
+                            this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
+                        } else {
+                            // Select country
+                            path.classList.add('selected');
+                            path.style.fill = 'rgba(255, 215, 0, 0.7)';
+                            path.style.stroke = '#FFA500';
+                            path.style.strokeWidth = '3';
+                            path.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
+                            path.style.transform = 'scale(1.02)';
+                            path.style.animation = 'statePulse 2s ease-in-out infinite';
+                            
+                            // Add to selected countries
+                            this.selectedCountries.push(countryId);
+                        }
+                        
+                        // Show continue button if any countries are selected
+                        if (this.selectedCountries.length > 0) {
+                            this.showCountryMapsContinueButton();
+                        } else {
+                            this.hideCountryMapsContinueButton();
+                        }
+                    });
+                });
+
+                continentMapDiv.appendChild(svgElement);
+            })
+            .catch(err => {
+                console.error(`Error loading ${continent} map:`, err);
+                continentMapDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #FFD700;">
+                        <h3>🗺️ Map Loading Error</h3>
+                        <p>Unable to load the ${this.getContinentDisplayName(continent)} map.</p>
+                    </div>
+                `;
+            });
+    }
+
+    showCountryMapsContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'slider-continue-btn';
+            continueBtn.textContent = `Continue (${this.selectedCountries.length} countries selected)`;
+            continueBtn.addEventListener('click', () => {
+                this.selectAnswer(this.selectedCountries);
+            });
+            continueContainer.appendChild(continueBtn);
+        } else if (continueContainer && continueContainer.querySelector('.slider-continue-btn')) {
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            existingBtn.textContent = `Continue (${this.selectedCountries.length} countries selected)`;
+        }
+    }
+
+    hideCountryMapsContinueButton() {
+        const continueContainer = document.getElementById('continueContainer');
+        if (continueContainer) {
+            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+        }
+    }
        
     showMapContinueButton() {
-        console.log('showMapContinueButton called');
         const continueContainer = document.getElementById('continueContainer');
         if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
             // Use the same continue button system as sliders
@@ -1216,16 +2356,11 @@ class NameGuessingQuiz {
             continueBtn.className = 'slider-continue-btn';
             continueBtn.textContent = 'Continue';
             continueBtn.addEventListener('click', () => {
-                // Get the selected state
-                const selectedState = document.querySelector('.state-path.selected');
-                if (selectedState) {
-                    const stateId = selectedState.id || selectedState.getAttribute('name');
-                    console.log('Continuing with state:', stateId);
-                    this.selectAnswer(stateId);
+                if (this.selectedState) {
+                    this.selectAnswer(this.selectedState);
                 }
             });
             continueContainer.appendChild(continueBtn);
-            console.log('Map continue button added');
         }
     }
     
@@ -1233,12 +2368,10 @@ class NameGuessingQuiz {
         const mapContainer = document.getElementById('mapContainer');
         if (mapContainer) {
             mapContainer.style.display = 'none';
-            console.log('Map hidden');
         }
     }
     
     createBasicMap(container) {
-        console.log('Creating basic map...');
         
         // Create a simple list of major states
         const majorStates = [
@@ -1319,9 +2452,6 @@ class NameGuessingQuiz {
         });
         
         container.appendChild(stateList);
-        console.log('Basic map created and added');
-        console.log('State list children count:', stateList.children.length);
-        console.log('Container children count:', container.children.length);
         
         // Force a visual update and make sure it's visible
         stateList.style.display = 'grid';
@@ -1334,25 +2464,11 @@ class NameGuessingQuiz {
         container.style.display = 'block';
         container.style.visibility = 'visible';
         container.style.opacity = '1';
-        
-        console.log('Forced visibility update');
-        console.log('State list computed style:', window.getComputedStyle(stateList).display);
-        console.log('Container computed style:', window.getComputedStyle(container).display);
-        
-        // Add a test element to make sure something is visible
-        const testDiv = document.createElement('div');
-        testDiv.innerHTML = 'TEST: Map should be visible here!';
-        testDiv.style.cssText = 'background: red; color: white; padding: 20px; margin: 10px; font-size: 20px; border: 3px solid yellow;';
-        container.appendChild(testDiv);
-        console.log('Test element added');
     }
     
     createSimpleMap(container) {
-        console.log('Creating simple map...');
-        
         const mapGrid = document.createElement('div');
         mapGrid.className = 'map-grid';
-        console.log('Map grid created');
         
         // All 50 US states in a simple grid format
         const states = [
@@ -1362,8 +2478,6 @@ class NameGuessingQuiz {
             'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
             'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
         ];
-        
-        console.log(`Creating ${states.length} state buttons`);
         
         // Create state buttons
         states.forEach(stateCode => {
@@ -1375,10 +2489,7 @@ class NameGuessingQuiz {
             button.addEventListener('click', () => this.selectAnswer(stateCode));
             mapGrid.appendChild(button);
         });
-        
-        console.log('State buttons created, adding to container');
         container.appendChild(mapGrid);
-        console.log('Map grid added to container');
     }
     
     getStateName(code) {
@@ -1469,21 +2580,9 @@ class NameGuessingQuiz {
     }
 
     async calculateGuess() {
-        console.log('=== STARTING NAME SEARCH ===');
-        console.log('Current answers:', this.answers);
-        console.log('Total names in database:', Object.keys(this.enhancedNameDatabase.nameData).length);
-        console.log('Sample names from database:', Object.values(this.enhancedNameDatabase.nameData).slice(0, 10).map(n => n.name));
-        console.log('🎯 User selected state:', this.answers.state);
-        console.log('🎯 User selected gender:', this.answers.gender);
-        console.log('🎯 User selected length:', this.answers.length);
-        
         const candidates = await this.getCandidates();
         
-        console.log('Candidates after filtering:', candidates.length);
-        console.log('Filtered candidates:', candidates.map(c => c.name).slice(0, 10));
-        
         if (candidates.length === 0) {
-            console.log('🔍 NO CANDIDATES FOUND - trying with relaxed criteria');
             
             // Try with relaxed length criteria using efficient lookups
             let relaxedCandidates = [];
@@ -1523,13 +2622,8 @@ class NameGuessingQuiz {
                 });
             }
             
-            console.log('✅ Relaxed candidates found:', relaxedCandidates.length);
-            console.log('📝 Relaxed candidate names:', relaxedCandidates.map(c => c.name).slice(0, 10));
-            
             if (relaxedCandidates.length === 0) {
-                console.log('🚨 STILL NO CANDIDATES - checking what long consonant names exist');
-                
-                // Debug: Show what long consonant names are in the database
+                // Fallback: find any long consonant names
                 const longConsonantNames = Object.values(this.enhancedNameDatabase.nameData).filter(nameInfo => {
                     const nameLength = nameInfo.name.length;
                     const firstLetter = nameInfo.name.charAt(0).toLowerCase();
@@ -1537,26 +2631,20 @@ class NameGuessingQuiz {
                     return nameLength >= 6 && !isVowel;
                 });
                 
-                console.log('🔍 Long consonant names in database:', longConsonantNames.map(n => n.name).slice(0, 20));
-                
                 if (longConsonantNames.length > 0) {
-                    console.log('✅ Using first available long consonant name:', longConsonantNames[0].name);
                     return longConsonantNames[0];
                 }
                 
-                console.log('❌ NO LONG CONSONANT NAMES FOUND - returning default Alex');
                 return { name: 'Alex', confidence: 25 };
             }
             
             // Use relaxed candidates
-            console.log('🎯 Using relaxed candidates for scoring');
             const scoredCandidates = relaxedCandidates.map(candidate => ({
                 ...candidate,
                 score: this.calculateNameScore(candidate)
             }));
             
             scoredCandidates.sort((a, b) => b.score - a.score);
-            console.log('🏆 Best relaxed candidate:', scoredCandidates[0].name, 'Score:', scoredCandidates[0].score);
             return scoredCandidates[0];
         }
         
@@ -1578,36 +2666,24 @@ class NameGuessingQuiz {
     }
 
     async calculateTopGuesses(count = 5) {
-        console.log('=== CALCULATING HYBRID TOP GUESSES ===');
-        console.log('Current answers:', this.answers);
-        console.log('Total names in database:', Object.keys(this.enhancedNameDatabase.nameData).length);
-        
         // Get rule-based predictions
         const ruleBasedGuesses = await this.calculateRuleBasedGuesses(count);
-        console.log('🔍 Rule-based guesses:', ruleBasedGuesses);
         
         // Get ML predictions
         const mlPredictions = await this.mlModel.predict(this.answers);
-        console.log('🧠 ML predictions:', mlPredictions);
         
         // Combine both approaches
         const hybridGuesses = this.combinePredictions(ruleBasedGuesses, mlPredictions, count);
         
-        console.log('🏆 Hybrid top guesses:', hybridGuesses.map(g => `${g.name} (${g.confidence}%)`));
-        console.log('🏆 Hybrid top guesses length:', hybridGuesses.length);
         return hybridGuesses;
     }
 
     async calculateRuleBasedGuesses(count = 5) {
         const candidates = await this.getCandidates();
         
-        console.log('Candidates after filtering:', candidates.length);
-        console.log('Filtered candidates:', candidates.map(c => c.name).slice(0, 10));
-        
         let scoredCandidates = [];
         
         if (candidates.length === 0) {
-            console.log('🔍 NO CANDIDATES FOUND - trying with relaxed criteria');
             
             // Try with relaxed length criteria using efficient lookups
             let relaxedCandidates = [];
@@ -1647,23 +2723,13 @@ class NameGuessingQuiz {
                 });
             }
             
-            console.log('✅ Relaxed candidates found:', relaxedCandidates.length);
-            console.log('📝 Relaxed candidate names:', relaxedCandidates.map(c => c.name).slice(0, 10));
-            
             if (relaxedCandidates.length === 0) {
-                console.log('🚨 STILL NO CANDIDATES - using filtered fallback names');
-                console.log('🔍 Current answers for fallback:', this.answers);
-                console.log('🔍 Gender:', this.answers.gender, 'Length:', this.answers.length);
                 // Create fallback names that respect gender and length preferences
                 const fallbackNames = [];
                 
                 // Add names based on gender preference
-                console.log('🔍 Checking gender condition:', this.answers.gender === 'F', this.answers.gender, '!this.answers.gender:', !this.answers.gender);
                 if (this.answers.gender === 'F' || !this.answers.gender) {
-                    console.log('✅ Adding female fallback names');
-                    console.log('🔍 Checking length condition:', this.answers.length === 'long', this.answers.length);
                     if (this.answers.length === 'long') {
-                        console.log('✅ Adding long female names');
                         fallbackNames.push(
                             { name: 'Elizabeth', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Victoria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
@@ -1672,7 +2738,6 @@ class NameGuessingQuiz {
                             { name: 'Stephanie', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else if (this.answers.length === 'extra_long') {
-                        console.log('✅ Adding extra long female names');
                         fallbackNames.push(
                             { name: 'Alexandria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christina', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
@@ -1689,7 +2754,6 @@ class NameGuessingQuiz {
                             { name: 'Hope', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else {
-                        console.log('✅ Adding short female names (length was:', this.answers.length, ')');
                         fallbackNames.push(
                             { name: 'Amy', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Eva', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
@@ -1700,11 +2764,8 @@ class NameGuessingQuiz {
                     }
                 }
                 
-                console.log('🔍 Checking male condition:', this.answers.gender === 'M', this.answers.gender);
                 if (this.answers.gender === 'M' || !this.answers.gender) {
-                    console.log('✅ Adding male fallback names');
                     if (this.answers.length === 'long') {
-                        console.log('✅ Adding long male names');
                         fallbackNames.push(
                             { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
@@ -1713,7 +2774,6 @@ class NameGuessingQuiz {
                             { name: 'Sebastian', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else if (this.answers.length === 'extra_long') {
-                        console.log('✅ Adding extra long male names');
                         fallbackNames.push(
                             { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
@@ -1756,11 +2816,8 @@ class NameGuessingQuiz {
                 }
                 
                 // Add non-binary fallback names if gender is non-binary
-                console.log('🔍 Checking non-binary condition:', this.answers.gender === 'NB', this.answers.gender);
                 if (this.answers.gender === 'NB') {
-                    console.log('✅ Adding non-binary fallback names');
                     if (this.answers.length === 'long') {
-                        console.log('✅ Adding long non-binary names');
                         fallbackNames.push(
                             { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Jordan', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
@@ -1769,7 +2826,6 @@ class NameGuessingQuiz {
                             { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
                     } else if (this.answers.length === 'extra_long') {
-                        console.log('✅ Adding extra long non-binary names');
                         fallbackNames.push(
                             { name: 'Alexandria', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
@@ -1796,13 +2852,10 @@ class NameGuessingQuiz {
                     }
                 }
                 
-                console.log('🔍 Fallback names before scoring:', fallbackNames.length, fallbackNames.map(n => n.name));
                 scoredCandidates = fallbackNames.map(name => ({
                     ...name,
                     score: this.calculateNameScore(name)
                 }));
-                
-                console.log('🎯 Fallback names created:', scoredCandidates.length, scoredCandidates.map(n => `${n.name} (${n.gender}, ${n.name.length} letters, score: ${n.score})`));
             } else {
                 scoredCandidates = relaxedCandidates.map(candidate => ({
                     ...candidate,
@@ -1846,7 +2899,6 @@ class NameGuessingQuiz {
         
         // Add ML predictions if available AND we have rule-based candidates
         if (mlPredictions && ruleBasedGuesses.length > 0) {
-            console.log('🧠 ML predictions available, combining with rule-based...');
             
             // Get top ML predictions
             const mlTopIndices = Array.from({length: mlPredictions.length}, (_, i) => i)
@@ -1879,7 +2931,6 @@ class NameGuessingQuiz {
                 }
             });
         } else if (ruleBasedGuesses.length === 0) {
-            console.log('🧠 No rule-based candidates found, skipping ML combination');
         }
         
         // Sort by combined score and return top guesses
@@ -1887,7 +2938,6 @@ class NameGuessingQuiz {
             .sort((a, b) => b.combinedScore - a.combinedScore)
             .slice(0, count);
         
-        console.log('🔍 Combined scores before final processing:', sortedGuesses.map(g => `${g.name} (${g.combinedScore})`));
         
         const finalGuesses = sortedGuesses.map((guess, index) => ({
             ...guess,
@@ -1895,30 +2945,24 @@ class NameGuessingQuiz {
             confidence: this.calculateConfidenceForGuess(guess, index + 1)
         }));
         
-        console.log('🎯 Final guesses:', finalGuesses.map(g => `${g.name} (${g.confidence}%)`));
         
         return finalGuesses;
     }
 
     displayTopGuesses(guesses) {
-        console.log('🎯 Displaying top guesses:', guesses);
-        console.log('🎯 Number of guesses:', guesses.length);
         
         for (let i = 0; i < 5; i++) {
             const guessElement = document.getElementById(`guess${i + 1}`);
             const nameElement = document.getElementById(`guessName${i + 1}`);
             const confidenceElement = document.getElementById(`confidence${i + 1}`);
             
-            console.log(`🎯 Processing guess ${i + 1}:`, guessElement, nameElement, confidenceElement);
             
             if (i < guesses.length && guesses[i]) {
                 const guess = guesses[i];
-                console.log(`🎯 Setting guess ${i + 1}:`, guess.name, `${guess.confidence}%`);
                 nameElement.textContent = guess.name;
                 confidenceElement.textContent = `${guess.confidence}%`;
                 guessElement.style.display = 'flex';
             } else {
-                console.log(`🎯 Hiding guess ${i + 1} (no data)`);
                 guessElement.style.display = 'none';
             }
         }
@@ -1935,15 +2979,12 @@ class NameGuessingQuiz {
         const randomFactor = (Math.random() - 0.5) * 10;
         
         const confidence = Math.round(Math.max(20, Math.min(95, baseConfidence - rankPenalty + randomFactor)));
-        console.log(`🎯 Confidence for ${guess.name}: score=${guess.score}, base=${baseConfidence}, rank=${rank}, penalty=${rankPenalty}, random=${randomFactor}, final=${confidence}`);
         return confidence;
     }
 
     calculateNameScore(nameInfo) {
         let score = 0;
         
-        // DEBUG: Log current answers
-        console.log('Current answers:', this.answers);
         
         // HIGHEST PRIORITY: Political/Cultural identity (60 points) - NPR research shows this is the strongest predictor
         if (this.answers.political_values) {
@@ -2271,22 +3312,18 @@ class NameGuessingQuiz {
     }
 
     async getCandidates() {
-        console.log('🚀 Using comprehensive indexed lookup...');
         
         // Ensure database is loaded
         if (this.enhancedNameDatabase.ensureLoaded) {
             await this.enhancedNameDatabase.ensureLoaded();
         } else {
-            console.log('⚠️ ensureLoaded method not available, waiting for database...');
             // Wait a bit for database to load
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
         // Use comprehensive lookups based on all user preferences
         if (this.answers.gender === 'NB') {
-            console.log('🌈 Non-binary gender selected - using gender-balanced names');
             const nonBinaryNames = this.enhancedNameDatabase.getNonBinaryNames();
-            console.log(`Found ${nonBinaryNames.length} non-binary suitable names`);
             
             // Filter by length if specified
             let candidates = nonBinaryNames;
@@ -2299,7 +3336,6 @@ class NameGuessingQuiz {
                     if (this.answers.length === 'extra_long' && nameLength >= 10) return true;
                     return false;
                 });
-                console.log(`📏 Filtered to ${candidates.length} non-binary names matching length=${this.answers.length}`);
             }
             
             return candidates;
@@ -2311,17 +3347,14 @@ class NameGuessingQuiz {
             const vowel = this.answers.starts_with;
             const popularity = this.answers.popularity;
             
-            console.log(`🎯 Comprehensive lookup: state=${state}, gender=${gender}, length=${length}, vowel=${vowel}, popularity=${popularity}`);
             
             // Try comprehensive lookup first
             let candidates = [];
             if (this.enhancedNameDatabase.getNamesByAllCriteria) {
                 candidates = this.enhancedNameDatabase.getNamesByAllCriteria(state, gender, length, vowel, popularity);
             } else if (this.enhancedNameDatabase.getNamesByGenderAndLength) {
-                console.log('⚠️ Database not ready, using fallback lookup');
                 candidates = this.enhancedNameDatabase.getNamesByGenderAndLength(gender, length);
             } else {
-                console.log('⚠️ Database methods not available, using basic fallback');
                 // Fallback to basic filtering
                 const allNames = Object.values(this.enhancedNameDatabase.nameData || {});
                 candidates = allNames.filter(nameInfo => {
@@ -2333,21 +3366,17 @@ class NameGuessingQuiz {
             }
             
             if (candidates.length === 0 && this.enhancedNameDatabase.getNamesByStateGenderAndLength) {
-                console.log('🔄 No results from comprehensive lookup, trying state+gender+length...');
                 candidates = this.enhancedNameDatabase.getNamesByStateGenderAndLength(state, gender, length);
             }
             
             if (candidates.length === 0 && this.enhancedNameDatabase.getNamesByGenderAndLength) {
-                console.log('🔄 No state-specific results, trying national gender+length...');
                 candidates = this.enhancedNameDatabase.getNamesByGenderAndLength(gender, length);
             }
             
             if (candidates.length === 0 && this.enhancedNameDatabase.getNamesByGender) {
-                console.log('🔄 No gender+length results, trying gender only...');
                 candidates = this.enhancedNameDatabase.getNamesByGender(gender);
             }
             
-            console.log(`✅ Final candidates: ${candidates.length}`);
             return candidates;
         }
     }
@@ -2385,59 +3414,46 @@ class NameGuessingQuiz {
     }
 
     matchesCriteria(nameInfo) {
-        console.log(`🔍 Checking ${nameInfo.name} (gender: ${nameInfo.gender}, length: ${nameInfo.name.length})`);
-        console.log(`   User preferences: gender=${this.answers.gender}, length=${this.answers.length}`);
         
         // Check gender (include non-binary and prefer not to say as matching any gender)
         if (this.answers.gender && 
             this.answers.gender !== "NB" && 
             this.answers.gender !== "PREFER_NOT_TO_SAY" && 
             nameInfo.gender !== this.answers.gender) {
-            console.log(`❌ REJECTED: ${nameInfo.name} - wrong gender (${nameInfo.gender} vs ${this.answers.gender})`);
             return false;
         }
         
         // For non-binary names, we already filtered in getCandidates(), so just pass through
         if (this.answers.gender === 'NB' && nameInfo.gender === 'NB') {
-            console.log(`✅ ACCEPTED: ${nameInfo.name} - non-binary suitable name`);
         }
         
         // Check name length - CRITICAL FILTER
         if (this.answers.length) {
             const nameLength = nameInfo.name.length;
             if (this.answers.length === 'short' && nameLength > 4) {
-                console.log(`❌ REJECTED: ${nameInfo.name} - too long for short preference (${nameLength} > 4)`);
                 return false;
             }
             if (this.answers.length === 'medium' && (nameLength < 5 || nameLength > 6)) {
-                console.log(`❌ REJECTED: ${nameInfo.name} - wrong length for medium preference (${nameLength} not 5-6)`);
                 return false;
             }
             if (this.answers.length === 'long' && (nameLength < 7 || nameLength > 9)) {
-                console.log(`❌ REJECTED: ${nameInfo.name} - wrong length for long preference (${nameLength} not 7-9)`);
                 return false;
             }
             if (this.answers.length === 'extra_long' && nameLength < 10) {
-                console.log(`❌ REJECTED: ${nameInfo.name} - too short for extra long preference (${nameLength} < 10)`);
                 return false;
             }
-            console.log(`✅ ACCEPTED: ${nameInfo.name} - matches length preference`);
         }
         
         // VOWEL/CONSONANT: Used for scoring only, not filtering
         // if (this.answers.starts_with) {
         //     const firstLetter = nameInfo.name.charAt(0).toLowerCase();
         //     const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
-        //     console.log(`Checking ${nameInfo.name} (starts with ${firstLetter}, isVowel: ${isVowel}) against preference: ${this.answers.starts_with}`);
         //     if (this.answers.starts_with === 'vowel' && !isVowel) {
-        //         console.log(`REJECTED: ${nameInfo.name} doesn't start with vowel but user wants vowel`);
         //         return false;
         //     }
         //     if (this.answers.starts_with === 'consonant' && isVowel) {
-        //         console.log(`REJECTED: ${nameInfo.name} starts with vowel but user wants consonant`);
         //         return false;
         //     }
-        //     console.log(`ACCEPTED: ${nameInfo.name} matches vowel/consonant preference`);
         // }
         
         // POPULARITY: Used for scoring only, not filtering
@@ -2762,7 +3778,6 @@ class NameGuessingQuiz {
                 <p class="name-input-note">This will help improve future predictions!</p>
             `;
             
-            console.log(`📝 Real name submitted: ${realName}`);
         }
     }
 
@@ -2807,7 +3822,6 @@ class NameGuessingQuiz {
         };
         
         this.storeTrainingData(trainingData);
-        console.log('✅ Prediction success logged:', trainingData);
     }
 
     logPredictionFailure() {
@@ -2821,7 +3835,6 @@ class NameGuessingQuiz {
         };
         
         this.storeTrainingData(trainingData);
-        console.log('❌ Prediction failure logged:', trainingData);
     }
 
     storeTrainingData(data) {
@@ -2837,7 +3850,6 @@ class NameGuessingQuiz {
             }
             
             localStorage.setItem('nameGuessingTrainingData', JSON.stringify(existingData));
-            console.log(`📊 Training data stored. Total entries: ${existingData.length}`);
         } catch (error) {
             console.error('Error storing training data:', error);
         }
@@ -2947,18 +3959,22 @@ class NameGuessingQuiz {
 class MysticalBackground {
     constructor() {
         this.graphics = [
-            'crystal_ball.png',
-            'devil.png',
-            'homer\'s_riddle.png',
-            'illuminati.png',
-            'mask.png',
-            'medusa.png',
-            'smoke.png',
-            'vecteezy_cobra_36629722.svg',
-            'vecteezy_egypt-sphinx_36659095.svg',
-            'vecteezy_snake_36654696.svg'
+            '../assets/background-graphics/crystal_ball.png',
+            '../assets/background-graphics/devil.png',
+            '../assets/background-graphics/homer\'s_riddle.png',
+            '../assets/background-graphics/illuminati.png',
+            '../assets/background-graphics/mask.png',
+            '../assets/background-graphics/medusa.png',
+            '../assets/background-graphics/smoke.png',
+            '../assets/background-graphics/vecteezy_cobra_36629722.svg',
+            '../assets/background-graphics/vecteezy_egypt-sphinx_36659095.svg',
+            '../assets/background-graphics/vecteezy_snake_36654696.svg'
         ];
         this.container = document.getElementById('mysticalBackground');
+        if (!this.container) {
+            console.error('Mystical background container not found!');
+            return;
+        }
         this.quadrants = [];
         this.activeGraphics = [];
         this.maxActive = 8;
@@ -2966,6 +3982,50 @@ class MysticalBackground {
         this.initializeQuadrants();
         this.createGraphics();
         this.startAnimationCycle();
+        
+        // Handle window resize/zoom with debouncing
+        this.resizeTimeout = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => {
+                this.handleResize();
+            }, 100);
+        });
+        
+        // Also handle zoom changes (visualViewport API)
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                clearTimeout(this.resizeTimeout);
+                this.resizeTimeout = setTimeout(() => {
+                    this.handleResize();
+                }, 100);
+            });
+        }
+    }
+    
+    handleResize() {
+        // Recalculate quadrants on resize
+        this.initializeQuadrants();
+        
+        // Update positions of all existing graphics
+        const allGraphics = document.querySelectorAll('.mystical-graphic');
+        allGraphics.forEach((graphic) => {
+            const quadrantId = parseInt(graphic.dataset.quadrant);
+            const quadrant = this.quadrants[quadrantId];
+            if (quadrant) {
+                // Get the stored size from the graphic or use default
+                const size = graphic.dataset.size ? parseFloat(graphic.dataset.size) : (Math.random() * 40 + 80);
+                
+                // Recalculate position for this graphic
+                const centerX = quadrant.x + (quadrant.width / 2);
+                const centerY = quadrant.y + (quadrant.height / 2);
+                const x = centerX - size / 2;
+                const y = centerY - size / 2;
+                
+                graphic.style.left = `${x}px`;
+                graphic.style.top = `${y}px`;
+            }
+        });
     }
 
     initializeQuadrants() {
@@ -2995,6 +4055,7 @@ class MysticalBackground {
             const graphic = document.createElement('div');
             graphic.className = 'mystical-graphic';
             graphic.dataset.quadrant = i % 8; // Distribute across 8 quadrants
+            graphic.style.position = 'absolute';
             graphic.style.opacity = '0';
             this.container.appendChild(graphic);
         }
@@ -3096,6 +4157,7 @@ class MysticalBackground {
         const size = Math.random() * 40 + 80;
         graphic.style.width = `${size}px`;
         graphic.style.height = `${size}px`;
+        graphic.dataset.size = size; // Store size for resize calculations
         
         // Since we only show one graphic per quadrant, we can center it
         const centerX = quadrant.x + (quadrant.width / 2);
@@ -3106,6 +4168,15 @@ class MysticalBackground {
         graphic.style.left = `${x}px`;
         graphic.style.top = `${y}px`;
         
+        // Random graphic from the collection (using all 10 graphics)
+        const graphicSrc = this.graphics[Math.floor(Math.random() * this.graphics.length)];
+        const img = document.createElement('img');
+        img.src = graphicSrc;
+        img.alt = 'Mystical Symbol';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        
         // Random orientation: 0 degrees, horizontal flip, vertical flip, or both
         const orientations = [
             'rotate(0deg)',           // Normal
@@ -3114,18 +4185,19 @@ class MysticalBackground {
             'scaleX(-1) scaleY(-1)'   // Both flips
         ];
         const orientation = orientations[Math.floor(Math.random() * orientations.length)];
-        graphic.style.transform = orientation;
+        img.style.transform = orientation;
         
-        // Random graphic from the collection (using all 10 graphics)
-        const graphicSrc = this.graphics[Math.floor(Math.random() * this.graphics.length)];
-        const img = document.createElement('img');
-        img.src = `../assets/background-graphics/${graphicSrc}`;
-        img.alt = 'Mystical Symbol';
+        // Handle image load errors
+        img.onerror = () => {
+            console.warn('Failed to load background graphic:', graphicSrc);
+            graphic.style.opacity = '0';
+        };
+        
+        img.onload = () => {
+            graphic.style.opacity = '0.7';
+        };
         
         graphic.appendChild(img);
-        
-        // Show the graphic
-        graphic.style.opacity = '0.7';
     }
 }
 
