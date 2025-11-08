@@ -1207,13 +1207,25 @@ body::after {
 /* North America - tall map */
 .continent-map-container[data-continent="north-america"] .continent-map-svg,
 .continent-map-container svg[data-continent="north-america"] {
-    max-width: 500px;
-    max-height: 1000px;
-    width: 500px;
+    max-width: 700px !important;
+    max-height: 900px !important;
+    width: 700px !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    display: block !important;
+    transform: translateX(-8%) translateY(-5%) scale(80%) !important;
+}
+
+/* Central America - wide map with Caribbean */
+.continent-map-container[data-continent="central-america"] .continent-map-svg,
+.continent-map-container svg[data-continent="central-america"] {
+    max-width: 650px;
+    max-height: 900px;
+    width: 650px;
     height: auto;
     margin: 0 auto;
     display: block;
-    transform: translateX(-40%) translateY(-35%) scale(50%);
+    transform: translateY(-10%) scale(105%) !important;
 }
 
 /* Asia - square-ish map */
@@ -1255,7 +1267,7 @@ body::after {
     height: auto;
     margin: 0 auto;
     display: block;
-    transform: translateX(-25%) translateY(-28%) scale(70%);
+    transform: translateX(-8%) translateY(-5%) scale(115%) !important;
 }
 
 /* Oceania - very wide map */
@@ -1278,7 +1290,7 @@ body::after {
     height: auto;
     margin: 0 auto;
     display: block;
-    transform: translateX(5%) translateY(-4%) scale(55%);
+    transform: translateY(-4%) scale(55%);
 }
 
 /* World map now uses same styling as state map (us-map and state-path classes) */
@@ -1397,6 +1409,25 @@ body::after {
 
 /* Also disable active state for world map */
 .world-map-continent-selector .state-path:active {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
+}
+
+/* Disable CSS hover for North America - JavaScript handles country-wide hover (US states together, CA provinces together) */
+.continent-map-container[data-continent="north-america"] .state-path:hover {
+    fill: rgba(255, 215, 0, 0.1) !important;
+    stroke: #FFD700 !important;
+    stroke-width: 1.5 !important;
+    filter: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+}
+
+/* Also disable active state for North America */
+.continent-map-container[data-continent="north-america"] .state-path:active {
     fill: rgba(255, 215, 0, 0.1) !important;
     stroke: #FFD700 !important;
     stroke-width: 1.5 !important;
@@ -3219,12 +3250,14 @@ body::after {
     .continent-map-container svg[data-continent="north-america"],
     .continent-map-container[data-continent="asia"] .continent-map-svg,
     .continent-map-container svg[data-continent="asia"] {
-        max-width: 350px;
-        max-height: 320px;
+        max-width: 450px !important;
+        max-height: 400px !important;
     }
     
     .continent-map-container[data-continent="europe"] .continent-map-svg,
     .continent-map-container svg[data-continent="europe"],
+    .continent-map-container[data-continent="central-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="central-america"],
     .continent-map-container[data-continent="oceania"] .continent-map-svg,
     .continent-map-container svg[data-continent="oceania"] {
         max-width: 450px;
@@ -3301,12 +3334,14 @@ body::after {
     .continent-map-container svg[data-continent="north-america"],
     .continent-map-container[data-continent="asia"] .continent-map-svg,
     .continent-map-container svg[data-continent="asia"] {
-        max-width: 280px;
-        max-height: 280px;
+        max-width: 350px !important;
+        max-height: 350px !important;
     }
     
     .continent-map-container[data-continent="europe"] .continent-map-svg,
     .continent-map-container svg[data-continent="europe"],
+    .continent-map-container[data-continent="central-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="central-america"],
     .continent-map-container[data-continent="oceania"] .continent-map-svg,
     .continent-map-container svg[data-continent="oceania"] {
         max-width: 320px;
@@ -3440,8 +3475,9 @@ body::after {
     
     .continent-map-container[data-continent="north-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="north-america"] {
-        max-width: 90vw;
-        max-height: 50vh;
+        max-width: 90vw !important;
+        max-height: 55vh !important;
+        transform: scale(1.15) !important;
     }
     
     .continent-map-container[data-continent="asia"] .continent-map-svg,
@@ -3452,6 +3488,12 @@ body::after {
     
     .continent-map-container[data-continent="europe"] .continent-map-svg,
     .continent-map-container svg[data-continent="europe"] {
+        max-width: 90vw;
+        max-height: 50vh;
+    }
+    
+    .continent-map-container[data-continent="central-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="central-america"] {
         max-width: 90vw;
         max-height: 50vh;
     }

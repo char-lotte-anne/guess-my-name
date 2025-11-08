@@ -221,11 +221,12 @@ class NameGuessingQuiz {
         // Comprehensive country-to-continent mapping based on world-map.svg
         // Using lowercase to match SVG IDs directly
         this.continentToCountries = {
-            'north-america': ['us', 'ca', 'mx', 'gt', 'bz', 'sv', 'hn', 'ni', 'cr', 'pa', 'cu', 'jm', 'ht', 'do', 'pr', 'tt', 'bb', 'gd', 'lc', 'vc', 'ag', 'kn', 'dm', 'bs', 'gl'],
+            'north-america': ['us', 'ca', 'mx', 'gl'],
+            'central-america': ['gt', 'bz', 'sv', 'hn', 'ni', 'cr', 'pa', 'cu', 'jm', 'ht', 'do', 'pr', 'bs', 'tt', 'bb', 'gd', 'lc', 'vc', 'ag', 'kn', 'dm', 'ms', 'tc', 'ky', 'aw', 'bq', 'cw', 'bl', 'mq', 'gp', 'vi', 'vg', 'ai', 'mf'],
             'south-america': ['ar', 'bo', 'br', 'cl', 'co', 'ec', 'fk', 'gf', 'gy', 'py', 'pe', 'sr', 'uy', 've'],
-            'europe': ['ad', 'al', 'at', 'by', 'be', 'ba', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr', 'de', 'gr', 'hu', 'is', 'ie', 'it', 'xk', 'lv', 'li', 'lt', 'lu', 'mk', 'mt', 'md', 'mc', 'me', 'nl', 'no', 'pl', 'pt', 'ro', 'sm', 'rs', 'sk', 'si', 'es', 'se', 'ch', 'ua', 'gb', 'va'],
+            'europe': ['ad', 'al', 'am', 'at', 'by', 'be', 'ba', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr', 'de', 'ge', 'gr', 'hu', 'is', 'ie', 'it', 'xk', 'lv', 'li', 'lt', 'lu', 'mk', 'mt', 'md', 'mc', 'me', 'nl', 'no', 'pl', 'pt', 'ro', 'sm', 'rs', 'sk', 'si', 'es', 'se', 'ch', 'ua', 'gb', 'va'],
             'africa': ['dz', 'ao', 'bw', 'bi', 'cm', 'cv', 'cf', 'td', 'km', 'cg', 'cd', 'dj', 'eg', 'gq', 'er', 'et', 'ga', 'gm', 'gh', 'gn', 'gw', 'ci', 'ke', 'ls', 'lr', 'ly', 'mg', 'mw', 'ml', 'mr', 'mu', 'ma', 'mz', 'na', 'ne', 'ng', 'rw', 'st', 'sn', 'sc', 'sl', 'so', 'za', 'ss', 'sd', 'sz', 'tz', 'tg', 'tn', 'ug', 'zm', 'zw', 'bf', 'bj', 'eh'],
-            'asia': ['af', 'am', 'az', 'bh', 'bd', 'bt', 'bn', 'kh', 'cn', 'ge', 'in', 'id', 'ir', 'iq', 'il', 'jp', 'jo', 'kz', 'kw', 'kg', 'la', 'lb', 'my', 'mv', 'mn', 'mm', 'np', 'kp', 'om', 'pk', 'ps', 'ph', 'qa', 'sa', 'sg', 'kr', 'lk', 'sy', 'tw', 'tj', 'th', 'tl', 'tr', 'tm', 'ae', 'uz', 'vn', 'ye', 'ru'],
+            'asia': ['af', 'az', 'bh', 'bd', 'bt', 'bn', 'kh', 'cn', 'in', 'id', 'ir', 'iq', 'il', 'jp', 'jo', 'kz', 'kw', 'kg', 'la', 'lb', 'my', 'mv', 'mn', 'mm', 'np', 'kp', 'om', 'pk', 'ps', 'ph', 'qa', 'sa', 'sg', 'kr', 'lk', 'sy', 'tw', 'tj', 'th', 'tl', 'tr', 'tm', 'ae', 'uz', 'vn', 'ye', 'ru'],
             'oceania': ['au', 'fj', 'ki', 'mh', 'fm', 'nr', 'nz', 'pw', 'pg', 'ws', 'sb', 'to', 'tv', 'vu', 'nc']
         };
         this.enhancedNameDatabase = new EnhancedNameDatabase();
@@ -1615,6 +1616,7 @@ class NameGuessingQuiz {
     loadContinentMapForSelection(continent) {
         const continentMapFiles = {
             'north-america': '../assets/north-america.svg',
+            'central-america': '../assets/central-america.svg',
             'south-america': '../assets/south-america.svg',
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
@@ -1709,8 +1711,10 @@ class NameGuessingQuiz {
         const canadaPaths = [];
         const otherPaths = [];
         
-        svgElement.querySelectorAll('path').forEach(path => {
-            const pathId = (path.id || path.getAttribute('name') || '').toUpperCase();
+        // Process both paths and circles (Mexico is a circle)
+        const allElements = [...svgElement.querySelectorAll('path'), ...svgElement.querySelectorAll('circle')];
+        allElements.forEach(path => {
+            const pathId = (path.id || path.getAttribute('name') || path.getAttribute('class') || '').toUpperCase();
             
             // Remove any existing attributes
             path.removeAttribute('fill');
@@ -1759,10 +1763,11 @@ class NameGuessingQuiz {
                 if (wasEmpty) {
                     countryPaths.forEach(p => {
                         if (!p.classList.contains('selected')) {
-                            p.style.fill = 'rgba(255, 215, 0, 0.4)';
-                            p.style.stroke = '#FFFFFF';
-                            p.style.strokeWidth = '2.5';
-                            p.style.filter = 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))';
+                            p.style.setProperty('fill', 'rgba(255, 215, 0, 0.4)', 'important');
+                            p.style.setProperty('stroke', '#FFFFFF', 'important');
+                            p.style.setProperty('stroke-width', '2.5', 'important');
+                            p.style.setProperty('filter', 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.8))', 'important');
+                            p.style.setProperty('transform', 'scale(1.02)', 'important');
                         }
                     });
                 }
@@ -1776,10 +1781,11 @@ class NameGuessingQuiz {
                 if (countryHoveredPaths[country].size === 0) {
                     countryPaths.forEach(p => {
                         if (!p.classList.contains('selected')) {
-                            p.style.fill = 'rgba(255, 215, 0, 0.1)';
-                            p.style.stroke = '#FFD700';
-                            p.style.strokeWidth = '1.5';
-                            p.style.filter = 'none';
+                            p.style.setProperty('fill', 'rgba(255, 215, 0, 0.1)', 'important');
+                            p.style.setProperty('stroke', '#FFD700', 'important');
+                            p.style.setProperty('stroke-width', '1.5', 'important');
+                            p.style.setProperty('filter', 'none', 'important');
+                            p.style.setProperty('transform', 'scale(1)', 'important');
                         }
                     });
                 }
@@ -2245,6 +2251,7 @@ class NameGuessingQuiz {
     getContinentDisplayName(continentId) {
         const names = {
             'north-america': 'North America',
+            'central-america': 'Central America',
             'south-america': 'South America', 
             'europe': 'Europe',
             'africa': 'Africa',
@@ -2264,6 +2271,7 @@ class NameGuessingQuiz {
         // Map continent IDs to their SVG file names
         const continentMapFiles = {
             'north-america': '../assets/north-america.svg',
+            'central-america': '../assets/central-america.svg',
             'south-america': '../assets/south-america.svg',
             'europe': '../assets/europe.svg',
             'africa': '../assets/africa.svg',
