@@ -232,7 +232,6 @@ class NameGuessingQuiz {
         this.enhancedNameDatabase = new EnhancedNameDatabase();
         this.mlModel = new NamePredictionML();
         this.questions = [
-            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What's your gender identity?",
                 type: "multi_select",
@@ -259,8 +258,6 @@ class NameGuessingQuiz {
                 type: "map",
                 key: "state"
             },
-            */
-            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "How many letters are in your first name?",
                 type: "slider",
@@ -289,8 +286,6 @@ class NameGuessingQuiz {
                 labels: ["✨ Uncommon/unique", "💫 Somewhat popular", "🔥 Very popular"],
                 key: "popularity"
             },
-            */
-            /* COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What political values matter most to you?",
                 type: "multi_select",
@@ -562,7 +557,6 @@ class NameGuessingQuiz {
                 ],
                 key: "religious_tradition"
             },
-            */ // END COMMENTED OUT FOR CONTINENT TESTING
             {
                 text: "What continents does your family come from? (Select all that apply)",
                 type: "continent_selection",
