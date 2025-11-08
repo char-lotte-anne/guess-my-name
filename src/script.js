@@ -4016,6 +4016,19 @@ class NameGuessingQuiz {
             // Store the sanitized name for training
             this.realName = sanitizedName;
             
+            // If we have quiz answers, send training data to GitHub
+            // This allows name-only submissions to contribute to global learning
+            if (this.answers && Object.keys(this.answers).length > 0) {
+                const trainingData = {
+                    timestamp: Date.now(),
+                    answers: this.answers,
+                    realName: sanitizedName,
+                    success: undefined // No success/failure feedback yet, just name provided
+                };
+                
+                this.storeTrainingData(trainingData);
+            }
+            
             // Update the UI to show the name was submitted
             // Use textContent instead of innerHTML to prevent XSS
             const nameInputSection = document.getElementById('nameInputSection');
@@ -4114,29 +4127,28 @@ class NameGuessingQuiz {
             console.error('Error storing training data:', error);
         }
         
-        // Also send anonymized data to GitHub for global model training
+        // Also send training data to GitHub for global model training
         // This happens asynchronously and doesn't block the UI
         this.sendTrainingDataToGitHub(data).catch(error => {
-            // Fail silently - don't break user experience if GitHub API is unavailable
-            console.log('Could not send training data to GitHub (this is okay):', error.message);
+            // Log error but don't break user experience if GitHub API is unavailable
+            console.warn('⚠️ Could not send training data to GitHub:', error.message);
+            console.warn('This is okay - your data is still stored locally for local learning.');
         });
     }
     
     /**
      * Send training data to GitHub for global model training
-     * Uses GitHub Issues API (no authentication needed for public repos)
+     * Uses a serverless function (Vercel) to authenticate with GitHub and create issues
+     * 
      * Data is stored as GitHub Issues, then processed by GitHub Actions
      * Includes first names if users voluntarily provide them (for better model training)
      * Note: This data will be visible in public GitHub Issues
      */
     async sendTrainingDataToGitHub(data) {
-        // Only send if user provided feedback (success or failure)
+        // Only send if user provided feedback (success or failure) or a name
         if (data.success === undefined && !data.realName) {
             return; // Skip if no meaningful feedback
         }
-        
-        const GITHUB_USERNAME = 'char-lotte-anne';
-        const REPO_NAME = 'guess-my-name';
         
         // Create training data payload
         // Includes realName if provided (users voluntarily submit this for training)
@@ -4155,9 +4167,8 @@ class NameGuessingQuiz {
         };
         
         // Create GitHub Issue with training data
-        // Using Issues API because it's public and doesn't require authentication
         // Note: This data (including first names if provided) will be visible in public GitHub Issues
-        const issueTitle = `Training Data: ${data.success ? 'Success' : 'Failure'} - ${new Date(trainingData.timestamp).toISOString()}`;
+        const issueTitle = `Training Data: ${data.success !== undefined ? (data.success ? 'Success' : 'Failure') : 'Name Only'} - ${new Date(trainingData.timestamp).toISOString()}`;
         const issueBody = `<!-- Training Data for Global Model -->
 \`\`\`json
 ${JSON.stringify(trainingData, null, 2)}
@@ -4166,29 +4177,34 @@ ${JSON.stringify(trainingData, null, 2)}
 *This issue was automatically created for model training. It will be processed and closed by GitHub Actions.*`;
 
         try {
-            const response = await fetch(
-                `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/issues`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({
-                        title: issueTitle,
-                        body: issueBody,
-                        labels: ['training-data', 'auto-generated']
-                    })
-                }
-            );
+            console.log('📤 Sending training data to GitHub via serverless function...', trainingData);
+            
+            // Determine API endpoint - use relative path if on same domain, or absolute if on different domain
+            // This works for both Vercel deployments and local development
+            const apiEndpoint = '/api/create-issue';
+            
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: issueTitle,
+                    body: issueBody,
+                    labels: ['training-data', 'auto-generated']
+                })
+            });
+            
+            const responseData = await response.json();
             
             if (!response.ok) {
-                throw new Error(`GitHub API error: ${response.status}`);
+                throw new Error(responseData.message || `Server error: ${response.status} ${response.statusText}`);
             }
             
-            const issue = await response.json();
-            console.log('✅ Training data sent to GitHub:', issue.number);
+            console.log('✅ Training data sent to GitHub successfully!', responseData.issue);
+            return responseData.issue;
         } catch (error) {
+            console.error('❌ Failed to send training data to GitHub:', error);
             // Re-throw to be caught by caller
             throw error;
         }
