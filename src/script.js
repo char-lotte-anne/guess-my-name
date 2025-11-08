@@ -659,6 +659,12 @@ class NameGuessingQuiz {
         const optionsContainer = document.getElementById('optionsContainer');
         optionsContainer.innerHTML = '';
         
+        // Hide map by default, will be shown if needed
+        const isMapQuestion = question.type === 'map' || question.type === 'continent_selection' || question.type === 'world_map';
+        if (!isMapQuestion) {
+            this.hideMap();
+        }
+        
         if (question.type === 'slider') {
             this.createSlider(question, optionsContainer);
         } else if (question.type === 'map') {
@@ -2548,6 +2554,7 @@ class NameGuessingQuiz {
         
         document.getElementById('quizSection').style.display = 'none';
         document.getElementById('resultSection').style.display = 'block';
+        this.hideMap();
         
         // Display top 5 guesses
         this.displayTopGuesses(topGuesses);
@@ -3787,6 +3794,7 @@ class NameGuessingQuiz {
         
         document.getElementById('resultSection').style.display = 'none';
         document.getElementById('finalSection').style.display = 'block';
+        this.hideMap();
         
         document.getElementById('finalTitle').textContent = '🔮 The spirits have spoken! 🔮';
         document.getElementById('finalMessage').textContent = '✨ My crystal ball never lies! ✨';
@@ -3802,6 +3810,7 @@ class NameGuessingQuiz {
         
         document.getElementById('resultSection').style.display = 'none';
         document.getElementById('finalSection').style.display = 'block';
+        this.hideMap();
         
         document.getElementById('finalTitle').textContent = '🌫️ The vision was unclear... 🌫️';
         document.getElementById('finalMessage').textContent = '🔮 The spirits are being mysterious today... 🔮';
@@ -3864,6 +3873,7 @@ class NameGuessingQuiz {
         document.getElementById('finalSection').style.display = 'none';
         document.getElementById('quizSection').style.display = 'none';
         document.querySelector('.hero').style.display = 'block';
+        this.hideMap();
         
         document.getElementById('progressFill').style.width = '0%';
         document.getElementById('characterThinking').style.display = 'none';
@@ -3901,6 +3911,7 @@ class NameGuessingQuiz {
         
         // Show hero section
         document.querySelector('.hero').style.display = 'block';
+        this.hideMap();
         
         // Update browser history
         history.pushState({page: 'home'}, '', '#home');
@@ -3917,6 +3928,7 @@ class NameGuessingQuiz {
         
         // Show How It Works section
         document.getElementById('howItWorksSection').style.display = 'block';
+        this.hideMap();
         
         // Update browser history
         history.pushState({page: 'how-it-works'}, '', '#how-it-works');
@@ -3933,6 +3945,7 @@ class NameGuessingQuiz {
         
         // Show About section
         document.getElementById('aboutSection').style.display = 'block';
+        this.hideMap();
         
         // Update browser history
         history.pushState({page: 'about'}, '', '#about');
@@ -3949,6 +3962,7 @@ class NameGuessingQuiz {
         
         // Show Contact section
         document.getElementById('contactSection').style.display = 'block';
+        this.hideMap();
         
         // Update browser history
         history.pushState({page: 'contact'}, '', '#contact');
@@ -4215,6 +4229,9 @@ function showQuiz() {
         // Show hero section
         document.querySelector('.hero').style.display = 'block';
         
+        // Hide map when returning to hero
+        quiz.hideMap();
+        
         // Reset quiz state
         quiz.resetQuiz();
     }
@@ -4254,6 +4271,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('resultSection').style.display = 'none';
                 document.getElementById('finalSection').style.display = 'none';
                 
+                // Hide map when leaving quiz
+                quiz.hideMap();
+                
                 // Reset quiz state
                 quiz.currentQuestion = 0;
                 quiz.answers = {};
@@ -4264,12 +4284,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('quizSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'block';
             document.getElementById('finalSection').style.display = 'none';
+            quiz.hideMap();
         } else if (hash === '#final') {
             document.querySelector('.hero').style.display = 'none';
             document.getElementById('quizSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'block';
             document.getElementById('howItWorksSection').style.display = 'none';
+            quiz.hideMap();
         } else if (hash === '#how-it-works') {
             document.querySelector('.hero').style.display = 'none';
             document.getElementById('aboutSection').style.display = 'none';
@@ -4278,6 +4300,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'none';
             document.getElementById('howItWorksSection').style.display = 'block';
+            quiz.hideMap();
         } else if (hash === '#about') {
             document.querySelector('.hero').style.display = 'none';
             document.getElementById('howItWorksSection').style.display = 'none';
@@ -4286,6 +4309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'none';
             document.getElementById('aboutSection').style.display = 'block';
+            quiz.hideMap();
         } else if (hash === '#contact') {
             document.querySelector('.hero').style.display = 'none';
             document.getElementById('aboutSection').style.display = 'none';
@@ -4294,6 +4318,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'none';
             document.getElementById('contactSection').style.display = 'block';
+            quiz.hideMap();
         } else {
             // Default to hero section
             document.querySelector('.hero').style.display = 'block';
@@ -4303,6 +4328,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('quizSection').style.display = 'none';
             document.getElementById('resultSection').style.display = 'none';
             document.getElementById('finalSection').style.display = 'none';
+            
+            // Hide map when on hero
+            quiz.hideMap();
             
             // Reset quiz state
             quiz.currentQuestion = 0;
