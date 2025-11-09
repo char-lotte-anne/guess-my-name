@@ -1,7 +1,6 @@
 {
   "version": 2,
   "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "src",
   "functions": {
     "api/*.js": {
       "maxDuration": 10
@@ -13,8 +12,16 @@
       "destination": "/api/$1"
     },
     {
+      "source": "/",
+      "destination": "/src/index.html"
+    },
+    {
+      "source": "/(.*\\.(html|css|js|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|otf|pdf))",
+      "destination": "/src/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/src/index.html"
     }
   ],
   "headers": [
