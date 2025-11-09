@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "outputDirectory": "src",
   "functions": {
     "api/*.js": {
       "maxDuration": 10
@@ -13,7 +12,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/src/$1"
     }
   ],
   "headers": [
