@@ -1,3 +1,19 @@
+/* CSS Custom Properties for Better Maintainability */
+:root {
+    --primary-color: #8b5cf6;
+    --secondary-color: #7c3aed;
+    --accent-color: #ffd700;
+    --text-color: #ffffff;
+    --bg-color: #000000;
+    --border-radius: 0;
+    --transition-speed: 0.3s;
+    --touch-target-min: 44px; /* WCAG minimum touch target size */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+}
+
 /* Custom Fonts */
 @font-face {
     font-family: 'Grand Paradiso Script';
@@ -6,6 +22,7 @@
          url('../fonts/grand_paradiso/GrandParadisoScript-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap; /* Better performance - show fallback while loading */
 }
 
 @font-face {
@@ -15,6 +32,7 @@
          url('../fonts/grand_paradiso/GrandParadiso-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -24,6 +42,7 @@
          url('../fonts/grand_paradiso/GrandParadisoItalic-Italic.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -31,6 +50,7 @@
     src: url('../fonts/bohemian_typewriter/Bohemian Typewriter.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -38,6 +58,7 @@
     src: url('../fonts/great_warrior/Great Warrior.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -45,6 +66,7 @@
     src: url('../fonts/punkbabe/PUNKBABE TRIAL.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 /* Reset and Base Styles */
@@ -54,12 +76,78 @@
     box-sizing: border-box;
 }
 
+/* Respect user's motion preferences for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Progressive Enhancement - Fallbacks for older browsers */
+/* Fallback for clamp() - use fixed sizes for browsers that don't support clamp */
+@supports not (font-size: clamp(1rem, 2vw, 2rem)) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    @media (max-width: 600px) {
+        .main-title {
+            font-size: 1.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-title {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+/* Support for CSS custom properties (CSS variables) */
+@supports not (--css: variables) {
+    :root {
+        --touch-target-min: 44px;
+    }
+    
+    .start-btn,
+    .option-btn,
+    .action-btn,
+    .share-btn,
+    .slider-continue-btn {
+        min-height: 44px;
+    }
+}
+
+/* Enhanced backdrop-filter support */
+@supports (backdrop-filter: blur(5px)) or (-webkit-backdrop-filter: blur(5px)) {
+    .option-btn {
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+    }
+}
+
+@supports not (backdrop-filter: blur(5px)) {
+    .option-btn {
+        background: rgba(0, 0, 0, 0.95); /* More opaque fallback */
+    }
+}
+
 html {
     background: #000000 !important;
 }
 
 body {
-    font-family: 'Bohemian Typewriter', sans-serif;
+    font-family: 'Bohemian Typewriter', monospace, sans-serif;
+    /* Support for safe area insets (iPhone notches, etc.) */
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
     background: 
         #000000,
         radial-gradient(4px 4px at 20px 30px, #ffffff, transparent),
@@ -600,8 +688,12 @@ body::after {
     position: relative;
     overflow: hidden;
     min-width: clamp(200px, 40vw, 250px);
+    min-height: var(--touch-target-min); /* WCAG minimum touch target */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     animation: mysticalButtonGlow 2s ease-in-out infinite alternate;
+    /* Better touch interaction on mobile */
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+    touch-action: manipulation; /* Prevents double-tap zoom delay */
 }
 
 .start-btn::before {
@@ -747,6 +839,9 @@ body::after {
     overflow: hidden;
     backdrop-filter: blur(5px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    min-height: var(--touch-target-min); /* WCAG minimum touch target */
+    -webkit-tap-highlight-color: rgba(192, 132, 252, 0.3);
+    touch-action: manipulation;
 }
 
 .option-btn::before {
@@ -787,14 +882,14 @@ body::after {
 
 .slider-value {
     font-family: 'Bohemian Typewriter', monospace;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
     font-weight: normal;
     color: #FFFFFF;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: clamp(15px, 3vw, 20px);
     text-shadow: 
         1px 1px 2px rgba(0, 0, 0, 0.3);
-    min-height: 40px;
+    min-height: clamp(30px, 5vw, 40px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -931,6 +1026,12 @@ body::after {
     text-align: right;
 }
 
+.slider-label-end {
+    position: absolute;
+    bottom: 0;
+    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+}
+
 .slider-continue-btn {
     font-family: 'Great Warrior', sans-serif;
     background: linear-gradient(145deg, #1A0033, #4A148C);
@@ -950,6 +1051,9 @@ body::after {
         0 0 20px rgba(255, 215, 0, 0.3);
     position: relative;
     z-index: 1000; /* Ensure buttons are always on top of maps */
+    min-height: var(--touch-target-min);
+    -webkit-tap-highlight-color: rgba(255, 215, 0, 0.3);
+    touch-action: manipulation;
 }
 
 .slider-continue-btn:hover {
@@ -1813,6 +1917,9 @@ body::after {
     text-transform: none;
     letter-spacing: 0.5px;
     min-width: 160px;
+    min-height: var(--touch-target-min);
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+    touch-action: manipulation;
 }
 
 .correct {
@@ -1853,7 +1960,10 @@ body::after {
     text-transform: none;
     letter-spacing: 0.5px;
     min-width: 200px;
+    min-height: var(--touch-target-min);
     box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+    -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
+    touch-action: manipulation;
 }
 
 .share-btn:hover {
@@ -3219,12 +3329,18 @@ body::after {
     }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive Design - Using research-based breakpoints */
+/* Mobile: up to 600px, Tablet: 601-900px, Desktop: 901px+ */
+
+/* Tablet and below (up to 900px) */
+@media (max-width: 900px) {
     .container {
         padding: 20px 15px;
     }
-    
+}
+
+/* Mobile devices (up to 600px) */
+@media (max-width: 600px) {
     .main-nav {
         flex-direction: column;
         gap: 20px;
@@ -3237,7 +3353,11 @@ body::after {
     
     .nav-link {
         font-size: 0.95rem;
-        padding: 6px 12px;
+        padding: 10px 16px; /* Increased for better touch target */
+        min-height: var(--touch-target-min);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .hero {
@@ -3425,12 +3545,16 @@ body::after {
     /* Mobile continent maps - smaller to fit screen */
     .continent-map-container[data-continent="africa"] .continent-map-svg,
     .continent-map-container svg[data-continent="africa"],
-    .continent-map-container[data-continent="north-america"] .continent-map-svg,
-    .continent-map-container svg[data-continent="north-america"],
     .continent-map-container[data-continent="asia"] .continent-map-svg,
     .continent-map-container svg[data-continent="asia"] {
         max-width: 350px !important;
         max-height: 350px !important;
+    }
+    
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"] {
+        max-width: 280px !important;
+        max-height: 280px !important;
     }
     
     .continent-map-container[data-continent="europe"] .continent-map-svg,
@@ -3460,38 +3584,38 @@ body::after {
     }
     
     .main-title {
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 6vw, 2rem);
         margin-bottom: 15px;
     }
     
     .tagline {
-        font-size: 1rem;
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
         margin-bottom: 30px;
     }
     
     .character {
-        width: 100px;
-        height: 100px;
+        width: clamp(80px, 15vw, 100px);
+        height: clamp(80px, 15vw, 100px);
     }
     
     .start-btn {
-        padding: 16px 24px;
-        font-size: 1rem;
-        min-width: 180px;
+        padding: clamp(12px, 2vw, 16px) clamp(20px, 3vw, 24px);
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        min-width: clamp(160px, 35vw, 180px);
     }
     
     .question-text {
-        font-size: 1.3rem;
+        font-size: clamp(1rem, 3.5vw, 1.3rem);
         margin-bottom: 30px;
     }
     
     .option-btn {
-        padding: 16px 20px;
-        font-size: 0.95rem;
+        padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
     }
     
     .guess-name {
-        font-size: 1.8rem;
+        font-size: clamp(1.3rem, 3.5vw, 1.8rem);
         padding: 20px 25px;
     }
     
@@ -3500,7 +3624,7 @@ body::after {
     }
     
     .result-title {
-        font-size: 1.5rem;
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
         margin-bottom: 25px;
         line-height: 1.3;
     }
@@ -3511,27 +3635,27 @@ body::after {
     }
     
     .guess-item {
-        padding: 12px 15px;
+        padding: clamp(10px, 2vw, 12px) clamp(12px, 2.5vw, 15px);
         flex-wrap: wrap;
         gap: 8px;
     }
     
     .guess-rank {
-        font-size: 1.3rem;
-        width: 35px;
-        height: 35px;
-        margin-right: 10px;
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        width: clamp(28px, 5vw, 35px);
+        height: clamp(28px, 5vw, 35px);
+        margin-right: clamp(8px, 1.5vw, 10px);
     }
     
     .guess-item .guess-name {
-        font-size: 1.5rem;
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
         flex: 1 1 auto;
         min-width: 0;
         word-break: break-word;
     }
     
     .guess-confidence {
-        font-size: 0.85rem;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
         flex: 0 0 auto;
     }
     
@@ -3650,9 +3774,20 @@ body::after {
     
     .continent-map-container[data-continent="north-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="north-america"] {
-        max-width: 90vw !important;
-        max-height: 55vh !important;
-        transform: scale(1.15) !important;
+        max-width: 70vw !important;
+        max-height: 45vh !important;
+        transform: scale(0.9) !important;
+    }
+    
+    /* Make states map bigger on mobile */
+    .us-map {
+        max-width: 95vw !important;
+        width: 95vw !important;
+    }
+    
+    .map-container svg.us-map {
+        max-width: 95vw !important;
+        width: 95vw !important;
     }
     
     .continent-map-container[data-continent="asia"] .continent-map-svg,
@@ -3693,13 +3828,20 @@ body::after {
 /* Floating Feedback Button */
 .feedback-float-btn {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 0;
+    margin: 0;
     padding: 15px 25px;
     background: linear-gradient(145deg, #6A1B9A, #8E24AA);
     color: white;
     border: 2px solid rgba(255, 215, 0, 0.5);
-    border-radius: 50px;
+    border-top: 2px solid rgba(255, 215, 0, 0.5);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
     font-size: 1rem;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
@@ -3952,13 +4094,33 @@ body::after {
     color: rgba(241, 196, 15, 1);
 }
 
+/* Desktop - keep floating */
+@media (min-width: 769px) {
+    .feedback-float-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        left: auto;
+        width: auto;
+        border-radius: 50px;
+        border: 2px solid rgba(255, 215, 0, 0.5);
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .feedback-float-btn {
-        bottom: 20px;
-        right: 20px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        border-radius: 0;
         padding: 12px 20px;
         font-size: 0.9rem;
+        border-top: 2px solid rgba(255, 215, 0, 0.5);
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
     }
     
     .feedback-modal-content {

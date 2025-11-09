@@ -895,23 +895,27 @@ class NameGuessingQuiz {
                     labelsContainer.appendChild(labelElement);
                 });
             } else {
-                // Standard positioning for other sliders
-                question.labels.forEach((label, index) => {
-                    const labelElement = document.createElement('div');
-                    labelElement.className = 'slider-label';
-                    labelElement.textContent = label;
-                    labelElement.style.position = 'absolute';
-                    labelElement.style.transform = 'translateX(-50%)';
-                    labelElement.style.whiteSpace = 'nowrap';
-                    labelElement.style.textAlign = 'center';
+                // For other sliders, only show first and last labels at bottom
+                // The center value is shown in the valueDisplay above the slider
+                if (question.labels && question.labels.length > 0) {
+                    // First label (left)
+                    const firstLabel = document.createElement('div');
+                    firstLabel.className = 'slider-label slider-label-end';
+                    firstLabel.textContent = question.labels[0];
+                    firstLabel.style.position = 'absolute';
+                    firstLabel.style.left = '0';
+                    firstLabel.style.textAlign = 'left';
+                    labelsContainer.appendChild(firstLabel);
                     
-                    // Calculate position based on slider range
-                    const position = (index / (question.labels.length - 1)) * 100;
-                    labelElement.style.left = `${position}%`;
-                    labelElement.style.top = '0';
-                    
-                    labelsContainer.appendChild(labelElement);
-                });
+                    // Last label (right)
+                    const lastLabel = document.createElement('div');
+                    lastLabel.className = 'slider-label slider-label-end';
+                    lastLabel.textContent = question.labels[question.labels.length - 1];
+                    lastLabel.style.position = 'absolute';
+                    lastLabel.style.right = '0';
+                    lastLabel.style.textAlign = 'right';
+                    labelsContainer.appendChild(lastLabel);
+                }
             }
         }
         
@@ -4109,8 +4113,8 @@ class NameGuessingQuiz {
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // For mobile, try to share to Instagram Story using deep link
-                this.shareToInstagramStory(imageBlob);
+                // For mobile, try to share to Instagram Story using Web Share API or download
+                await this.shareToInstagramStory(imageBlob);
             } else {
                 // For desktop, download the image
                 this.downloadImage(imageBlob, `my-name-should-have-been-${topName.toLowerCase()}.png`);
@@ -4288,12 +4292,28 @@ class NameGuessingQuiz {
         });
     }
 
-    shareToInstagramStory(imageBlob) {
-        // Create a temporary URL for the image
-        const imageUrl = URL.createObjectURL(imageBlob);
+    async shareToInstagramStory(imageBlob) {
+        // Try Web Share API first (works on iOS Safari and some Android browsers)
+        if (navigator.share && navigator.canShare) {
+            try {
+                const file = new File([imageBlob], 'my-name-should-have-been.png', { type: 'image/png' });
+                
+                if (navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: 'My name should have been...',
+                        text: 'Check out what the spirits said my name should have been!'
+                    });
+                    return; // Successfully shared
+                }
+            } catch (error) {
+                // User cancelled or share failed, fall through to download method
+                console.log('Web Share API not available or cancelled:', error);
+            }
+        }
         
-        // Create a temporary anchor element to download the image first
-        // Instagram Stories requires the image to be in the user's photo library
+        // Fallback: Download image and provide instructions
+        const imageUrl = URL.createObjectURL(imageBlob);
         const link = document.createElement('a');
         link.href = imageUrl;
         link.download = `my-name-should-have-been.png`;
@@ -4301,18 +4321,8 @@ class NameGuessingQuiz {
         link.click();
         document.body.removeChild(link);
         
-        // After a short delay, try to open Instagram Story camera
-        // The image should now be the most recent in the user's gallery
-        setTimeout(() => {
-            // Try Instagram Stories deep link
-            const instagramUrl = 'instagram://story-camera';
-            window.location.href = instagramUrl;
-            
-            // Fallback: if Instagram app is not installed, show instructions
-            setTimeout(() => {
-                alert('Image saved! Open Instagram, swipe to create a story, and select the image from your gallery.');
-            }, 1000);
-        }, 500);
+        // Show instructions
+        alert('Image saved to your photos! To share to Instagram Story:\n\n1. Open Instagram\n2. Swipe right or tap the camera icon\n3. Swipe up to access your gallery\n4. Select the saved image\n5. Add stickers/text and share!');
         
         // Clean up the URL after a delay
         setTimeout(() => {
