@@ -1383,6 +1383,30 @@ class EnhancedNameDatabase {
             await this.loadStateData(allNames);
             
             this.nameData = allNames;
+            
+            // Load and add non-binary names to nameData before indexing
+            try {
+                console.log('🔍 Loading non-binary names for indexing...');
+                const nonBinaryNames = await this.getNonBinaryNames();
+                if (nonBinaryNames && nonBinaryNames.length > 0) {
+                    let addedCount = 0;
+                    nonBinaryNames.forEach(nbName => {
+                        // Add non-binary names to nameData with NB gender key
+                        const key = `${nbName.name.toLowerCase()}_NB`;
+                        if (!this.nameData[key]) {
+                            this.nameData[key] = nbName;
+                            addedCount++;
+                        }
+                    });
+                    console.log(`✅ Added ${addedCount} non-binary names to database (${nonBinaryNames.length} total available)`);
+                } else {
+                    console.warn('⚠️ No non-binary names returned from getNonBinaryNames()');
+                }
+            } catch (error) {
+                console.error('❌ Error loading non-binary names during initialization:', error);
+                console.error('Error stack:', error.stack);
+            }
+            
             this.buildIndexes();
             this.isLoaded = true;
             console.log('✅ Enhanced name database fully loaded and indexed');
@@ -1864,7 +1888,61 @@ class EnhancedNameDatabase {
     }
     
     // Get names suitable for non-binary users (appear with similar frequencies in both genders)
-    getNonBinaryNames() {
+    async getNonBinaryNames() {
+        // Try to load pre-generated non-binary names file first (faster and more comprehensive)
+        try {
+            console.log('📂 Attempting to fetch non-binary names from ../data/nonbinary-names.json');
+            const response = await fetch('../data/nonbinary-names.json');
+            console.log('📂 Fetch response status:', response.status, response.ok);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('📂 Parsed JSON, checking for names array...', data.names ? `Found ${data.names.length} names` : 'No names array found');
+                if (data.names && Array.isArray(data.names)) {
+                    // Convert the pre-generated format to our internal format
+                    const nonBinaryNames = data.names.map(nb => {
+                        const nameLower = nb.nameLower || nb.name.toLowerCase();
+                        const maleVersion = this.nameData[`${nameLower}_M`];
+                        const femaleVersion = this.nameData[`${nameLower}_F`];
+                        const sourceVersion = this.getMostPopularVersion(nb.name) || {};
+                        
+                        // Convert years object to years array format (if available)
+                        let yearsArray = [];
+                        if (nb.years && typeof nb.years === 'object') {
+                            yearsArray = Object.entries(nb.years).map(([year, count]) => ({
+                                year: year,
+                                count: count
+                            }));
+                        } else if (sourceVersion.years) {
+                            // Fallback to years from source version
+                            yearsArray = sourceVersion.years;
+                        }
+                        
+                        return {
+                            // Copy other properties from the more popular version first
+                            ...sourceVersion,
+                            // Override with non-binary specific data
+                            name: nb.name,
+                            gender: 'NB',
+                            totalCount: nb.total,
+                            maleCount: nb.male,
+                            femaleCount: nb.female,
+                            genderBalance: nb.ratio,
+                            isCurated: nb.isCurated,
+                            // Use years from non-binary JSON if available (has full historical data),
+                            // otherwise fall back to sourceVersion years
+                            years: yearsArray.length > 0 ? yearsArray : (sourceVersion.years || [])
+                        };
+                    });
+                    
+                    console.log(`✅ Loaded ${nonBinaryNames.length} non-binary names from pre-generated file`);
+                    return nonBinaryNames;
+                }
+            }
+        } catch (error) {
+            console.warn('ℹ️  Pre-generated non-binary names file not found, calculating from current data...', error.message);
+        }
+        
+        // Fallback: calculate from current nameData (original method)
         const nameFrequencyMap = {};
         const nonBinaryNames = [];
         const curatedNeutralNames = this.getCuratedGenderNeutralNames();
@@ -1892,14 +1970,17 @@ class EnhancedNameDatabase {
             
             if (nameData.male > 0 && nameData.female > 0) {
                 // Calculate the ratio between male and female usage
+                // Ratio of 1.0 = perfect 50/50 split, 0.43 = 30/70 split, 0.67 = 40/60 split
                 const ratio = Math.min(nameData.male, nameData.female) / Math.max(nameData.male, nameData.female);
                 
                 // Include names from curated list with more lenient criteria, or statistical matches
-                // Curated names: minimum 50 total uses
-                // Statistical names: ratio >= 0.1 and >= 100 total uses
+                // Curated names: minimum 50 total uses (no ratio requirement - accept any split)
+                // Statistical names: ratio >= 0.43 (accepts 30/70 splits and better, up to 50/50)
+                //   This includes: 30-70, 35-65, 40-60, 45-55, 50-50 splits
+                //   and >= 100 total uses
                 const shouldInclude = isCurated 
                     ? nameData.total >= 50 
-                    : (ratio >= 0.1 && nameData.total >= 100);
+                    : (ratio >= 0.43 && nameData.total >= 100);
                 
                 if (shouldInclude) {
                     // Create a combined entry for non-binary use

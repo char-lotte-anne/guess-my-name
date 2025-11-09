@@ -793,6 +793,8 @@ class NameGuessingQuiz {
     startQuiz() {
         document.querySelector('.hero').style.display = 'none';
         document.getElementById('quizSection').style.display = 'block';
+        document.getElementById('resultSection').style.display = 'none';
+        document.getElementById('finalSection').style.display = 'none';
         this.showQuestion();
         
         // Update browser history for first question
@@ -2372,6 +2374,9 @@ class NameGuessingQuiz {
         // Initialize selected countries array
         this.selectedCountries = [];
         
+        // Show continue button immediately (allows skipping by clicking continue with no selection)
+        this.showCountryMapsContinueButton();
+        
         // Create a container for all country maps
         const countryMapsContainer = document.createElement('div');
         countryMapsContainer.className = 'country-maps-container';
@@ -2527,12 +2532,8 @@ class NameGuessingQuiz {
                             this.selectedCountries.push(countryId);
                         }
                         
-                        // Show continue button if any countries are selected
-                        if (this.selectedCountries.length > 0) {
-                            this.showCountryMapsContinueButton();
-                        } else {
-                            this.hideCountryMapsContinueButton();
-                        }
+                        // Update continue button text (button should always be visible)
+                        this.showCountryMapsContinueButton();
                     });
                 });
 
@@ -2551,17 +2552,20 @@ class NameGuessingQuiz {
 
     showCountryMapsContinueButton() {
         const continueContainer = document.getElementById('continueContainer');
+        const buttonText = this.selectedCountries.length > 0 
+            ? `Continue (${this.selectedCountries.length} countries selected)` 
+            : 'Continue';
         if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
             const continueBtn = document.createElement('button');
             continueBtn.className = 'slider-continue-btn';
-            continueBtn.textContent = `Continue (${this.selectedCountries.length} countries selected)`;
+            continueBtn.textContent = buttonText;
             continueBtn.addEventListener('click', () => {
                 this.selectAnswer(this.selectedCountries);
             });
             continueContainer.appendChild(continueBtn);
         } else if (continueContainer && continueContainer.querySelector('.slider-continue-btn')) {
             const existingBtn = continueContainer.querySelector('.slider-continue-btn');
-            existingBtn.textContent = `Continue (${this.selectedCountries.length} countries selected)`;
+            existingBtn.textContent = buttonText;
         }
     }
 
@@ -2826,15 +2830,28 @@ class NameGuessingQuiz {
             // Try with relaxed length criteria using efficient lookups
             let relaxedCandidates = [];
             
-            if (this.answers.gender === 'NB') {
-                // For non-binary, use the existing method but with relaxed length
-                const nonBinaryNames = this.enhancedNameDatabase.getNonBinaryNames();
-                relaxedCandidates = nonBinaryNames.filter(nameInfo => {
-                    if (this.answers.length === 'long') {
-                        return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
-                    }
-                    return true;
-                });
+            if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
+                // Ensure database is loaded before getting non-binary names
+                if (this.enhancedNameDatabase.ensureLoaded) {
+                    await this.enhancedNameDatabase.ensureLoaded();
+                }
+                // For non-binary or prefer not to say, use the existing method but with relaxed length
+                const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
+                if (nonBinaryNames && nonBinaryNames.length > 0) {
+                    relaxedCandidates = nonBinaryNames.filter(nameInfo => {
+                        if (this.answers.length === 'long') {
+                            return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
+                        } else if (this.answers.length === 'extra_long') {
+                            return nameInfo.name.length >= 8; // Relaxed: 8+ instead of 10+
+                        } else if (this.answers.length === 'medium') {
+                            return nameInfo.name.length >= 4 && nameInfo.name.length <= 7; // Relaxed medium
+                        } else if (this.answers.length === 'short') {
+                            return nameInfo.name.length <= 5; // Relaxed short
+                        }
+                        return true;
+                    });
+                }
+                // If still no candidates, will use fallback below
             } else {
                 // Use efficient gender lookup, then filter with relaxed length
                 const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
@@ -2927,15 +2944,28 @@ class NameGuessingQuiz {
             // Try with relaxed length criteria using efficient lookups
             let relaxedCandidates = [];
             
-            if (this.answers.gender === 'NB') {
-                // For non-binary, use the existing method but with relaxed length
-                const nonBinaryNames = this.enhancedNameDatabase.getNonBinaryNames();
-                relaxedCandidates = nonBinaryNames.filter(nameInfo => {
-                    if (this.answers.length === 'long') {
-                        return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
-                    }
-                    return true;
-                });
+            if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
+                // Ensure database is loaded before getting non-binary names
+                if (this.enhancedNameDatabase.ensureLoaded) {
+                    await this.enhancedNameDatabase.ensureLoaded();
+                }
+                // For non-binary or prefer not to say, use the existing method but with relaxed length
+                const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
+                if (nonBinaryNames && nonBinaryNames.length > 0) {
+                    relaxedCandidates = nonBinaryNames.filter(nameInfo => {
+                        if (this.answers.length === 'long') {
+                            return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
+                        } else if (this.answers.length === 'extra_long') {
+                            return nameInfo.name.length >= 8; // Relaxed: 8+ instead of 10+
+                        } else if (this.answers.length === 'medium') {
+                            return nameInfo.name.length >= 4 && nameInfo.name.length <= 7; // Relaxed medium
+                        } else if (this.answers.length === 'short') {
+                            return nameInfo.name.length <= 5; // Relaxed short
+                        }
+                        return true;
+                    });
+                }
+                // If still no candidates, will use fallback below
             } else {
                 // Use efficient gender lookup, then filter with relaxed length
                 const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
@@ -3054,8 +3084,8 @@ class NameGuessingQuiz {
                     }
                 }
                 
-                // Add non-binary fallback names if gender is non-binary
-                if (this.answers.gender === 'NB') {
+                // Add non-binary fallback names if gender is non-binary or prefer not to say
+                if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
                     if (this.answers.length === 'long') {
                         fallbackNames.push(
                             { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
@@ -3524,8 +3554,6 @@ class NameGuessingQuiz {
     }
 
     getDecadePopularity(nameInfo, decade) {
-        // This would ideally use historical data, but for now we'll use a simplified approach
-        // In a real implementation, you'd have decade-specific popularity data
         const decadeRanges = {
             1900: [1900, 1909],
             1910: [1910, 1919],
@@ -3542,8 +3570,31 @@ class NameGuessingQuiz {
             2020: [2020, 2029]
         };
         
-        // For now, return a base popularity score
-        // In a real implementation, this would check historical data
+        // If we have year-by-year data, calculate decade-specific popularity
+        if (nameInfo.years && Array.isArray(nameInfo.years) && nameInfo.years.length > 0) {
+            const [decadeStart, decadeEnd] = decadeRanges[decade] || [decade, decade + 9];
+            let decadeCount = 0;
+            let totalDecadeCount = 0;
+            
+            // Sum counts for this name in the specified decade
+            nameInfo.years.forEach(yearData => {
+                const year = parseInt(yearData.year);
+                if (year >= decadeStart && year <= decadeEnd) {
+                    decadeCount += yearData.count || 0;
+                }
+            });
+            
+            // Calculate what percentage of total usage this decade represents
+            // Normalize to 0-1 scale where 1.0 = very popular in that decade
+            if (nameInfo.totalCount > 0) {
+                const decadeRatio = decadeCount / nameInfo.totalCount;
+                // If the name was used a lot in this decade relative to its total usage, it's popular
+                // Average decade would be ~10% of total (1/10 decades), so we scale accordingly
+                return Math.min(1.0, decadeRatio * 10); // Scale so 10% = 1.0
+            }
+        }
+        
+        // Fallback: use total popularity as a proxy
         if (nameInfo.totalCount > 1000) return 0.8; // Very popular
         if (nameInfo.totalCount > 500) return 0.6;  // Popular
         if (nameInfo.totalCount > 100) return 0.4;  // Somewhat popular
@@ -3561,8 +3612,9 @@ class NameGuessingQuiz {
         }
         
         // Use comprehensive lookups based on all user preferences
-        if (this.answers.gender === 'NB') {
-            const nonBinaryNames = this.enhancedNameDatabase.getNonBinaryNames();
+        // For non-binary or prefer not to say, use only non-binary names database
+        if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
+            const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
             
             // Filter by length if specified
             let candidates = nonBinaryNames;
@@ -3662,8 +3714,8 @@ class NameGuessingQuiz {
             return false;
         }
         
-        // For non-binary names, we already filtered in getCandidates(), so just pass through
-        if (this.answers.gender === 'NB' && nameInfo.gender === 'NB') {
+        // For non-binary names (NB or PREFER_NOT_TO_SAY), we already filtered in getCandidates(), so just pass through
+        if ((this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') && nameInfo.gender === 'NB') {
         }
         
         // Check name length - CRITICAL FILTER
@@ -4215,9 +4267,13 @@ ${JSON.stringify(trainingData, null, 2)}
         this.answers = {};
         this.realName = null; // Reset real name
         this.selectedCountries = []; // Reset selected countries
+        this.selectedContinents = []; // Reset selected continents
+        this.currentContinentIndex = 0; // Reset continent index
+        this.selectedState = null; // Reset selected state
         
         document.getElementById('finalSection').style.display = 'none';
         document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultSection').style.display = 'none';
         document.querySelector('.hero').style.display = 'block';
         this.hideMap();
         
@@ -4251,17 +4307,8 @@ ${JSON.stringify(trainingData, null, 2)}
     }
 
     showHome() {
-        // Hide all sections
-        document.getElementById('aboutSection').style.display = 'none';
-        document.getElementById('howItWorksSection').style.display = 'none';
-        document.getElementById('contactSection').style.display = 'none';
-        document.getElementById('quizSection').style.display = 'none';
-        document.getElementById('resultSection').style.display = 'none';
-        document.getElementById('finalSection').style.display = 'none';
-        
-        // Show hero section
-        document.querySelector('.hero').style.display = 'block';
-        this.hideMap();
+        // Reset quiz state when navigating home
+        this.resetQuiz();
         
         // Update browser history
         history.pushState({page: 'home'}, '', '#home');
