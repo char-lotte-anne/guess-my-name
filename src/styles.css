@@ -348,6 +348,50 @@ body::after {
     gap: 30px;
 }
 
+/* Hamburger Menu Button (Hidden on desktop) */
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 44px; /* WCAG touch target minimum */
+    height: 44px; /* WCAG touch target minimum */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 7px; /* Padding to make touch target larger */
+    z-index: 1001;
+    position: relative;
+    -webkit-tap-highlight-color: rgba(192, 132, 252, 0.3);
+    touch-action: manipulation;
+}
+
+.nav-hamburger span {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #c084fc, #ffd700, #c084fc);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+}
+
+.nav-hamburger:hover span {
+    background: linear-gradient(90deg, #d8b4fe, #ffed4e, #d8b4fe);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+}
+
+/* Hamburger animation when active */
+.nav-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.nav-hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
 .nav-link {
     font-family: 'Bohemian Typewriter', sans-serif;
     font-size: 1rem;
@@ -516,8 +560,8 @@ body::after {
 
 .mystical-eyes {
     display: flex;
-    gap: 25px;
-    margin-bottom: 15px;
+    gap: clamp(12px, 3vw, 25px);
+    margin-bottom: clamp(8px, 2vw, 15px);
 }
 
 .eye {
@@ -538,8 +582,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
+    width: clamp(5px, 1.2vw, 8px);
+    height: clamp(5px, 1.2vw, 8px);
     background: #1A0033;
     border-radius: 50%;
     animation: pupilGlow 1.5s ease-in-out infinite alternate;
@@ -550,8 +594,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
+    width: clamp(18px, 4.5vw, 30px);
+    height: clamp(18px, 4.5vw, 30px);
     background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent 70%);
     border-radius: 50%;
     animation: eyeGlow 2s ease-in-out infinite alternate;
@@ -559,9 +603,9 @@ body::after {
 
 .mystical-mouth {
     position: relative;
-    width: 35px;
-    height: 20px;
-    margin-top: 15px;
+    width: clamp(20px, 5vw, 35px);
+    height: clamp(12px, 3vw, 20px);
+    margin-top: clamp(8px, 2vw, 15px);
 }
 
 .mystical-mouth::before {
@@ -571,8 +615,8 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    border: 3px solid #FFD700;
-    border-radius: 0 0 35px 35px;
+    border: clamp(2px, 0.5vw, 3px) solid #FFD700;
+    border-radius: 0 0 clamp(20px, 5vw, 35px) clamp(20px, 5vw, 35px);
     box-shadow: 
         0 0 10px rgba(255, 215, 0, 0.8),
         0 0 20px rgba(138, 43, 226, 0.6);
@@ -591,8 +635,8 @@ body::after {
 }
 
 .mystical-mouth.happy::before {
-    border-radius: 35px 35px 0 0;
-    border-top: 3px solid #FFD700;
+    border-radius: clamp(20px, 5vw, 35px) clamp(20px, 5vw, 35px) 0 0;
+    border-top: clamp(2px, 0.5vw, 3px) solid #FFD700;
     border-bottom: none;
 }
 
@@ -797,7 +841,8 @@ body::after {
     font-size: clamp(1.2rem, 4vw, 2rem);
     font-weight: normal;
     color: #FFFFFF;
-    margin-bottom: clamp(30px, 6vw, 60px);
+    margin: 0 auto clamp(30px, 6vw, 60px);
+    text-align: center;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.8),
         0 0 15px #c084fc;
@@ -1030,6 +1075,12 @@ body::after {
     position: absolute;
     bottom: 0;
     font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    padding: 0 clamp(5px, 2vw, 10px);
+    max-width: 45%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    line-height: 1.3;
 }
 
 .slider-continue-btn {
@@ -3339,25 +3390,165 @@ body::after {
     }
 }
 
-/* Mobile devices (up to 600px) */
-@media (max-width: 600px) {
+/* Tablet devices (601px - 900px) - also use hamburger menu */
+@media (max-width: 900px) and (min-width: 601px) {
     .main-nav {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+    
+    .nav-hamburger {
+        display: flex;
     }
     
     .nav-links {
-        gap: 20px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, rgba(26, 0, 51, 0.98), rgba(74, 20, 140, 0.98));
+        border: 2px solid rgba(192, 132, 252, 0.5);
+        border-top: none;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.5),
+            0 0 30px rgba(192, 132, 252, 0.3),
+            inset 0 0 20px rgba(192, 132, 252, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 20px;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: 1000;
+        margin-top: 10px;
+    }
+    
+    .nav-links.active {
+        max-height: 500px;
+        opacity: 1;
+        border-top: 2px solid rgba(192, 132, 252, 0.5);
     }
     
     .nav-link {
-        font-size: 0.95rem;
-        padding: 10px 16px; /* Increased for better touch target */
+        font-size: 1rem;
+        padding: 15px 20px;
         min-height: var(--touch-target-min);
-        display: inline-flex;
+        display: block;
+        text-align: left;
+        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    .nav-link:hover,
+    .nav-link:active {
+        background: rgba(192, 132, 252, 0.15);
+        padding-left: 30px;
+        box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2);
+    }
+    
+    .nav-link::before {
+        content: '✨';
+        position: absolute;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .nav-link:hover::before,
+    .nav-link:active::before {
+        opacity: 1;
+    }
+}
+
+/* Mobile devices (up to 600px) */
+@media (max-width: 600px) {
+    .main-nav {
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
+        position: relative;
+    }
+    
+    /* Show hamburger button on mobile */
+    .nav-hamburger {
+        display: flex;
+    }
+    
+    /* Hide nav links by default on mobile, show as dropdown when active */
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: linear-gradient(135deg, rgba(26, 0, 51, 0.98), rgba(74, 20, 140, 0.98));
+        border: 2px solid rgba(192, 132, 252, 0.5);
+        border-top: none;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.5),
+            0 0 30px rgba(192, 132, 252, 0.3),
+            inset 0 0 20px rgba(192, 132, 252, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 20px;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.4s ease;
+        z-index: 1000;
+        margin-top: 10px;
+    }
+    
+    .nav-links.active {
+        max-height: 500px;
+        opacity: 1;
+        border-top: 2px solid rgba(192, 132, 252, 0.5);
+    }
+    
+    .nav-link {
+        font-size: 1rem;
+        padding: 15px 20px;
+        min-height: var(--touch-target-min);
+        display: block;
+        text-align: left;
+        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .nav-link:last-child {
+        border-bottom: none;
+    }
+    
+    .nav-link:hover,
+    .nav-link:active {
+        background: rgba(192, 132, 252, 0.15);
+        padding-left: 30px;
+        box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2);
+    }
+    
+    .nav-link::before {
+        content: '✨';
+        position: absolute;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .nav-link:hover::before,
+    .nav-link:active::before {
+        opacity: 1;
     }
     
     .hero {
@@ -3407,6 +3598,52 @@ body::after {
     
     .quiz-section {
         padding: 40px 15px;
+        text-align: center;
+    }
+    
+    .quiz-container {
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .question-text {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    
+    .options-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .slider-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .slider-labels {
+        padding: 0 12px;
+        min-height: 50px;
+    }
+    
+    .slider-label-end {
+        padding: 0 6px;
+        max-width: 45%;
+        font-size: clamp(0.7rem, 1.7vw, 0.9rem);
+        white-space: normal;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-align: center;
+    }
+    
+    .slider-label-end:first-child {
+        text-align: left;
+    }
+    
+    .slider-label-end:last-child {
+        text-align: right;
     }
     
     .result-section {
@@ -3481,8 +3718,8 @@ body::after {
     
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
-        max-width: 280px;
-        max-height: 350px;
+        max-width: 420px; /* 1.5x larger (280 * 1.5) */
+        max-height: 525px; /* 1.5x larger (350 * 1.5) */
     }
     
     .main-footer {
@@ -3569,14 +3806,77 @@ body::after {
     
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
-        max-width: 220px;
-        max-height: 300px;
+        max-width: 330px; /* 1.5x larger (220 * 1.5) */
+        max-height: 450px; /* 1.5x larger (300 * 1.5) */
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 15px 10px;
+        padding: 15px;
+    }
+    
+    .quiz-section {
+        padding: 40px 15px;
+        text-align: center;
+    }
+    
+    .quiz-container {
+        margin: 0 auto;
+        text-align: center;
+        padding: 0;
+    }
+    
+    .question-container {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .question-text {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    
+    .options-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .slider-container {
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 15px;
+    }
+    
+    .slider-labels {
+        padding: 0 15px;
+        min-height: 60px;
+        margin-top: 15px;
+    }
+    
+    .slider-label-end {
+        padding: 0 8px;
+        max-width: 45%;
+        font-size: clamp(0.65rem, 1.6vw, 0.85rem);
+        white-space: normal;
+        line-height: 1.4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        text-align: center;
+    }
+    
+    .slider-label-end:first-child {
+        left: 0 !important;
+        right: auto !important;
+        text-align: left;
+    }
+    
+    .slider-label-end:last-child {
+        right: 0 !important;
+        left: auto !important;
+        text-align: right;
     }
     
     .hero {
@@ -3774,20 +4074,61 @@ body::after {
     
     .continent-map-container[data-continent="north-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="north-america"] {
-        max-width: 70vw !important;
-        max-height: 45vh !important;
-        transform: scale(0.9) !important;
+        max-width: 75vw !important; /* Slightly bigger */
+        max-height: 50vh !important; /* Slightly bigger */
+        transform: translateX(0) translateY(-10%) scale(1.0) !important; /* Move up and make bigger */
     }
     
-    /* Make states map bigger on mobile */
+    /* Make states map bigger on mobile and ensure proper centering */
+    .map-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 15px;
+        margin: 0 auto;
+    }
+    
     .us-map {
         max-width: 95vw !important;
         width: 95vw !important;
+        margin: 0 auto;
+        display: block;
     }
     
     .map-container svg.us-map {
         max-width: 95vw !important;
         width: 95vw !important;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    /* Center all world/continent maps on mobile */
+    .map-container svg {
+        margin: 0 auto !important;
+        display: block !important;
+        transform: translateX(0) !important; /* Remove any horizontal translation */
+    }
+    
+    .continent-map-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 auto !important;
+        padding: 0 15px;
+    }
+    
+    .continent-map-container svg {
+        margin: 0 auto !important;
+        display: block !important;
+        transform: translateX(0) !important; /* Remove any horizontal translation */
+    }
+    
+    /* Override any translateX transforms on mobile for proper centering */
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"] {
+        max-width: 75vw !important; /* Slightly bigger */
+        max-height: 50vh !important; /* Slightly bigger */
+        transform: translateX(0) translateY(-10%) scale(1.0) !important; /* Move up and make bigger */
     }
     
     .continent-map-container[data-continent="asia"] .continent-map-svg,
@@ -3817,7 +4158,8 @@ body::after {
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
         max-width: 90vw;
-        max-height: 50vh;
+        max-height: 75vh; /* 1.5x larger (50vh * 1.5) */
+        transform: scale(1.5) !important; /* Scale up 1.5x */
     }
 }
 
@@ -3827,29 +4169,41 @@ body::after {
 
 /* Floating Feedback Button */
 .feedback-float-btn {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    border-radius: 0;
-    margin: 0;
     padding: 15px 25px;
     background: linear-gradient(145deg, #6A1B9A, #8E24AA);
     color: white;
     border: 2px solid rgba(255, 215, 0, 0.5);
-    border-top: 2px solid rgba(255, 215, 0, 0.5);
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
     font-size: 1rem;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    z-index: 9999;
     box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
     transition: all 0.3s ease;
     animation: feedbackPulse 2s infinite;
+}
+
+/* Desktop button - floating */
+.feedback-desktop-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    left: auto;
+    width: auto;
+    border-radius: 50px;
+    z-index: 9999;
+}
+
+/* Mobile button - inside footer */
+.feedback-footer-btn {
+    position: relative;
+    width: 100%;
+    border-radius: 0;
+    margin: 20px 0 0 0;
+    border-top: 2px solid rgba(255, 215, 0, 0.5);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    z-index: 1;
 }
 
 .feedback-float-btn:hover {
@@ -4094,33 +4448,27 @@ body::after {
     color: rgba(241, 196, 15, 1);
 }
 
-/* Desktop - keep floating */
+/* Desktop - show desktop button, hide mobile button */
 @media (min-width: 769px) {
-    .feedback-float-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        left: auto;
-        width: auto;
-        border-radius: 50px;
-        border: 2px solid rgba(255, 215, 0, 0.5);
+    .feedback-desktop-btn {
+        display: block;
+    }
+    
+    .feedback-footer-btn {
+        display: none;
     }
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive - hide desktop button, show mobile button in footer */
 @media (max-width: 768px) {
-    .feedback-float-btn {
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        border-radius: 0;
+    .feedback-desktop-btn {
+        display: none;
+    }
+    
+    .feedback-footer-btn {
+        display: block;
         padding: 12px 20px;
         font-size: 0.9rem;
-        border-top: 2px solid rgba(255, 215, 0, 0.5);
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
     }
     
     .feedback-modal-content {
@@ -4150,10 +4498,8 @@ body::after {
 }
 
 @media (max-width: 480px) {
-    .feedback-float-btn {
-        bottom: 15px;
-        right: 15px;
-        padding: 10px 18px;
+    .feedback-footer-btn {
+        padding: 12px 18px;
         font-size: 0.85rem;
     }
     

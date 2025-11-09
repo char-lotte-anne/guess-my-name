@@ -758,6 +758,196 @@ class NameGuessingQuiz {
         };
     }
 
+    getFallbackNamesForCriteria(needed, excludeNames = []) {
+        const excludeLower = excludeNames.map(n => n.toLowerCase());
+        const fallbacks = [];
+        
+        // Get gender and length from answers
+        const gender = this.answers.gender || 'F';
+        const length = this.answers.length || 'medium';
+        
+        // Try to get names from database first that meet criteria
+        let candidates = [];
+        if (gender === 'NB') {
+            candidates = this.enhancedNameDatabase.getNonBinaryNames() || [];
+        } else {
+            candidates = this.enhancedNameDatabase.getNamesByGender(gender) || [];
+        }
+        
+        // Filter by length if specified
+        if (length) {
+            candidates = candidates.filter(nameInfo => {
+                const nameLength = nameInfo.name.length;
+                if (length === 'short' && nameLength <= 4) return true;
+                if (length === 'medium' && nameLength >= 5 && nameLength <= 6) return true;
+                if (length === 'long' && nameLength >= 7 && nameLength <= 9) return true;
+                if (length === 'extra_long' && nameLength >= 10) return true;
+                return false;
+            });
+        }
+        
+        // Remove already included names
+        candidates = candidates.filter(nameInfo => 
+            !excludeLower.includes(nameInfo.name.toLowerCase())
+        );
+        
+        // Take up to 'needed' candidates
+        for (let i = 0; i < Math.min(needed, candidates.length); i++) {
+            fallbacks.push(candidates[i]);
+        }
+        
+        // If we still need more, use hardcoded fallbacks
+        if (fallbacks.length < needed) {
+            const hardcodedFallbacks = this.getHardcodedFallbacks(gender, length);
+            for (const fallback of hardcodedFallbacks) {
+                if (fallbacks.length >= needed) break;
+                if (!excludeLower.includes(fallback.name.toLowerCase())) {
+                    fallbacks.push(fallback);
+                }
+            }
+        }
+        
+        return fallbacks.slice(0, needed);
+    }
+
+    getHardcodedFallbacks(gender, length) {
+        const fallbacks = [];
+        
+        if (gender === 'F' || !gender) {
+            if (length === 'short') {
+                fallbacks.push(
+                    { name: 'Amy', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Eva', gender: 'F', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Ivy', gender: 'F', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Joy', gender: 'F', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Zoe', gender: 'F', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Ava', gender: 'F', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Mia', gender: 'F', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Lea', gender: 'F', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'medium') {
+                fallbacks.push(
+                    { name: 'Sarah', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Emma', gender: 'F', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Grace', gender: 'F', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Faith', gender: 'F', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Hope', gender: 'F', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Hannah', gender: 'F', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Sophia', gender: 'F', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Olivia', gender: 'F', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'long') {
+                fallbacks.push(
+                    { name: 'Elizabeth', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Victoria', gender: 'F', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Isabella', gender: 'F', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Gabrielle', gender: 'F', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Stephanie', gender: 'F', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Catherine', gender: 'F', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Jennifer', gender: 'F', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Patricia', gender: 'F', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'extra_long') {
+                fallbacks.push(
+                    { name: 'Alexandria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Christina', gender: 'F', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Katherine', gender: 'F', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Stephanie', gender: 'F', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Elizabeth', gender: 'F', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Alexandra', gender: 'F', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Gabriella', gender: 'F', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Valentina', gender: 'F', totalCount: 650, languageOrigin: 'english' }
+                );
+            }
+        }
+        
+        if (gender === 'M' || !gender) {
+            if (length === 'short') {
+                fallbacks.push(
+                    { name: 'Alex', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Jack', gender: 'M', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Luke', gender: 'M', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Jake', gender: 'M', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Ryan', gender: 'M', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Kyle', gender: 'M', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Sean', gender: 'M', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Mark', gender: 'M', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'medium') {
+                fallbacks.push(
+                    { name: 'David', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'James', gender: 'M', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Daniel', gender: 'M', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Samuel', gender: 'M', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Thomas', gender: 'M', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Robert', gender: 'M', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Michael', gender: 'M', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'William', gender: 'M', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'long') {
+                fallbacks.push(
+                    { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Benjamin', gender: 'M', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Christopher', gender: 'M', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Nathaniel', gender: 'M', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Sebastian', gender: 'M', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Theodore', gender: 'M', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Nicholas', gender: 'M', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Jonathan', gender: 'M', totalCount: 650, languageOrigin: 'english' }
+                );
+            } else if (length === 'extra_long') {
+                fallbacks.push(
+                    { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
+                    { name: 'Alexander', gender: 'M', totalCount: 950, languageOrigin: 'english' },
+                    { name: 'Nathaniel', gender: 'M', totalCount: 900, languageOrigin: 'english' },
+                    { name: 'Sebastian', gender: 'M', totalCount: 850, languageOrigin: 'english' },
+                    { name: 'Theodore', gender: 'M', totalCount: 800, languageOrigin: 'english' },
+                    { name: 'Benjamin', gender: 'M', totalCount: 750, languageOrigin: 'english' },
+                    { name: 'Jonathan', gender: 'M', totalCount: 700, languageOrigin: 'english' },
+                    { name: 'Nicholas', gender: 'M', totalCount: 650, languageOrigin: 'english' }
+                );
+            }
+        }
+        
+        if (gender === 'NB') {
+            if (length === 'short') {
+                fallbacks.push(
+                    { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Sam', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Jamie', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Avery', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Riley', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
+                );
+            } else if (length === 'medium') {
+                fallbacks.push(
+                    { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Jordan', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Taylor', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Casey', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
+                );
+            } else if (length === 'long') {
+                fallbacks.push(
+                    { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Jordan', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Taylor', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Casey', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
+                );
+            } else {
+                fallbacks.push(
+                    { name: 'Alexandria', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Christopher', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Stephanie', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Nathaniel', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
+                    { name: 'Gabrielle', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
+                );
+            }
+        }
+        
+        return fallbacks;
+    }
+
     initializeEventListeners() {
         document.getElementById('startBtn').addEventListener('click', () => this.startQuiz());
         document.getElementById('correctBtn').addEventListener('click', () => this.handleCorrect());
@@ -3122,6 +3312,30 @@ class NameGuessingQuiz {
             return b.totalCount - a.totalCount;
         });
         
+        // Ensure we always return at least 'count' names (default 5)
+        // If we don't have enough, fill with fallback names that meet basic criteria
+        if (scoredCandidates.length < count) {
+            const needed = count - scoredCandidates.length;
+            const existingNames = scoredCandidates.map(c => c.name);
+            const fallbackNames = this.getFallbackNamesForCriteria(needed, existingNames);
+            fallbackNames.forEach(fallback => {
+                if (!scoredCandidates.find(c => c.name.toLowerCase() === fallback.name.toLowerCase())) {
+                    scoredCandidates.push({
+                        ...fallback,
+                        score: this.calculateNameScore(fallback)
+                    });
+                }
+            });
+            
+            // Re-sort after adding fallbacks
+            scoredCandidates.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score;
+                }
+                return b.totalCount - a.totalCount;
+            });
+        }
+        
         return scoredCandidates.slice(0, count);
     }
 
@@ -3178,10 +3392,33 @@ class NameGuessingQuiz {
         }
         
         // Sort by combined score and return top guesses
-        const sortedGuesses = Array.from(combinedScores.values())
-            .sort((a, b) => b.combinedScore - a.combinedScore)
-            .slice(0, count);
+        let sortedGuesses = Array.from(combinedScores.values())
+            .sort((a, b) => b.combinedScore - a.combinedScore);
         
+        // Ensure we always return exactly 'count' names (default 5)
+        // If we don't have enough, fill with fallback names that meet basic criteria
+        if (sortedGuesses.length < count) {
+            const needed = count - sortedGuesses.length;
+            const fallbackNames = this.getFallbackNamesForCriteria(needed, sortedGuesses.map(g => g.name));
+            fallbackNames.forEach(fallback => {
+                if (!sortedGuesses.find(g => g.name.toLowerCase() === fallback.name.toLowerCase())) {
+                    sortedGuesses.push({
+                        ...fallback,
+                        ruleScore: 0,
+                        mlScore: 0,
+                        combinedScore: 20, // Lower score for fallbacks
+                        source: 'fallback'
+                    });
+                }
+            });
+            
+            // Re-sort after adding fallbacks
+            sortedGuesses = sortedGuesses
+                .sort((a, b) => b.combinedScore - a.combinedScore)
+                .slice(0, count);
+        } else {
+            sortedGuesses = sortedGuesses.slice(0, count);
+        }
         
         const finalGuesses = sortedGuesses.map((guess, index) => ({
             ...guess,
@@ -4195,9 +4432,9 @@ class NameGuessingQuiz {
         
         let yPos = height * 0.25;
         textLines.forEach((line, index) => {
-            // Add text shadow/glow effect
+            // Add text shadow/glow effect (reduced)
             ctx.shadowColor = '#00ff88';
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 12;
             ctx.fillText(line, width / 2, yPos);
             ctx.shadowBlur = 0;
             yPos += 80;
@@ -4221,9 +4458,9 @@ class NameGuessingQuiz {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        // Add glow effect for the name
+        // Add glow effect for the name (reduced)
         ctx.shadowColor = '#ffd700';
-        ctx.shadowBlur = 30;
+        ctx.shadowBlur = 18;
         ctx.fillText(name.toUpperCase(), width / 2, nameY);
         ctx.shadowBlur = 0;
         
@@ -4267,7 +4504,7 @@ class NameGuessingQuiz {
         let definitionStartY = definitionY;
         lines.forEach((line, index) => {
             ctx.shadowColor = '#00ff88';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 10;
             ctx.fillText(line, width / 2, definitionStartY + (index * 50));
             ctx.shadowBlur = 0;
         });
@@ -4857,6 +5094,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const quiz = new NameGuessingQuiz();
     window.quizInstance = quiz; // Make quiz instance globally available
     
+    // Mobile hamburger menu toggle
+    const navHamburger = document.getElementById('navHamburger');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (navHamburger && navLinks) {
+        navHamburger.addEventListener('click', () => {
+            navHamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a nav link (mobile/tablet)
+        const navLinkElements = navLinks.querySelectorAll('.nav-link');
+        navLinkElements.forEach(link => {
+            link.addEventListener('click', () => {
+                // Only close on mobile/tablet (when hamburger is visible)
+                if (window.innerWidth <= 900) {
+                    navHamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        
+        // Close menu when clicking outside (mobile/tablet)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 900) {
+                if (!navHamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                    navHamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                }
+            }
+        });
+        
+        // Close menu on window resize if switching to desktop view
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 900) {
+                navHamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    }
+    
     // Handle browser back button
     window.addEventListener('popstate', (event) => {
         const hash = window.location.hash;
@@ -4984,17 +5262,26 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Feedback modal elements
     const feedbackFloatBtn = document.getElementById('feedbackFloatBtn');
+    const feedbackFloatBtnMobile = document.getElementById('feedbackFloatBtnMobile');
     const feedbackModal = document.getElementById('feedbackModal');
     const feedbackCloseBtn = document.getElementById('feedbackCloseBtn');
     const feedbackForm = document.getElementById('feedbackForm');
     const feedbackStatus = document.getElementById('feedbackStatus');
     const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
     
-    // Open feedback modal
-    feedbackFloatBtn.addEventListener('click', () => {
+    // Open feedback modal - handle both desktop and mobile buttons
+    const openFeedbackModal = () => {
         feedbackModal.style.display = 'flex';
         document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-    });
+    };
+    
+    if (feedbackFloatBtn) {
+        feedbackFloatBtn.addEventListener('click', openFeedbackModal);
+    }
+    
+    if (feedbackFloatBtnMobile) {
+        feedbackFloatBtnMobile.addEventListener('click', openFeedbackModal);
+    }
     
     // Close feedback modal
     function closeFeedbackModal() {
