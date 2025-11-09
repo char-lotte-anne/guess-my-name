@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": "src",
   "functions": {
     "api/*.js": {
       "maxDuration": 10
@@ -11,16 +12,8 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/",
-      "destination": "/src/index.html"
-    },
-    {
-      "source": "/(.*\\.(html|css|js|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|otf|pdf))",
-      "destination": "/src/$1"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/src/index.html"
+      "destination": "/index.html"
     }
   ],
   "headers": [
