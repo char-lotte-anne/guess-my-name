@@ -1668,7 +1668,7 @@ body::after {
 }
 
 .guess-item:nth-child(1) .guess-rank {
-    color: #ffd700;
+    color: #0d0025;
     border-color: #ffd700;
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
 }
