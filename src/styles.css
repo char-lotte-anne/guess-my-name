@@ -1694,8 +1694,8 @@ body::after {
 }
 
 .guess-item:nth-child(1) .guess-name {
-    color: #ffd700 !important;
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 215, 0, 0.7), 0 0 45px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
     font-size: 2.2rem;
     background: none !important;
     padding: 0 !important;
