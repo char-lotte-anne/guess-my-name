@@ -416,7 +416,7 @@ body::after {
 /* Hero Section */
 .hero {
     text-align: center;
-    padding: clamp(30px, 8vw, 60px) clamp(15px, 3vw, 20px);
+    padding: 60px 20px;
     background: transparent;
     position: relative;
     min-height: 100vh;
@@ -451,8 +451,8 @@ body::after {
 }
 
 .character {
-    width: clamp(100px, 20vw, 150px);
-    height: clamp(100px, 20vw, 150px);
+    width: 150px;
+    height: 150px;
     margin: 0 auto;
     position: relative;
     animation: mysticalFloat 3s ease-in-out infinite, mysticalGlow 2s ease-in-out infinite alternate;
@@ -476,8 +476,8 @@ body::after {
     top: -30px;
     left: 50%;
     transform: translateX(-50%);
-    width: clamp(25px, 4vw, 40px);
-    height: clamp(25px, 4vw, 40px);
+    width: 40px;
+    height: 40px;
     background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(138, 43, 226, 0.8), rgba(75, 0, 130, 0.9));
     border-radius: 50%;
     border: 2px solid rgba(255, 215, 0, 0.8);
@@ -494,8 +494,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: clamp(12px, 2vw, 20px);
-    height: clamp(12px, 2vw, 20px);
+    width: 20px;
+    height: 20px;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(138, 43, 226, 0.6));
     border-radius: 50%;
     animation: innerGlow 1s ease-in-out infinite alternate;
@@ -642,10 +642,10 @@ body::after {
 
 .main-title {
     font-family: 'Great Warrior', sans-serif;
-    font-size: clamp(2rem, 8vw, 4rem);
+    font-size: 4rem;
     font-weight: normal;
     color: #FFFFFF;
-    margin-bottom: clamp(15px, 3vw, 30px);
+    margin-bottom: 30px;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.8),
         0 0 15px #c084fc;
@@ -660,29 +660,29 @@ body::after {
 .main-title::before {
     content: '🔮';
     position: absolute;
-    left: clamp(-40px, -6vw, -60px);
+    left: -60px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: 2rem;
     animation: crystalFloat 3s ease-in-out infinite;
 }
 
 .main-title::after {
     content: '🔮';
     position: absolute;
-    right: clamp(-40px, -6vw, -60px);
+    right: -60px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-size: 2rem;
     animation: crystalFloat 3s ease-in-out infinite reverse;
 }
 
 .tagline {
     font-family: 'Bohemian Typewriter', sans-serif;
-    font-size: clamp(1rem, 3vw, 1.4rem);
+    font-size: 1.4rem;
     font-weight: normal;
     color: #FFFFFF;
-    margin-bottom: clamp(25px, 5vw, 50px);
+    margin-bottom: 50px;
     text-shadow: 
         1px 1px 2px rgba(0, 0, 0, 0.8),
         0 0 10px #c084fc;
@@ -717,22 +717,21 @@ body::after {
     background: linear-gradient(45deg, #8b5cf6, #7c3aed, #8b5cf6);
     color: #FFFFFF;
     border: 3px solid #FFFFFF;
-    padding: clamp(14px, 2.5vw, 20px) clamp(28px, 5vw, 40px);
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    padding: 20px 40px;
+    font-size: 1.3rem;
     font-weight: normal;
     border-radius: 0;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
-    letter-spacing: clamp(1px, 0.3vw, 2px);
+    letter-spacing: 2px;
     box-shadow: 
         0 0 20px #8b5cf6,
         0 0 40px #8b5cf6,
         inset 0 0 20px rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
-    min-width: clamp(200px, 40vw, 250px);
-    min-height: var(--touch-target-min); /* WCAG minimum touch target */
+    min-width: 250px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     animation: mysticalButtonGlow 2s ease-in-out infinite alternate;
     /* Better touch interaction on mobile */
@@ -838,11 +837,10 @@ body::after {
 
 .question-text {
     font-family: 'Bohemian Typewriter', sans-serif;
-    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-size: 2rem;
     font-weight: normal;
     color: #FFFFFF;
-    margin: 0 auto clamp(30px, 6vw, 60px);
-    text-align: center;
+    margin-bottom: 60px;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.8),
         0 0 15px #c084fc;
@@ -869,8 +867,8 @@ body::after {
     background: rgba(0, 0, 0, 0.9);
     color: #FFFFFF;
     border: 2px solid #c084fc;
-    padding: clamp(14px, 2.5vw, 20px) clamp(20px, 4vw, 30px);
-    font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+    padding: 20px 30px;
+    font-size: 1.1rem;
     font-weight: normal;
     border-radius: 0;
     cursor: pointer;
@@ -1794,10 +1792,10 @@ body::after {
 
 .result-title {
     font-family: 'Bohemian Typewriter', sans-serif;
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-size: 2.5rem;
     font-weight: 900;
     color: #00ff88;
-    margin-bottom: clamp(25px, 5vw, 50px);
+    margin-bottom: 50px;
     letter-spacing: 2px;
     line-height: 1.2;
     text-transform: uppercase;
@@ -1853,17 +1851,17 @@ body::after {
 
 .guess-rank {
     font-family: 'Bohemian Typewriter', sans-serif;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: 1.8rem;
     font-weight: 900;
     color: #00ff88;
     background: linear-gradient(45deg, #000000, #1a1a1a);
-    width: clamp(35px, 6vw, 50px);
-    height: clamp(35px, 6vw, 50px);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: clamp(12px, 2.5vw, 20px);
+    margin-right: 20px;
     border: 2px solid #00ff88;
     box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
     flex-shrink: 0;
@@ -1877,11 +1875,11 @@ body::after {
 
 .guess-item .guess-name {
     font-family: 'Bohemian Typewriter', sans-serif;
-    font-size: clamp(1.3rem, 4vw, 2.2rem);
+    font-size: 2.2rem;
     font-weight: 900;
     color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: clamp(1px, 0.3vw, 2px);
+    letter-spacing: 2px;
     flex-grow: 1;
     text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
     background: none;
@@ -1899,7 +1897,7 @@ body::after {
 .guess-item:nth-child(1) .guess-name {
     color: #1a1a1a !important;
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.9), 0 0 30px rgba(255, 215, 0, 0.7), 0 0 45px rgba(255, 215, 0, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-    font-size: clamp(1.3rem, 4vw, 2.2rem) !important;
+    font-size: 2.2rem;
     background: none !important;
     padding: 0 !important;
     border: none !important;
