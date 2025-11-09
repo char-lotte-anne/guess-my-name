@@ -1,19 +1,3 @@
-/* CSS Custom Properties for Better Maintainability */
-:root {
-    --primary-color: #8b5cf6;
-    --secondary-color: #7c3aed;
-    --accent-color: #ffd700;
-    --text-color: #ffffff;
-    --bg-color: #000000;
-    --border-radius: 0;
-    --transition-speed: 0.3s;
-    --touch-target-min: 44px; /* WCAG minimum touch target size */
-    --safe-area-inset-top: env(safe-area-inset-top, 0px);
-    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-area-inset-left: env(safe-area-inset-left, 0px);
-    --safe-area-inset-right: env(safe-area-inset-right, 0px);
-}
-
 /* Custom Fonts */
 @font-face {
     font-family: 'Grand Paradiso Script';
@@ -22,7 +6,6 @@
          url('../fonts/grand_paradiso/GrandParadisoScript-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap; /* Better performance - show fallback while loading */
 }
 
 @font-face {
@@ -32,7 +15,6 @@
          url('../fonts/grand_paradiso/GrandParadiso-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
@@ -42,7 +24,6 @@
          url('../fonts/grand_paradiso/GrandParadisoItalic-Italic.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
@@ -50,7 +31,6 @@
     src: url('../fonts/bohemian_typewriter/Bohemian Typewriter.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
@@ -58,7 +38,6 @@
     src: url('../fonts/great_warrior/Great Warrior.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
@@ -66,7 +45,6 @@
     src: url('../fonts/punkbabe/PUNKBABE TRIAL.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
 }
 
 /* Reset and Base Styles */
@@ -76,78 +54,12 @@
     box-sizing: border-box;
 }
 
-/* Respect user's motion preferences for accessibility */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-}
-
-/* Progressive Enhancement - Fallbacks for older browsers */
-/* Fallback for clamp() - use fixed sizes for browsers that don't support clamp */
-@supports not (font-size: clamp(1rem, 2vw, 2rem)) {
-    .main-title {
-        font-size: 2.5rem;
-    }
-    
-    @media (max-width: 600px) {
-        .main-title {
-            font-size: 1.8rem;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .main-title {
-            font-size: 1.5rem;
-        }
-    }
-}
-
-/* Support for CSS custom properties (CSS variables) */
-@supports not (--css: variables) {
-    :root {
-        --touch-target-min: 44px;
-    }
-    
-    .start-btn,
-    .option-btn,
-    .action-btn,
-    .share-btn,
-    .slider-continue-btn {
-        min-height: 44px;
-    }
-}
-
-/* Enhanced backdrop-filter support */
-@supports (backdrop-filter: blur(5px)) or (-webkit-backdrop-filter: blur(5px)) {
-    .option-btn {
-        -webkit-backdrop-filter: blur(5px);
-        backdrop-filter: blur(5px);
-    }
-}
-
-@supports not (backdrop-filter: blur(5px)) {
-    .option-btn {
-        background: rgba(0, 0, 0, 0.95); /* More opaque fallback */
-    }
-}
-
 html {
     background: #000000 !important;
 }
 
 body {
-    font-family: 'Bohemian Typewriter', monospace, sans-serif;
-    /* Support for safe area insets (iPhone notches, etc.) */
-    padding-top: var(--safe-area-inset-top);
-    padding-bottom: var(--safe-area-inset-bottom);
-    padding-left: var(--safe-area-inset-left);
-    padding-right: var(--safe-area-inset-right);
+    font-family: 'Bohemian Typewriter', sans-serif;
     background: 
         #000000,
         radial-gradient(4px 4px at 20px 30px, #ffffff, transparent),
@@ -348,50 +260,6 @@ body::after {
     gap: 30px;
 }
 
-/* Hamburger Menu Button (Hidden on desktop) */
-.nav-hamburger {
-    display: none;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 44px; /* WCAG touch target minimum */
-    height: 44px; /* WCAG touch target minimum */
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 7px; /* Padding to make touch target larger */
-    z-index: 1001;
-    position: relative;
-    -webkit-tap-highlight-color: rgba(192, 132, 252, 0.3);
-    touch-action: manipulation;
-}
-
-.nav-hamburger span {
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #c084fc, #ffd700, #c084fc);
-    border-radius: 3px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
-}
-
-.nav-hamburger:hover span {
-    background: linear-gradient(90deg, #d8b4fe, #ffed4e, #d8b4fe);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-}
-
-/* Hamburger animation when active */
-.nav-hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
-}
-
-.nav-hamburger.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.nav-hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
 .nav-link {
     font-family: 'Bohemian Typewriter', sans-serif;
     font-size: 1rem;
@@ -560,13 +428,13 @@ body::after {
 
 .mystical-eyes {
     display: flex;
-    gap: clamp(8px, 2vw, 25px); /* Smaller gap on mobile to match smaller eyes */
-    margin-bottom: clamp(6px, 1.5vw, 15px); /* Smaller margin on mobile */
+    gap: 25px;
+    margin-bottom: 15px;
 }
 
 .eye {
-    width: clamp(12px, 2.5vw, 25px); /* Smaller on mobile, maintaining ratio */
-    height: clamp(12px, 2.5vw, 25px); /* Smaller on mobile, maintaining ratio */
+    width: 25px;
+    height: 25px;
     background: linear-gradient(45deg, #FFD700, #FFA500);
     border-radius: 50%;
     position: relative;
@@ -582,8 +450,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: clamp(4px, 1vw, 8px); /* Smaller pupil on mobile */
-    height: clamp(4px, 1vw, 8px); /* Smaller pupil on mobile */
+    width: 8px;
+    height: 8px;
     background: #1A0033;
     border-radius: 50%;
     animation: pupilGlow 1.5s ease-in-out infinite alternate;
@@ -594,8 +462,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: clamp(14px, 3.5vw, 30px); /* Smaller glow on mobile */
-    height: clamp(14px, 3.5vw, 30px); /* Smaller glow on mobile */
+    width: 30px;
+    height: 30px;
     background: radial-gradient(circle, rgba(255, 215, 0, 0.3), transparent 70%);
     border-radius: 50%;
     animation: eyeGlow 2s ease-in-out infinite alternate;
@@ -603,9 +471,9 @@ body::after {
 
 .mystical-mouth {
     position: relative;
-    width: clamp(20px, 5vw, 35px);
-    height: clamp(12px, 3vw, 20px);
-    margin-top: clamp(8px, 2vw, 15px);
+    width: 35px;
+    height: 20px;
+    margin-top: 15px;
 }
 
 .mystical-mouth::before {
@@ -615,8 +483,8 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    border: clamp(2px, 0.5vw, 3px) solid #FFD700;
-    border-radius: 0 0 clamp(20px, 5vw, 35px) clamp(20px, 5vw, 35px);
+    border: 3px solid #FFD700;
+    border-radius: 0 0 35px 35px;
     box-shadow: 
         0 0 10px rgba(255, 215, 0, 0.8),
         0 0 20px rgba(138, 43, 226, 0.6);
@@ -635,8 +503,8 @@ body::after {
 }
 
 .mystical-mouth.happy::before {
-    border-radius: clamp(20px, 5vw, 35px) clamp(20px, 5vw, 35px) 0 0;
-    border-top: clamp(2px, 0.5vw, 3px) solid #FFD700;
+    border-radius: 35px 35px 0 0;
+    border-top: 3px solid #FFD700;
     border-bottom: none;
 }
 
@@ -734,9 +602,6 @@ body::after {
     min-width: 250px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     animation: mysticalButtonGlow 2s ease-in-out infinite alternate;
-    /* Better touch interaction on mobile */
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
-    touch-action: manipulation; /* Prevents double-tap zoom delay */
 }
 
 .start-btn::before {
@@ -882,9 +747,6 @@ body::after {
     overflow: hidden;
     backdrop-filter: blur(5px);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    min-height: var(--touch-target-min); /* WCAG minimum touch target */
-    -webkit-tap-highlight-color: rgba(192, 132, 252, 0.3);
-    touch-action: manipulation;
 }
 
 .option-btn::before {
@@ -925,14 +787,14 @@ body::after {
 
 .slider-value {
     font-family: 'Bohemian Typewriter', monospace;
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-size: 1.3rem;
     font-weight: normal;
     color: #FFFFFF;
     text-align: center;
-    margin-bottom: clamp(15px, 3vw, 20px);
+    margin-bottom: 20px;
     text-shadow: 
         1px 1px 2px rgba(0, 0, 0, 0.3);
-    min-height: clamp(30px, 5vw, 40px);
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -952,9 +814,6 @@ body::after {
         inset 0 0 10px rgba(138, 43, 226, 0.4),
         0 0 15px rgba(255, 215, 0, 0.3),
         0 0 25px rgba(255, 255, 255, 0.2);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    will-change: transform;
 }
 
 .slider-labels {
@@ -1012,22 +871,15 @@ body::after {
         0 0 15px rgba(255, 215, 0, 0.8),
         0 0 25px rgba(255, 255, 255, 0.6),
         0 4px 8px rgba(138, 43, 226, 0.4);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform, box-shadow;
-    position: relative;
+    transition: all 0.3s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
-    transform: scale(1.15);
+    transform: scale(1.2);
     box-shadow: 
         0 0 25px rgba(255, 215, 0, 1),
         0 0 40px rgba(255, 255, 255, 0.8),
         0 6px 12px rgba(138, 43, 226, 0.6);
-}
-
-.slider::-webkit-slider-thumb:active {
-    transform: scale(1.1);
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slider::-moz-range-thumb {
@@ -1041,45 +893,15 @@ body::after {
         0 0 15px rgba(255, 215, 0, 0.8),
         0 0 25px rgba(255, 255, 255, 0.6),
         0 4px 8px rgba(138, 43, 226, 0.4);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform, box-shadow;
+    transition: all 0.3s ease;
 }
 
 .slider::-moz-range-thumb:hover {
-    transform: scale(1.15);
+    transform: scale(1.2);
     box-shadow: 
         0 0 25px rgba(255, 215, 0, 1),
         0 0 40px rgba(255, 255, 255, 0.8),
         0 6px 12px rgba(138, 43, 226, 0.6);
-}
-
-.slider::-moz-range-thumb:active {
-    transform: scale(1.1);
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Smooth track styling for Firefox */
-.slider::-moz-range-track {
-    height: 8px;
-    border-radius: 5px;
-    background: linear-gradient(90deg, #1A0033, #4A148C);
-    box-shadow: 
-        inset 0 0 10px rgba(138, 43, 226, 0.4),
-        0 0 15px rgba(255, 215, 0, 0.3),
-        0 0 25px rgba(255, 255, 255, 0.2);
-    border: none;
-}
-
-/* Smooth track styling for WebKit */
-.slider::-webkit-slider-runnable-track {
-    height: 8px;
-    border-radius: 5px;
-    background: linear-gradient(90deg, #1A0033, #4A148C);
-    box-shadow: 
-        inset 0 0 10px rgba(138, 43, 226, 0.4),
-        0 0 15px rgba(255, 215, 0, 0.3),
-        0 0 25px rgba(255, 255, 255, 0.2);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slider-labels {
@@ -1109,18 +931,6 @@ body::after {
     text-align: right;
 }
 
-.slider-label-end {
-    position: absolute;
-    bottom: 0;
-    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
-    padding: 0 clamp(5px, 2vw, 10px);
-    max-width: 45%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    line-height: 1.3;
-}
-
 .slider-continue-btn {
     font-family: 'Great Warrior', sans-serif;
     background: linear-gradient(145deg, #1A0033, #4A148C);
@@ -1140,9 +950,6 @@ body::after {
         0 0 20px rgba(255, 215, 0, 0.3);
     position: relative;
     z-index: 1000; /* Ensure buttons are always on top of maps */
-    min-height: var(--touch-target-min);
-    -webkit-tap-highlight-color: rgba(255, 215, 0, 0.3);
-    touch-action: manipulation;
 }
 
 .slider-continue-btn:hover {
@@ -1185,7 +992,6 @@ body::after {
     max-height: calc(100vh - 150px);
     min-height: 400px; /* Ensure minimum height for maps */
     box-sizing: border-box;
-    text-align: center; /* Center inline/block children */
 }
 
 .continent-map-container {
@@ -1754,11 +1560,10 @@ body::after {
 
 /* Result Section */
 .result-section {
-    background: transparent;
+    background: #000000;
     padding: 80px 20px;
     text-align: center;
     position: relative;
-    min-height: 100vh;
 }
 
 .result-section::before {
@@ -1778,8 +1583,6 @@ body::after {
 .result-container {
     max-width: 600px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
 }
 
 .character-celebration {
@@ -1888,10 +1691,6 @@ body::after {
     box-shadow: none;
     animation: none;
     position: static;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    min-width: 0;
-    line-height: 1.2; /* Better vertical alignment with rank and confidence */
 }
 
 .guess-item:nth-child(1) .guess-name {
@@ -1904,7 +1703,6 @@ body::after {
     box-shadow: none !important;
     backdrop-filter: none !important;
     position: static !important;
-    line-height: 1.2 !important; /* Better vertical alignment with rank and confidence */
 }
 
 .guess-confidence {
@@ -2009,9 +1807,6 @@ body::after {
     text-transform: none;
     letter-spacing: 0.5px;
     min-width: 160px;
-    min-height: var(--touch-target-min);
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
-    touch-action: manipulation;
 }
 
 .correct {
@@ -2030,48 +1825,6 @@ body::after {
 .action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(114, 9, 183, 0.3);
-}
-
-/* Share Section */
-.share-section {
-    margin: 30px 0;
-    text-align: center;
-}
-
-.share-btn {
-    font-family: 'Bohemian Typewriter', sans-serif;
-    padding: 16px 32px;
-    font-size: 1rem;
-    font-weight: 600;
-    background: linear-gradient(145deg, #00ff88, #00cc6a);
-    color: #000000;
-    border: 2px solid #00ff88;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: none;
-    letter-spacing: 0.5px;
-    min-width: 200px;
-    min-height: var(--touch-target-min);
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
-    -webkit-tap-highlight-color: rgba(0, 255, 136, 0.3);
-    touch-action: manipulation;
-}
-
-.share-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
-    background: linear-gradient(145deg, #00ff99, #00dd77);
-}
-
-.share-btn:active {
-    transform: translateY(0);
-}
-
-.share-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
 }
 
 /* Name Input Section */
@@ -3421,175 +3174,25 @@ body::after {
     }
 }
 
-/* Responsive Design - Using research-based breakpoints */
-/* Mobile: up to 600px, Tablet: 601-900px, Desktop: 901px+ */
-
-/* Tablet and below (up to 900px) */
-@media (max-width: 900px) {
+/* Responsive Design */
+@media (max-width: 768px) {
     .container {
         padding: 20px 15px;
     }
-}
-
-/* Tablet devices (601px - 900px) - also use hamburger menu */
-@media (max-width: 900px) and (min-width: 601px) {
-    .main-nav {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-    }
     
-    .nav-hamburger {
-        display: flex;
+    .main-nav {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
     }
     
     .nav-links {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        background: linear-gradient(135deg, rgba(26, 0, 51, 0.98), rgba(74, 20, 140, 0.98));
-        border: 2px solid rgba(192, 132, 252, 0.5);
-        border-top: none;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.5),
-            0 0 30px rgba(192, 132, 252, 0.3),
-            inset 0 0 20px rgba(192, 132, 252, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        padding: 20px;
-        gap: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        transition: all 0.4s ease;
-        z-index: 1000;
-        margin-top: 10px;
-    }
-    
-    .nav-links.active {
-        max-height: 500px;
-        opacity: 1;
-        border-top: 2px solid rgba(192, 132, 252, 0.5);
+        gap: 20px;
     }
     
     .nav-link {
-        font-size: 1rem;
-        padding: 15px 20px;
-        min-height: var(--touch-target-min);
-        display: block;
-        text-align: left;
-        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-    }
-    
-    .nav-link:last-child {
-        border-bottom: none;
-    }
-    
-    .nav-link:hover,
-    .nav-link:active {
-        background: rgba(192, 132, 252, 0.15);
-        padding-left: 30px;
-        box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2);
-    }
-    
-    .nav-link::before {
-        content: '✨';
-        position: absolute;
-        left: 0;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .nav-link:hover::before,
-    .nav-link:active::before {
-        opacity: 1;
-    }
-}
-
-/* Mobile devices (up to 600px) */
-@media (max-width: 600px) {
-    .main-nav {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-    }
-    
-    /* Show hamburger button on mobile */
-    .nav-hamburger {
-        display: flex;
-    }
-    
-    /* Hide nav links by default on mobile, show as dropdown when active */
-    .nav-links {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        background: linear-gradient(135deg, rgba(26, 0, 51, 0.98), rgba(74, 20, 140, 0.98));
-        border: 2px solid rgba(192, 132, 252, 0.5);
-        border-top: none;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.5),
-            0 0 30px rgba(192, 132, 252, 0.3),
-            inset 0 0 20px rgba(192, 132, 252, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        padding: 20px;
-        gap: 0;
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        transition: all 0.4s ease;
-        z-index: 1000;
-        margin-top: 10px;
-    }
-    
-    .nav-links.active {
-        max-height: 500px;
-        opacity: 1;
-        border-top: 2px solid rgba(192, 132, 252, 0.5);
-    }
-    
-    .nav-link {
-        font-size: 1rem;
-        padding: 15px 20px;
-        min-height: var(--touch-target-min);
-        display: block;
-        text-align: left;
-        border-bottom: 1px solid rgba(192, 132, 252, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-    }
-    
-    .nav-link:last-child {
-        border-bottom: none;
-    }
-    
-    .nav-link:hover,
-    .nav-link:active {
-        background: rgba(192, 132, 252, 0.15);
-        padding-left: 30px;
-        box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2);
-    }
-    
-    .nav-link::before {
-        content: '✨';
-        position: absolute;
-        left: 0;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .nav-link:hover::before,
-    .nav-link:active::before {
-        opacity: 1;
+        font-size: 0.95rem;
+        padding: 6px 12px;
     }
     
     .hero {
@@ -3639,108 +3242,10 @@ body::after {
     
     .quiz-section {
         padding: 40px 15px;
-        text-align: center;
-    }
-    
-    .quiz-container {
-        margin: 0 auto;
-        text-align: center;
-    }
-    
-    .question-text {
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-    }
-    
-    .options-container {
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .slider-container {
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .slider-labels {
-        padding: 0 12px;
-        min-height: 50px;
-    }
-    
-    .slider-label-end {
-        padding: 0 6px;
-        max-width: 45%;
-        font-size: clamp(0.7rem, 1.7vw, 0.9rem);
-        white-space: normal;
-        line-height: 1.4;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        text-align: center;
-    }
-    
-    .slider-label-end:first-child {
-        text-align: left;
-    }
-    
-    .slider-label-end:last-child {
-        text-align: right;
     }
     
     .result-section {
-        padding: 40px 15px;
-        min-height: auto;
-    }
-    
-    .result-title {
-        font-size: 1.8rem;
-        margin-bottom: 30px;
-    }
-    
-    .guesses-container {
-        gap: 12px;
-        margin: 30px 0;
-        max-width: 100%;
-        padding: 0 10px; /* Add some padding to prevent edge overflow */
-    }
-    
-    .guess-item {
-        padding: 15px 20px; /* Similar to desktop but adjusted for mobile */
-        flex-wrap: nowrap; /* Prevent wrapping to maintain alignment */
-        align-items: center;
-    }
-    
-    .guess-item .guess-name {
-        font-size: clamp(1rem, 2.5vw, 1.3rem) !important; /* Same size for all names */
-    }
-    
-    .guess-item:nth-child(1) .guess-name {
-        font-size: clamp(1rem, 2.5vw, 1.3rem) !important; /* Same size as others */
-    }
-    
-    .guess-rank {
-        font-size: 1.5rem;
-        width: 40px;
-        height: 40px;
-        margin-right: 15px;
-    }
-    
-    .guess-item .guess-name {
-        font-size: 1.8rem;
-    }
-    
-    .guess-confidence {
-        font-size: 0.9rem;
-    }
-    
-    .share-section {
-        margin: 25px 0;
-    }
-    
-    .share-btn {
-        padding: 14px 24px;
-        font-size: 0.95rem;
-        min-width: 180px;
+        padding: 60px 15px;
     }
     
     .final-section {
@@ -3770,8 +3275,8 @@ body::after {
     
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
-        max-width: 420px; /* 1.5x larger (280 * 1.5) */
-        max-height: 525px; /* 1.5x larger (350 * 1.5) */
+        max-width: 280px;
+        max-height: 350px;
     }
     
     .main-footer {
@@ -3834,16 +3339,12 @@ body::after {
     /* Mobile continent maps - smaller to fit screen */
     .continent-map-container[data-continent="africa"] .continent-map-svg,
     .continent-map-container svg[data-continent="africa"],
+    .continent-map-container[data-continent="north-america"] .continent-map-svg,
+    .continent-map-container svg[data-continent="north-america"],
     .continent-map-container[data-continent="asia"] .continent-map-svg,
     .continent-map-container svg[data-continent="asia"] {
         max-width: 350px !important;
         max-height: 350px !important;
-    }
-    
-    .continent-map-container[data-continent="north-america"] .continent-map-svg,
-    .continent-map-container svg[data-continent="north-america"] {
-        max-width: 280px !important;
-        max-height: 280px !important;
     }
     
     .continent-map-container[data-continent="europe"] .continent-map-svg,
@@ -3858,77 +3359,14 @@ body::after {
     
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
-        max-width: 330px; /* 1.5x larger (220 * 1.5) */
-        max-height: 450px; /* 1.5x larger (300 * 1.5) */
+        max-width: 220px;
+        max-height: 300px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 15px;
-    }
-    
-    .quiz-section {
-        padding: 40px 15px;
-        text-align: center;
-    }
-    
-    .quiz-container {
-        margin: 0 auto;
-        text-align: center;
-        padding: 0;
-    }
-    
-    .question-container {
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .question-text {
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-    }
-    
-    .options-container {
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    .slider-container {
-        margin-left: auto;
-        margin-right: auto;
-        padding: 20px 15px;
-    }
-    
-    .slider-labels {
-        padding: 0 15px;
-        min-height: 60px;
-        margin-top: 15px;
-    }
-    
-    .slider-label-end {
-        padding: 0 8px;
-        max-width: 45%;
-        font-size: clamp(0.65rem, 1.6vw, 0.85rem);
-        white-space: normal;
-        line-height: 1.4;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        text-align: center;
-    }
-    
-    .slider-label-end:first-child {
-        left: 0 !important;
-        right: auto !important;
-        text-align: left;
-    }
-    
-    .slider-label-end:last-child {
-        right: 0 !important;
-        left: auto !important;
-        text-align: right;
+        padding: 15px 10px;
     }
     
     .hero {
@@ -3936,131 +3374,39 @@ body::after {
     }
     
     .main-title {
-        font-size: clamp(1.5rem, 6vw, 2rem);
+        font-size: 2rem;
         margin-bottom: 15px;
     }
     
     .tagline {
-        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        font-size: 1rem;
         margin-bottom: 30px;
     }
     
     .character {
-        width: clamp(80px, 15vw, 100px);
-        height: clamp(80px, 15vw, 100px);
+        width: 100px;
+        height: 100px;
     }
     
     .start-btn {
-        padding: clamp(12px, 2vw, 16px) clamp(20px, 3vw, 24px);
-        font-size: clamp(0.85rem, 2vw, 1rem);
-        min-width: clamp(160px, 35vw, 180px);
+        padding: 16px 24px;
+        font-size: 1rem;
+        min-width: 180px;
     }
     
     .question-text {
-        font-size: clamp(1rem, 3.5vw, 1.3rem);
+        font-size: 1.3rem;
         margin-bottom: 30px;
     }
     
     .option-btn {
-        padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 20px);
-        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        padding: 16px 20px;
+        font-size: 0.95rem;
     }
     
     .guess-name {
-        font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+        font-size: 1.8rem;
         padding: 20px 25px;
-    }
-    
-    .result-section {
-        padding: 30px 10px;
-    }
-    
-    .result-title {
-        font-size: clamp(1.2rem, 4vw, 1.5rem);
-        margin-bottom: 25px;
-        line-height: 1.3;
-    }
-    
-    .guesses-container {
-        gap: 10px;
-        margin: 25px 0;
-    }
-    
-    .guess-item {
-        padding: 15px 20px; /* Similar to desktop (20px 25px) but adjusted for mobile */
-        flex-wrap: nowrap; /* Prevent wrapping to maintain alignment */
-        gap: 0;
-        align-items: center;
-    }
-    
-    .guess-rank {
-        font-size: clamp(0.9rem, 2.2vw, 1.1rem);
-        width: clamp(32px, 6vw, 40px);
-        height: clamp(32px, 6vw, 40px);
-        margin-right: 12px; /* Consistent spacing */
-        flex-shrink: 0;
-    }
-    
-    .guess-item .guess-name {
-        font-size: clamp(1rem, 2.5vw, 1.3rem) !important; /* Same size for all names */
-        flex: 1 1 auto;
-        min-width: 0;
-        word-break: break-word;
-        overflow-wrap: break-word;
-        line-height: 1.2; /* Better alignment with rank and confidence */
-        text-align: left; /* Align with rank */
-    }
-    
-    .guess-item:nth-child(1) .guess-name {
-        font-size: clamp(1rem, 2.5vw, 1.3rem) !important; /* Same size as others */
-    }
-    
-    .guess-confidence {
-        font-size: clamp(0.75rem, 1.9vw, 0.9rem);
-        flex: 0 0 auto;
-        padding: 6px 12px; /* Slightly smaller padding for mobile */
-        margin-left: 8px; /* Spacing from name */
-        min-width: 50px; /* Ensure consistent width */
-    }
-    
-    .name-input-section {
-        margin: 25px 0;
-        padding: 15px;
-    }
-    
-    .name-input {
-        min-width: 150px;
-        font-size: 0.9rem;
-        padding: 10px 15px;
-    }
-    
-    .name-submit-btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-    }
-    
-    .result-actions {
-        gap: 12px;
-        margin: 20px 0;
-    }
-    
-    .action-btn {
-        padding: 14px 20px;
-        font-size: 0.9rem;
-        width: 100%;
-        max-width: 100%;
-    }
-    
-    .share-section {
-        margin: 20px 0;
-    }
-    
-    .share-btn {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-        min-width: 160px;
-        width: 100%;
-        max-width: 100%;
     }
     
     .final-title {
@@ -4138,102 +3484,9 @@ body::after {
     
     .continent-map-container[data-continent="north-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="north-america"] {
-        max-width: 75vw !important; /* Slightly bigger */
-        max-height: 50vh !important; /* Slightly bigger */
-        transform: translateX(0) translateY(-10%) scale(1.0) !important; /* Move up and make bigger */
-    }
-    
-    /* Make states map bigger on mobile and ensure proper centering */
-    .map-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px 10px; /* Reduced padding to prevent overflow */
-        margin: 0 auto;
-        width: 100%;
-        max-width: 100vw;
-        box-sizing: border-box;
-        overflow: hidden; /* Prevent overflow */
-    }
-    
-    .us-map {
-        max-width: 90vw !important; /* Reduced from 95vw to prevent overflow */
-        width: 90vw !important;
-        margin: 0 auto !important;
-        display: block !important;
-        transform: translateX(0) !important; /* Ensure no horizontal offset */
-    }
-    
-    .map-container svg.us-map {
-        max-width: 90vw !important; /* Reduced from 95vw */
-        width: 90vw !important;
-        margin: 0 auto !important;
-        display: block !important;
-        transform: translateX(0) !important; /* Ensure no horizontal offset */
-        box-sizing: border-box;
-    }
-    
-    /* Center all world/continent maps on mobile */
-    .map-container {
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: center !important;
-        align-items: center !important;
-        margin: 0 auto !important;
-        padding: 20px 10px !important;
-        width: 100% !important;
-        max-width: 100vw !important;
-        box-sizing: border-box !important;
-        overflow: hidden !important;
-    }
-    
-    .map-container svg {
-        margin: 0 auto !important;
-        display: block !important;
-        transform: translateX(0) !important; /* Remove any horizontal translation */
         max-width: 90vw !important;
-        width: auto !important;
-        box-sizing: border-box !important;
-    }
-    
-    /* World map specific centering */
-    .map-container svg.world-map-continent-selector,
-    .map-container svg[class*="world-map"] {
-        margin: 0 auto !important;
-        display: block !important;
-        transform: translateX(0) !important;
-        max-width: 90vw !important;
-        width: auto !important;
-        left: auto !important;
-        right: auto !important;
-    }
-    
-    .continent-map-container {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        margin: 0 auto !important;
-        padding: 0 10px !important;
-        width: 100% !important;
-        max-width: 100vw !important;
-        box-sizing: border-box !important;
-    }
-    
-    .continent-map-container svg {
-        margin: 0 auto !important;
-        display: block !important;
-        transform: translateX(0) !important; /* Remove any horizontal translation */
-        max-width: 90vw !important;
-        width: auto !important;
-        box-sizing: border-box !important;
-    }
-    
-    /* Override any translateX transforms on mobile for proper centering */
-    .continent-map-container[data-continent="north-america"] .continent-map-svg,
-    .continent-map-container svg[data-continent="north-america"] {
-        max-width: 75vw !important; /* Slightly bigger */
-        max-height: 50vh !important; /* Slightly bigger */
-        transform: translateX(0) translateY(-10%) scale(1.0) !important; /* Move up and make bigger */
+        max-height: 55vh !important;
+        transform: scale(1.15) !important;
     }
     
     .continent-map-container[data-continent="asia"] .continent-map-svg,
@@ -4263,8 +3516,7 @@ body::after {
     .continent-map-container[data-continent="south-america"] .continent-map-svg,
     .continent-map-container svg[data-continent="south-america"] {
         max-width: 90vw;
-        max-height: 75vh; /* 1.5x larger (50vh * 1.5) */
-        transform: scale(1.5) !important; /* Scale up 1.5x */
+        max-height: 50vh;
     }
 }
 
@@ -4274,41 +3526,22 @@ body::after {
 
 /* Floating Feedback Button */
 .feedback-float-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
     padding: 15px 25px;
     background: linear-gradient(145deg, #6A1B9A, #8E24AA);
     color: white;
     border: 2px solid rgba(255, 215, 0, 0.5);
+    border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
+    z-index: 9999;
     box-shadow: 0 6px 20px rgba(138, 43, 226, 0.4);
     transition: all 0.3s ease;
     animation: feedbackPulse 2s infinite;
-}
-
-/* Desktop button - floating */
-.feedback-desktop-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    left: auto;
-    width: auto;
-    border-radius: 50px;
-    z-index: 9999;
-}
-
-/* Mobile button - inside footer */
-.feedback-footer-btn {
-    position: relative;
-    width: 100%;
-    border-radius: 0;
-    margin: 20px 0 0 0;
-    border-top: 2px solid rgba(255, 215, 0, 0.5);
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
-    z-index: 1;
 }
 
 .feedback-float-btn:hover {
@@ -4553,25 +3786,11 @@ body::after {
     color: rgba(241, 196, 15, 1);
 }
 
-/* Desktop - show desktop button, hide mobile button */
-@media (min-width: 769px) {
-    .feedback-desktop-btn {
-        display: block;
-    }
-    
-    .feedback-footer-btn {
-        display: none;
-    }
-}
-
-/* Mobile Responsive - hide desktop button, show mobile button in footer */
+/* Mobile Responsive */
 @media (max-width: 768px) {
-    .feedback-desktop-btn {
-        display: none;
-    }
-    
-    .feedback-footer-btn {
-        display: block;
+    .feedback-float-btn {
+        bottom: 20px;
+        right: 20px;
         padding: 12px 20px;
         font-size: 0.9rem;
     }
@@ -4603,8 +3822,10 @@ body::after {
 }
 
 @media (max-width: 480px) {
-    .feedback-footer-btn {
-        padding: 12px 18px;
+    .feedback-float-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 18px;
         font-size: 0.85rem;
     }
     
