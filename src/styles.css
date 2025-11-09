@@ -1640,13 +1640,12 @@ body::after {
 }
 
 .guess-item:nth-child(1) {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 255, 0, 0.1));
-    border: 3px solid rgba(255, 215, 0, 0.8) !important;
-    padding: 19px 24px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 255, 0, 0.05));
+    border: 3px solid rgba(255, 215, 0, 0.7) !important;
+    padding: 20px 25px;
     box-shadow: 
-        0 4px 20px rgba(255, 215, 0, 0.3),
-        0 0 30px rgba(255, 215, 0, 0.2),
-        inset 0 0 20px rgba(255, 215, 0, 0.1);
+        0 4px 20px rgba(255, 215, 0, 0.25),
+        0 0 25px rgba(255, 215, 0, 0.15);
 }
 
 .guess-item:nth-child(1):hover {
@@ -1696,18 +1695,14 @@ body::after {
 
 .guess-item:nth-child(1) .guess-name {
     color: #ffd700 !important;
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
-    font-size: 2.4rem;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(13, 0, 37, 0.95)) !important;
-    padding: 15px 25px !important;
-    border-radius: 12px !important;
-    border: 2px solid rgba(255, 215, 0, 0.5) !important;
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.4),
-        inset 0 0 30px rgba(0, 0, 0, 0.5),
-        0 4px 15px rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(10px);
-    position: relative !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.5) !important;
+    font-size: 2.2rem;
+    background: none !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    position: static !important;
 }
 
 .guess-confidence {
