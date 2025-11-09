@@ -2,6 +2,8 @@
 
 An interactive web application that uses a **custom-built hybrid AI system** (rule-based logic + machine learning) to predict names based on user responses to a series of questions. Built with vanilla JavaScript, CSS animations, and TensorFlow.js. **All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.**
 
+🌐 **Live Website**: [https://guess-my-name-chi.vercel.app](https://guess-my-name-chi.vercel.app)
+
 ## ✨ Features
 
 - **Interactive Quiz**: Engaging question-based interface with multiple question types (multiple choice, sliders, maps)
@@ -25,7 +27,7 @@ An interactive web application that uses a **custom-built hybrid AI system** (ru
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/guess-my-name.git
+git clone https://github.com/char-lotte-anne/guess-my-name.git
 cd guess-my-name
 ```
 
