@@ -988,6 +988,9 @@ class NameGuessingQuiz {
         
         // Update browser history for first question
         history.pushState({page: 'quiz', question: 0}, '', '#quiz-0');
+        
+        // Scroll to show progress bar and first question on mobile
+        setTimeout(() => this.scrollToQuestion(), 300);
     }
 
     showQuestion() {
@@ -1022,7 +1025,9 @@ class NameGuessingQuiz {
                 const button = document.createElement('button');
                 button.className = 'option-btn';
                 button.textContent = option.text;
-                button.addEventListener('click', () => this.selectAnswer(option.value));
+                button.addEventListener('click', () => {
+                this.selectAnswer(option.value);
+            });
                 optionsContainer.appendChild(button);
             });
         }
@@ -1300,6 +1305,7 @@ class NameGuessingQuiz {
         continueBtn.addEventListener('click', () => {
             if (selectedValues.size > 0) {
                 this.selectAnswer(Array.from(selectedValues));
+                // Scroll will be handled in selectAnswer method
             }
         });
         
@@ -1453,9 +1459,10 @@ class NameGuessingQuiz {
             svgElement.classList.add('world-map');
             svgElement.style.width = '100%';
             svgElement.style.height = 'auto';
-            svgElement.style.maxWidth = '1000px';
+            svgElement.style.maxWidth = window.innerWidth <= 768 ? '90vw' : '1000px';
             svgElement.style.display = 'block';
             svgElement.style.margin = '0 auto';
+            svgElement.style.transform = 'translateX(0)';
       
             svgElement.querySelectorAll('path').forEach(path => {
                path.classList.add('country-path');
@@ -1629,9 +1636,10 @@ class NameGuessingQuiz {
             svgElement.classList.add('us-map', 'world-map-continent-selector'); // Use same class as state map + identifier
             svgElement.style.width = '100%';
             svgElement.style.height = 'auto';
-            svgElement.style.maxWidth = '800px';
+            svgElement.style.maxWidth = window.innerWidth <= 768 ? '90vw' : '800px';
             svgElement.style.display = 'block';
             svgElement.style.margin = '0 auto';
+            svgElement.style.transform = 'translateX(0)';
       
             // Track which paths belong to which continents
             const continentPaths = {};
@@ -2485,6 +2493,8 @@ class NameGuessingQuiz {
                 this.currentContinentIndex++;
                 if (this.currentContinentIndex < this.selectedContinents.length) {
                     this.showContinentCountryQuestion(this.selectedContinents[this.currentContinentIndex]);
+                    // Scroll to show progress bar and question
+                    setTimeout(() => this.scrollToQuestion(), 100);
                 } else {
                     // All continents processed, move to next quiz question
                     this.hideMap();
@@ -2494,6 +2504,8 @@ class NameGuessingQuiz {
                         if (this.currentQuestion < this.questions.length) {
                             this.showQuestion();
                             history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                            // Scroll to show progress bar at top and question below on mobile
+                            this.scrollToQuestion();
                         } else {
                             this.makeGuess();
                         }
@@ -2950,11 +2962,40 @@ class NameGuessingQuiz {
                 this.showQuestion();
                 // Update browser history for next question
                 history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                // Scroll to show progress bar at top and question below on mobile
+                this.scrollToQuestion();
             } else {
                 this.makeGuess();
             }
             document.getElementById('characterThinking').style.display = 'none';
         }, 800);
+    }
+
+    scrollToQuestion() {
+        // Scroll to show progress bar at top of viewport and question below
+        // Only scroll on mobile devices (screen width <= 768px)
+        if (window.innerWidth > 768) {
+            return; // Don't scroll on desktop
+        }
+        
+        const quizSection = document.getElementById('quizSection');
+        const progressBar = document.querySelector('.progress-bar');
+        
+        if (quizSection && progressBar) {
+            // Use requestAnimationFrame to ensure DOM has updated
+            requestAnimationFrame(() => {
+                // Calculate the scroll position to show progress bar at top
+                const quizSectionTop = quizSection.getBoundingClientRect().top + window.pageYOffset;
+                const progressBarOffset = progressBar.getBoundingClientRect().top - quizSection.getBoundingClientRect().top;
+                const targetScroll = quizSectionTop + progressBarOffset - 20; // 20px padding from top
+                
+                // Smooth scroll to position
+                window.scrollTo({
+                    top: Math.max(0, targetScroll), // Ensure we don't scroll to negative position
+                    behavior: 'smooth'
+                });
+            });
+        }
     }
 
     updateProgress() {
