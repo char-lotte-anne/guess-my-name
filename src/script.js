@@ -764,6 +764,7 @@ class NameGuessingQuiz {
         document.getElementById('wrongBtn').addEventListener('click', () => this.handleWrong());
         document.getElementById('playAgainBtn').addEventListener('click', () => this.resetQuiz());
         document.getElementById('nameSubmitBtn').addEventListener('click', () => this.handleNameSubmit());
+        document.getElementById('shareBtn').addEventListener('click', () => this.handleShare());
         
         // Allow Enter key to submit name
         document.getElementById('realNameInput').addEventListener('keypress', (e) => {
@@ -4745,10 +4746,264 @@ ${JSON.stringify(trainingData, null, 2)}
                 this.handleNameSubmit();
             }
         });
+
+        document.getElementById('shareBtn').addEventListener('click', () => this.handleShare());
         
         // Reset browser history
         history.pushState({page: 'home'}, '', '#');
     }
+
+    async handleShare() {
+        if (!this.currentGuesses || this.currentGuesses.length === 0) {
+            alert('No results to share yet!');
+            return;
+        }
+
+        const shareBtn = document.getElementById('shareBtn');
+        const originalText = shareBtn.textContent;
+        
+        try {
+            // Show loading state
+            shareBtn.disabled = true;
+            shareBtn.textContent = '✨ Creating graphic... ✨';
+            
+            const topName = this.currentGuesses[0].name;
+            
+            // Generate the shareable graphic
+            const imageBlob = await this.generateShareableGraphic(topName);
+            
+            // Check if we're on mobile
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // For mobile, try to share to Instagram Story using deep link
+                this.shareToInstagramStory(imageBlob);
+            } else {
+                // For desktop, download the image
+                this.downloadImage(imageBlob, `my-name-should-have-been-${topName.toLowerCase()}.png`);
+            }
+            
+            // Reset button
+            shareBtn.disabled = false;
+            shareBtn.textContent = originalText;
+        } catch (error) {
+            console.error('Error generating shareable graphic:', error);
+            alert('Sorry, there was an error generating the shareable graphic. Please try again.');
+            
+            // Reset button
+            shareBtn.disabled = false;
+            shareBtn.textContent = originalText;
+        }
+    }
+
+    async generateShareableGraphic(name) {
+        // Wait for fonts to load
+        await document.fonts.ready;
+        
+        // Get the name definition from the database
+        const definition = this.enhancedNameDatabase.getNameDefinition(name);
+        
+        // Instagram Story dimensions: 1080x1920 (9:16 aspect ratio)
+        const width = 1080;
+        const height = 1920;
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        // Background gradient (mystical dark theme)
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, '#000000');
+        gradient.addColorStop(0.3, '#1a0033');
+        gradient.addColorStop(0.7, '#000000');
+        gradient.addColorStop(1, '#0a1a0a');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+        
+        // Add mystical glow effects
+        for (let i = 0; i < 5; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const radius = 100 + Math.random() * 200;
+            const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+            glowGradient.addColorStop(0, `rgba(0, 255, 136, ${0.1 + Math.random() * 0.1})`);
+            glowGradient.addColorStop(1, 'rgba(0, 255, 136, 0)');
+            ctx.fillStyle = glowGradient;
+            ctx.fillRect(0, 0, width, height);
+        }
+        
+        // Add decorative elements (stars/sparkles)
+        ctx.fillStyle = '#00ff88';
+        for (let i = 0; i < 30; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const size = 1 + Math.random() * 3;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // Main text: "The spirits said my name should have been..."
+        ctx.fillStyle = '#00ff88';
+        ctx.font = 'bold 48px "Bohemian Typewriter", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        const textLines = [
+            'The spirits said',
+            'my name should',
+            'have been...'
+        ];
+        
+        let yPos = height * 0.25;
+        textLines.forEach((line, index) => {
+            // Add text shadow/glow effect
+            ctx.shadowColor = '#00ff88';
+            ctx.shadowBlur = 20;
+            ctx.fillText(line, width / 2, yPos);
+            ctx.shadowBlur = 0;
+            yPos += 80;
+        });
+        
+        // Calculate name position (centered in the decorative border area)
+        const nameY = height * 0.5;
+        const borderY = nameY - 100; // Border starts 100px above name center
+        const borderHeight = 200;
+        
+        // Add decorative border/ornament (centered around the name)
+        ctx.strokeStyle = '#00ff88';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([20, 10]);
+        ctx.strokeRect(80, borderY, width - 160, borderHeight);
+        ctx.setLineDash([]);
+        
+        // The name (larger, more prominent) - positioned in center of border
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 120px "Bohemian Typewriter", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Add glow effect for the name
+        ctx.shadowColor = '#ffd700';
+        ctx.shadowBlur = 30;
+        ctx.fillText(name.toUpperCase(), width / 2, nameY);
+        ctx.shadowBlur = 0;
+        
+        // Decorative separator line between name and definition
+        const separatorY = nameY + 140;
+        ctx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 5]);
+        ctx.beginPath();
+        ctx.moveTo(width * 0.2, separatorY);
+        ctx.lineTo(width * 0.8, separatorY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // Name definition (below the name)
+        const definitionY = nameY + 200;
+        ctx.fillStyle = '#00ff88';
+        ctx.font = '36px "Bohemian Typewriter", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Split definition into lines if it's too long
+        const maxWidth = width - 160;
+        const words = definition.split(' ');
+        let line = '';
+        let lines = [];
+        
+        for (let i = 0; i < words.length; i++) {
+            const testLine = line + words[i] + ' ';
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && i > 0) {
+                lines.push(line.trim());
+                line = words[i] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        lines.push(line.trim());
+        
+        // Draw definition lines
+        let definitionStartY = definitionY;
+        lines.forEach((line, index) => {
+            ctx.shadowColor = '#00ff88';
+            ctx.shadowBlur = 15;
+            ctx.fillText(line, width / 2, definitionStartY + (index * 50));
+            ctx.shadowBlur = 0;
+        });
+        
+        // Footer text
+        const footerY = definitionStartY + (lines.length * 50) + 80;
+        ctx.fillStyle = '#00ff88';
+        ctx.font = '32px "Bohemian Typewriter", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('🔮 Madame Mystique\'s Crystal Ball 🔮', width / 2, footerY);
+        
+        // Website URL
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.7)';
+        ctx.font = '24px "Bohemian Typewriter", monospace';
+        ctx.fillText('guess-my-name-chi.vercel.app', width / 2, footerY + 50);
+        
+        // Convert canvas to blob
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/png');
+        });
+    }
+
+    shareToInstagramStory(imageBlob) {
+        // Create a temporary URL for the image
+        const imageUrl = URL.createObjectURL(imageBlob);
+        
+        // Create a temporary anchor element to download the image first
+        // Instagram Stories requires the image to be in the user's photo library
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = `my-name-should-have-been.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // After a short delay, try to open Instagram Story camera
+        // The image should now be the most recent in the user's gallery
+        setTimeout(() => {
+            // Try Instagram Stories deep link
+            const instagramUrl = 'instagram://story-camera';
+            window.location.href = instagramUrl;
+            
+            // Fallback: if Instagram app is not installed, show instructions
+            setTimeout(() => {
+                alert('Image saved! Open Instagram, swipe to create a story, and select the image from your gallery.');
+            }, 1000);
+        }, 500);
+        
+        // Clean up the URL after a delay
+        setTimeout(() => {
+            URL.revokeObjectURL(imageUrl);
+        }, 10000);
+    }
+
+    downloadImage(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 100);
+        
+        alert('Image downloaded! You can now share it to Instagram Story from your photos.');
+    }
+
 
     showHome() {
         // Reset quiz state when navigating home

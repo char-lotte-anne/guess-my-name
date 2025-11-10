@@ -27,7 +27,7 @@ An interactive web application that uses a **custom-built hybrid AI system** (ru
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/char-lotte-anne/guess-my-name.git
+git clone https://github.com/your-username/guess-my-name.git
 cd guess-my-name
 ```
 

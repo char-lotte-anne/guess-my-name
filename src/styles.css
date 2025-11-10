@@ -1560,10 +1560,11 @@ body::after {
 
 /* Result Section */
 .result-section {
-    background: #000000;
+    background: transparent;
     padding: 80px 20px;
     text-align: center;
     position: relative;
+    min-height: 100vh;
 }
 
 .result-section::before {
@@ -1583,6 +1584,8 @@ body::after {
 .result-container {
     max-width: 600px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 .character-celebration {
@@ -1691,6 +1694,9 @@ body::after {
     box-shadow: none;
     animation: none;
     position: static;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
 }
 
 .guess-item:nth-child(1) .guess-name {
@@ -1790,9 +1796,16 @@ body::after {
 
 .result-actions {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.action-buttons-row {
+    display: flex;
     gap: 20px;
     justify-content: center;
-    margin-top: 40px;
 }
 
 .action-btn {
@@ -1825,6 +1838,48 @@ body::after {
 .action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(114, 9, 183, 0.3);
+}
+
+/* Share Section */
+.share-section {
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.share-btn {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(145deg, #00ff88, #00cc6a);
+    color: #000000;
+    border: 2px solid #00ff88;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    min-width: 200px;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+    background: linear-gradient(145deg, #00ff99, #00dd77);
+}
+
+.share-btn:active {
+    transform: translateY(0);
+}
+
+.share-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* Name Input Section */
@@ -3235,6 +3290,13 @@ body::after {
         gap: 15px;
     }
     
+    .action-buttons-row {
+        flex-direction: row;
+        width: 100%;
+        gap: 15px;
+        justify-content: center;
+    }
+    
     .action-btn {
         width: 100%;
         max-width: 250px;
@@ -3245,7 +3307,48 @@ body::after {
     }
     
     .result-section {
-        padding: 60px 15px;
+        padding: 40px 15px;
+        min-height: auto;
+    }
+    
+    .result-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+    
+    .guesses-container {
+        gap: 12px;
+        margin: 30px 0;
+    }
+    
+    .guess-item {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+    
+    .guess-rank {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        margin-right: 15px;
+    }
+    
+    .guess-item .guess-name {
+        font-size: 1.8rem;
+    }
+    
+    .guess-confidence {
+        font-size: 0.9rem;
+    }
+    
+    .share-section {
+        margin: 25px 0;
+    }
+    
+    .share-btn {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+        min-width: 180px;
     }
     
     .final-section {
@@ -3407,6 +3510,93 @@ body::after {
     .guess-name {
         font-size: 1.8rem;
         padding: 20px 25px;
+    }
+    
+    .result-section {
+        padding: 30px 10px;
+    }
+    
+    .result-title {
+        font-size: 1.5rem;
+        margin-bottom: 25px;
+        line-height: 1.3;
+    }
+    
+    .guesses-container {
+        gap: 10px;
+        margin: 25px 0;
+    }
+    
+    .guess-item {
+        padding: 12px 15px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .guess-rank {
+        font-size: 1.3rem;
+        width: 35px;
+        height: 35px;
+        margin-right: 10px;
+    }
+    
+    .guess-item .guess-name {
+        font-size: 1.5rem;
+        flex: 1 1 auto;
+        min-width: 0;
+        word-break: break-word;
+    }
+    
+    .guess-confidence {
+        font-size: 0.85rem;
+        flex: 0 0 auto;
+    }
+    
+    .name-input-section {
+        margin: 25px 0;
+        padding: 15px;
+    }
+    
+    .name-input {
+        min-width: 150px;
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+    
+    .name-submit-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .result-actions {
+        gap: 12px;
+        margin: 20px 0;
+    }
+    
+    .action-buttons-row {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    
+    .action-btn {
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .share-section {
+        margin: 0;
+        width: 100%;
+    }
+    
+    .share-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-width: 160px;
+        width: 100%;
+        max-width: 100%;
     }
     
     .final-title {
