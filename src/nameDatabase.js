@@ -1691,8 +1691,12 @@ class EnhancedNameDatabase {
             candidates = this.stateGenderLengthIndex[state][gender][length];
             console.log(`🗺️ Found ${candidates.length} state-specific candidates for ${state}`);
         } else if (gender && length) {
-            // Fallback to national data
-            candidates = this.genderLengthIndex[gender][length] || [];
+            // Fallback to national data - add safety checks
+            if (this.genderLengthIndex[gender] && this.genderLengthIndex[gender][length]) {
+                candidates = this.genderLengthIndex[gender][length] || [];
+            } else {
+                candidates = [];
+            }
             console.log(`🌍 Found ${candidates.length} national candidates`);
         } else if (gender) {
             candidates = this.genderIndex[gender] || [];

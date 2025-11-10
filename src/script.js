@@ -195,9 +195,9 @@ class NamePredictionML {
         const features = new Array(50).fill(0);
         let featureIndex = 0;
 
-        // Gender encoding
+        // Gender encoding (PREFER_NOT_TO_SAY is normalized to NB earlier)
         if (answers.gender) {
-            const genderMap = { 'M': 0, 'F': 1, 'NB': 2, 'PREFER_NOT_TO_SAY': 3 };
+            const genderMap = { 'M': 0, 'F': 1, 'NB': 2 };
             features[featureIndex + (genderMap[answers.gender] || 0)] = 1;
         }
         featureIndex += 4;
@@ -1707,11 +1707,12 @@ class NameGuessingQuiz {
     showContinentCountryQuestion(continent) {
         const mapContainer = document.getElementById('mapContainer');
         if (!mapContainer) {
+            console.error('Map container not found!');
             return;
         }
         
         mapContainer.style.display = 'block';
-        mapContainer.innerHTML = '<div id="continueContainer"></div>';
+        mapContainer.innerHTML = '<div id="continueContainer" style="display: block; visibility: visible;"></div>';
         
         // Update question text
         const questionText = document.getElementById('questionText');
@@ -1728,7 +1729,10 @@ class NameGuessingQuiz {
         });
         
         // Show continue button immediately (allows skipping by clicking continue with no selection)
-        this.showContinentCountryContinueButton(continent);
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            this.showContinentCountryContinueButton(continent);
+        }, 0);
         
         // Load the continent map
         this.loadContinentMapForSelection(continent);
@@ -2273,6 +2277,25 @@ class NameGuessingQuiz {
     
     showContinentCountryContinueButton(continent) {
         const continueContainer = document.getElementById('continueContainer');
+        if (!continueContainer) {
+            console.error('Continue container not found in showContinentCountryContinueButton!');
+            // Try to create it if it doesn't exist
+            const mapContainer = document.getElementById('mapContainer');
+            if (mapContainer) {
+                const newContainer = document.createElement('div');
+                newContainer.id = 'continueContainer';
+                newContainer.style.display = 'block';
+                newContainer.style.visibility = 'visible';
+                mapContainer.appendChild(newContainer);
+                return this.showContinentCountryContinueButton(continent); // Retry
+            }
+            return;
+        }
+        
+        // Ensure container is visible
+        continueContainer.style.display = 'block';
+        continueContainer.style.visibility = 'visible';
+        
         let existingBtn = continueContainer.querySelector('.continent-country-continue-btn');
         
         if (!existingBtn) {
@@ -2281,12 +2304,16 @@ class NameGuessingQuiz {
             continueBtn.textContent = this.selectedCountries.length > 0 
                 ? `Continue (${this.selectedCountries.length} selected)` 
                 : 'Continue';
+            continueBtn.style.display = 'block'; // Ensure button is visible
+            continueBtn.style.visibility = 'visible';
+            continueBtn.style.position = 'relative'; // Ensure it's in normal flow
+            continueBtn.style.zIndex = '1000'; // Ensure it's on top
             continueBtn.addEventListener('click', () => {
                 // Store selected countries for this continent
                 if (!this.answers.country_selections) {
                     this.answers.country_selections = {};
                 }
-                this.answers.country_selections[continent] = this.selectedCountries;
+                this.answers.country_selections[continent] = Array.isArray(this.selectedCountries) ? this.selectedCountries : [];
                 
                 // Move to next continent or next question
                 this.currentContinentIndex++;
@@ -2313,6 +2340,8 @@ class NameGuessingQuiz {
             existingBtn.textContent = this.selectedCountries.length > 0 
                 ? `Continue (${this.selectedCountries.length} selected)` 
                 : 'Continue';
+            existingBtn.style.display = 'block'; // Ensure button is visible
+            existingBtn.style.visibility = 'visible';
         }
     }
 
@@ -2371,8 +2400,11 @@ class NameGuessingQuiz {
         // Clear the container and show country maps for each selected continent
         mapContainer.innerHTML = '<div id="continueContainer"></div>';
         
-        // Initialize selected countries array
-        this.selectedCountries = [];
+        // Initialize selected countries as an array of objects with continent and countries
+        this.selectedCountries = this.selectedContinents.map(continent => ({
+            continent: continent,
+            countries: []
+        }));
         
         // Show continue button immediately (allows skipping by clicking continue with no selection)
         this.showCountryMapsContinueButton();
@@ -2507,6 +2539,13 @@ class NameGuessingQuiz {
                     path.addEventListener('click', () => {
                         const countryId = path.id || path.getAttribute('name') || path.getAttribute('data-name');
                         
+                        // Find the continent data for this map
+                        const continentData = this.selectedCountries.find(c => c.continent === continent);
+                        if (!continentData) {
+                            console.error(`Continent data not found for ${continent}`);
+                            return;
+                        }
+                        
                         if (path.classList.contains('selected')) {
                             // Deselect country
                             path.classList.remove('selected');
@@ -2514,10 +2553,9 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFD700';
                             path.style.strokeWidth = '1.5';
                             path.style.filter = 'drop-shadow(0 0 3px rgba(255, 215, 0, 0.2))';
-                            // Removed scale transform
                             
-                            // Remove from selected countries
-                            this.selectedCountries = this.selectedCountries.filter(c => c !== countryId);
+                            // Remove from selected countries for this continent
+                            continentData.countries = continentData.countries.filter(c => c !== countryId);
                         } else {
                             // Select country
                             path.classList.add('selected');
@@ -2525,11 +2563,11 @@ class NameGuessingQuiz {
                             path.style.stroke = '#FFA500';
                             path.style.strokeWidth = '3';
                             path.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 1))';
-                            // Removed scale transform
                             path.style.animation = 'statePulse 2s ease-in-out infinite';
-                            
-                            // Add to selected countries
-                            this.selectedCountries.push(countryId);
+                            // Add to selected countries for this continent
+                            if (!continentData.countries.includes(countryId)) {
+                                continentData.countries.push(countryId);
+                            }
                         }
                         
                         // Update continue button text (button should always be visible)
@@ -2552,20 +2590,84 @@ class NameGuessingQuiz {
 
     showCountryMapsContinueButton() {
         const continueContainer = document.getElementById('continueContainer');
-        const buttonText = this.selectedCountries.length > 0 
-            ? `Continue (${this.selectedCountries.length} countries selected)` 
+        if (!continueContainer) {
+            console.error('Continue container not found!');
+            return;
+        }
+        
+        // Calculate total selected countries across all continents
+        let totalSelected = 0;
+        if (Array.isArray(this.selectedCountries) && this.selectedCountries.length > 0) {
+            // Check if it's the new format (array of objects) or old format (flat array)
+            if (typeof this.selectedCountries[0] === 'object' && this.selectedCountries[0].continent) {
+                // New format: array of objects with continent and countries
+                this.selectedCountries.forEach(continentData => {
+                    if (continentData.countries) {
+                        totalSelected += continentData.countries.length;
+                    }
+                });
+            } else {
+                // Old format: flat array of country IDs
+                totalSelected = this.selectedCountries.length;
+            }
+        }
+        
+        const buttonText = totalSelected > 0 
+            ? `Continue (${totalSelected} countries selected)` 
             : 'Continue';
-        if (continueContainer && !continueContainer.querySelector('.slider-continue-btn')) {
-            const continueBtn = document.createElement('button');
+        
+        let continueBtn = continueContainer.querySelector('.slider-continue-btn');
+        if (!continueBtn) {
+            continueBtn = document.createElement('button');
             continueBtn.className = 'slider-continue-btn';
             continueBtn.textContent = buttonText;
+            continueBtn.style.display = 'block'; // Ensure button is visible
+            continueBtn.style.visibility = 'visible';
             continueBtn.addEventListener('click', () => {
-                this.selectAnswer(this.selectedCountries);
+                // Store country selections for all continents
+                if (!this.answers.country_selections) {
+                    this.answers.country_selections = {};
+                }
+                
+                // Store selections per continent
+                if (Array.isArray(this.selectedCountries) && this.selectedCountries.length > 0) {
+                    if (typeof this.selectedCountries[0] === 'object' && this.selectedCountries[0].continent) {
+                        // New format: array of objects
+                        this.selectedCountries.forEach(continentData => {
+                            this.answers.country_selections[continentData.continent] = continentData.countries || [];
+                        });
+                    } else {
+                        // Old format: flat array - store for all selected continents
+                        this.selectedContinents.forEach(continent => {
+                            this.answers.country_selections[continent] = [...this.selectedCountries];
+                        });
+                    }
+                } else {
+                    // No countries selected - store empty arrays
+                    this.selectedContinents.forEach(continent => {
+                        this.answers.country_selections[continent] = [];
+                    });
+                }
+                
+                // Move to next quiz question
+                this.hideMap();
+                document.getElementById('characterThinking').style.display = 'block';
+                setTimeout(() => {
+                    this.currentQuestion++;
+                    if (this.currentQuestion < this.questions.length) {
+                        this.showQuestion();
+                        history.pushState({page: 'quiz', question: this.currentQuestion}, '', `#quiz-${this.currentQuestion}`);
+                    } else {
+                        this.makeGuess();
+                    }
+                    document.getElementById('characterThinking').style.display = 'none';
+                }, 800);
             });
             continueContainer.appendChild(continueBtn);
-        } else if (continueContainer && continueContainer.querySelector('.slider-continue-btn')) {
-            const existingBtn = continueContainer.querySelector('.slider-continue-btn');
-            existingBtn.textContent = buttonText;
+        } else {
+            continueBtn.textContent = buttonText;
+            continueBtn.style.display = 'block'; // Ensure button is visible
+            continueBtn.style.visibility = 'visible';
         }
     }
 
@@ -2745,6 +2847,19 @@ class NameGuessingQuiz {
             console.error('❌ Question or question.key not found at index:', this.currentQuestion);
             return;
         }
+        
+        // Normalize "PREFER_NOT_TO_SAY" to "NB" for gender to simplify processing
+        if (question.key === 'gender') {
+            // Handle both array and string values
+            if (Array.isArray(value)) {
+                value = value.map(v => v === 'PREFER_NOT_TO_SAY' ? 'NB' : v);
+                console.log('✅ Normalized PREFER_NOT_TO_SAY to NB in array for gender processing');
+            } else if (value === 'PREFER_NOT_TO_SAY') {
+                value = 'NB';
+                console.log('✅ Normalized PREFER_NOT_TO_SAY to NB for gender processing');
+            }
+        }
+        
         this.answers[question.key] = value;
         
         // Hide the map when moving away from state question
@@ -2772,10 +2887,33 @@ class NameGuessingQuiz {
     }
 
     async makeGuess() {
+        console.log('🎯 makeGuess: Starting guess calculation...');
+        console.log('📋 Current answers:', JSON.stringify(this.answers));
+        
         // Train ML model with existing data before making prediction
         await this.trainMLModel();
         
         const topGuesses = await this.calculateTopGuesses(5);
+        console.log(`🎯 makeGuess: Got ${topGuesses ? topGuesses.length : 0} top guesses`);
+        
+        // If we still have no guesses, use emergency fallback
+        if (!topGuesses || topGuesses.length === 0) {
+            console.error('❌ makeGuess: No guesses returned! Using emergency fallback...');
+            const emergencyFallback = [
+                { name: 'Alex', gender: this.answers.gender || 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                { name: 'Jordan', gender: this.answers.gender || 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                { name: 'Taylor', gender: this.answers.gender || 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                { name: 'Casey', gender: this.answers.gender || 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                { name: 'Morgan', gender: this.answers.gender || 'NB', totalCount: 1200, score: 42, confidence: 42 }
+            ];
+            this.displayTopGuesses(emergencyFallback);
+            this.currentGuesses = emergencyFallback;
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            this.hideMap();
+            history.pushState({page: 'result'}, '', '#result');
+            return;
+        }
         
         document.getElementById('quizSection').style.display = 'none';
         document.getElementById('resultSection').style.display = 'block';
@@ -2830,7 +2968,7 @@ class NameGuessingQuiz {
             // Try with relaxed length criteria using efficient lookups
             let relaxedCandidates = [];
             
-            if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
+            if (this.answers.gender === 'NB') {
                 // Ensure database is loaded before getting non-binary names
                 if (this.enhancedNameDatabase.ensureLoaded) {
                     await this.enhancedNameDatabase.ensureLoaded();
@@ -2922,100 +3060,244 @@ class NameGuessingQuiz {
     }
 
     async calculateTopGuesses(count = 5) {
-        // Get rule-based predictions
-        const ruleBasedGuesses = await this.calculateRuleBasedGuesses(count);
-        
-        // Get ML predictions
-        const mlPredictions = await this.mlModel.predict(this.answers);
-        
-        // Combine both approaches
-        const hybridGuesses = this.combinePredictions(ruleBasedGuesses, mlPredictions, count);
-        
-        return hybridGuesses;
+        try {
+            // Handle both array and string values for gender
+            const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+            console.log('🎯 calculateTopGuesses: Starting...');
+            console.log('📋 Answers object:', JSON.stringify(this.answers));
+            console.log('📋 Gender value:', genderValue, '(raw:', this.answers.gender, ')');
+            
+            // Get rule-based predictions
+            let ruleBasedGuesses = [];
+            try {
+                console.log('🎯 calculateTopGuesses: About to call calculateRuleBasedGuesses...');
+                const result = await this.calculateRuleBasedGuesses(count);
+                console.log(`🎯 calculateTopGuesses: calculateRuleBasedGuesses returned:`, result);
+                ruleBasedGuesses = result || [];
+                console.log(`🎯 calculateTopGuesses: Got ${ruleBasedGuesses ? ruleBasedGuesses.length : 0} rule-based guesses`);
+            } catch (error) {
+                console.error('❌ calculateTopGuesses: Error in calculateRuleBasedGuesses:', error);
+                console.error('Error message:', error.message);
+                console.error('Stack:', error.stack);
+                // If it's a non-binary gender, return fallback
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    console.log('⚠️ Returning fallback for non-binary due to error');
+                    ruleBasedGuesses = [
+                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                    ];
+                } else {
+                    ruleBasedGuesses = [];
+                }
+            }
+            
+            // If we have rule-based guesses, return them (ML is optional)
+            if (ruleBasedGuesses && ruleBasedGuesses.length > 0) {
+                // Get ML predictions (may fail due to CSP, that's okay)
+                let mlPredictions = [];
+                try {
+                    mlPredictions = await this.mlModel.predict(this.answers);
+                    console.log(`🤖 calculateTopGuesses: Got ${mlPredictions ? mlPredictions.length : 0} ML predictions`);
+                } catch (error) {
+                    console.log('⚠️ ML predictions failed (expected with CSP), using rule-based only:', error.message);
+                    // ML failed, just return rule-based guesses
+                    return ruleBasedGuesses;
+                }
+                
+                // Combine both approaches if ML worked
+                if (mlPredictions && mlPredictions.length > 0) {
+                    const hybridGuesses = this.combinePredictions(ruleBasedGuesses, mlPredictions, count);
+                    console.log(`✅ calculateTopGuesses: Returning ${hybridGuesses ? hybridGuesses.length : 0} hybrid guesses`);
+                    if (hybridGuesses && hybridGuesses.length > 0) {
+                        return hybridGuesses;
+                    }
+                }
+                
+                // Return rule-based guesses if hybrid didn't work
+                console.log(`✅ calculateTopGuesses: Returning ${ruleBasedGuesses.length} rule-based guesses`);
+                return ruleBasedGuesses;
+            } else {
+                console.error('❌ calculateTopGuesses: No rule-based guesses returned!');
+                console.error('❌ Rule-based guesses value:', ruleBasedGuesses);
+                console.error('❌ Gender value:', this.answers.gender);
+                // Return fallback for non-binary - this should ALWAYS work
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    console.log('⚠️ Returning fallback for non-binary - this should always work');
+                    const fallback = [
+                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                    ];
+                    console.log('✅ Returning fallback with', fallback.length, 'names');
+                    return fallback;
+                }
+                console.error('❌ Gender is not NB, returning empty array');
+                return [];
+            }
+        } catch (error) {
+            console.error('❌ calculateTopGuesses: Error occurred:', error);
+            console.error('Stack:', error.stack);
+            // Return fallback for non-binary
+            if (this.answers.gender === 'NB') {
+                return [
+                    { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                    { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                    { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                    { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                    { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                ];
+            }
+            return [];
+        }
     }
 
     async calculateRuleBasedGuesses(count = 5) {
-        const candidates = await this.getCandidates();
-        
-        let scoredCandidates = [];
-        
-        if (candidates.length === 0) {
+        try {
+            // Handle both array and string values for gender
+            const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+            console.log(`🔍 calculateRuleBasedGuesses: Starting for gender=${genderValue} (raw: ${JSON.stringify(this.answers.gender)}), count=${count}`);
+            console.log(`📋 Answers:`, JSON.stringify(this.answers));
             
-            // Try with relaxed length criteria using efficient lookups
-            let relaxedCandidates = [];
+            // For non-binary, ensure we always return something
+            if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                console.log('🔍 calculateRuleBasedGuesses: Processing non-binary gender');
+            }
             
-            if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
-                // Ensure database is loaded before getting non-binary names
-                if (this.enhancedNameDatabase.ensureLoaded) {
-                    await this.enhancedNameDatabase.ensureLoaded();
+            let candidates = [];
+            try {
+                candidates = await this.getCandidates();
+                console.log(`🔍 calculateRuleBasedGuesses: Got ${candidates ? candidates.length : 0} candidates for gender=${this.answers.gender}`);
+                console.log(`🔍 calculateRuleBasedGuesses: candidates type:`, typeof candidates, Array.isArray(candidates));
+            } catch (error) {
+                console.error('❌ calculateRuleBasedGuesses: Error in getCandidates:', error);
+                console.error('Stack:', error.stack);
+                // Return fallback for non-binary
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    console.log('⚠️ Returning fallback for non-binary due to getCandidates error');
+                    return [
+                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                    ];
                 }
-                // For non-binary or prefer not to say, use the existing method but with relaxed length
-                const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
-                if (nonBinaryNames && nonBinaryNames.length > 0) {
-                    relaxedCandidates = nonBinaryNames.filter(nameInfo => {
-                        if (this.answers.length === 'long') {
-                            return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
-                        } else if (this.answers.length === 'extra_long') {
-                            return nameInfo.name.length >= 8; // Relaxed: 8+ instead of 10+
-                        } else if (this.answers.length === 'medium') {
-                            return nameInfo.name.length >= 4 && nameInfo.name.length <= 7; // Relaxed medium
-                        } else if (this.answers.length === 'short') {
-                            return nameInfo.name.length <= 5; // Relaxed short
+                return [];
+            }
+            
+            if (!candidates || !Array.isArray(candidates)) {
+                console.error('❌ calculateRuleBasedGuesses: candidates is not an array:', candidates);
+                // Return fallback for non-binary
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    console.log('⚠️ Returning fallback for non-binary due to invalid candidates');
+                    return [
+                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                    ];
+                }
+                return [];
+            }
+            
+            let scoredCandidates = [];
+            
+            if (candidates.length === 0) {
+                console.log('⚠️ No candidates found, trying relaxed criteria...');
+                
+                // Try with relaxed length criteria using efficient lookups
+                let relaxedCandidates = [];
+                
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    // Ensure database is loaded before getting non-binary names
+                    if (this.enhancedNameDatabase.ensureLoaded) {
+                        await this.enhancedNameDatabase.ensureLoaded();
+                    }
+                    // For non-binary or prefer not to say, use the existing method but with relaxed length
+                    const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
+                    console.log(`📊 Found ${nonBinaryNames ? nonBinaryNames.length : 0} non-binary names`);
+                    if (nonBinaryNames && nonBinaryNames.length > 0) {
+                        if (this.answers.length) {
+                            relaxedCandidates = nonBinaryNames.filter(nameInfo => {
+                                if (this.answers.length === 'long') {
+                                    return nameInfo.name.length >= 6; // Relaxed: 6+ instead of 7+
+                                } else if (this.answers.length === 'extra_long') {
+                                    return nameInfo.name.length >= 8; // Relaxed: 8+ instead of 10+
+                                } else if (this.answers.length === 'medium') {
+                                    return nameInfo.name.length >= 4 && nameInfo.name.length <= 7; // Relaxed medium
+                                } else if (this.answers.length === 'short') {
+                                    return nameInfo.name.length <= 5; // Relaxed short
+                                }
+                                return true;
+                            });
+                        } else {
+                            // No length specified, use all non-binary names
+                            relaxedCandidates = nonBinaryNames;
                         }
+                        console.log(`✅ After relaxed filtering: ${relaxedCandidates.length} candidates`);
+                    }
+                    // If still no candidates, will use fallback below
+                } else {
+                    // Use efficient gender lookup, then filter with relaxed length
+                    const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
+                    relaxedCandidates = genderCandidates.filter(nameInfo => {
+                        // Relax length: if they want long, accept 6+ letters; if extra_long, accept 8+ letters
+                        if (this.answers.length === 'long') {
+                            const nameLength = nameInfo.name.length;
+                            if (nameLength < 6) return false; // Still reject very short names
+                        }
+                        if (this.answers.length === 'extra_long') {
+                            const nameLength = nameInfo.name.length;
+                            if (nameLength < 8) return false; // Still reject very short names
+                        }
+                        
+                        // Keep vowel filter
+                        if (this.answers.starts_with) {
+                            const firstLetter = nameInfo.name.charAt(0).toLowerCase();
+                            const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
+                            if (this.answers.starts_with === 'vowel' && !isVowel) return false;
+                            if (this.answers.starts_with === 'consonant' && isVowel) return false;
+                        }
+                        
                         return true;
                     });
                 }
-                // If still no candidates, will use fallback below
-            } else {
-                // Use efficient gender lookup, then filter with relaxed length
-                const genderCandidates = this.enhancedNameDatabase.getNamesByGender(this.answers.gender);
-                relaxedCandidates = genderCandidates.filter(nameInfo => {
-                // Relax length: if they want long, accept 6+ letters; if extra_long, accept 8+ letters
-                if (this.answers.length === 'long') {
-                    const nameLength = nameInfo.name.length;
-                    if (nameLength < 6) return false; // Still reject very short names
-                }
-                if (this.answers.length === 'extra_long') {
-                    const nameLength = nameInfo.name.length;
-                    if (nameLength < 8) return false; // Still reject very short names
-                }
                 
-                // Keep vowel filter
-                if (this.answers.starts_with) {
-                    const firstLetter = nameInfo.name.charAt(0).toLowerCase();
-                    const isVowel = ['a', 'e', 'i', 'o', 'u'].includes(firstLetter);
-                    if (this.answers.starts_with === 'vowel' && !isVowel) return false;
-                    if (this.answers.starts_with === 'consonant' && isVowel) return false;
-                }
-                
-                return true;
-                });
-            }
-            
-            if (relaxedCandidates.length === 0) {
-                // Create fallback names that respect gender and length preferences
-                const fallbackNames = [];
-                
-                // Add names based on gender preference
-                if (this.answers.gender === 'F' || !this.answers.gender) {
-                    if (this.answers.length === 'long') {
-                        fallbackNames.push(
+                if (relaxedCandidates.length === 0) {
+                    // Create fallback names that respect gender and length preferences
+                    const fallbackNames = [];
+                    
+                    // Add names based on gender preference
+                    if (this.answers.gender === 'F' || !this.answers.gender) {
+                        if (this.answers.length === 'long') {
+                            fallbackNames.push(
                             { name: 'Elizabeth', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Victoria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Isabella', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Gabrielle', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Stephanie', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'extra_long') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'extra_long') {
+                            fallbackNames.push(
                             { name: 'Alexandria', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christina', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Katherine', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Stephanie', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Elizabeth', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'medium') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'medium') {
+                            fallbackNames.push(
                             { name: 'Sarah', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Emma', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Grace', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
@@ -3023,35 +3305,35 @@ class NameGuessingQuiz {
                             { name: 'Hope', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else {
-                        fallbackNames.push(
+                            fallbackNames.push(
                             { name: 'Amy', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Eva', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Ivy', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Joy', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Zoe', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
+                        }
                     }
-                }
-                
-                if (this.answers.gender === 'M' || !this.answers.gender) {
-                    if (this.answers.length === 'long') {
-                        fallbackNames.push(
+                    
+                    if (this.answers.gender === 'M' || !this.answers.gender) {
+                        if (this.answers.length === 'long') {
+                            fallbackNames.push(
                             { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Benjamin', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Nathaniel', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Sebastian', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'extra_long') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'extra_long') {
+                            fallbackNames.push(
                             { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Nathaniel', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Sebastian', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Theodore', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'medium') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'medium') {
+                            fallbackNames.push(
                             { name: 'David', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'James', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Henry', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
@@ -3059,51 +3341,51 @@ class NameGuessingQuiz {
                             { name: 'Lucas', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else {
-                        fallbackNames.push(
+                            fallbackNames.push(
                             { name: 'Alex', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'John', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Paul', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Mark', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Luke', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
+                        }
                     }
-                }
-                
-                // If no gender specified, add some neutral names
-                if (!this.answers.gender) {
-                    if (this.answers.length === 'long') {
-                        fallbackNames.push(
+                    
+                    // If no gender specified, add some neutral names
+                    if (!this.answers.gender) {
+                        if (this.answers.length === 'long') {
+                            fallbackNames.push(
                             { name: 'Alexandra', gender: 'F', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Alexander', gender: 'M', totalCount: 1000, languageOrigin: 'english' }
                         );
                     } else {
-                        fallbackNames.push(
+                            fallbackNames.push(
                             { name: 'Alex', gender: 'M', totalCount: 1000, languageOrigin: 'english' },
                             { name: 'Emma', gender: 'F', totalCount: 1000, languageOrigin: 'english' }
                         );
+                        }
                     }
-                }
-                
-                // Add non-binary fallback names if gender is non-binary or prefer not to say
-                if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
-                    if (this.answers.length === 'long') {
-                        fallbackNames.push(
+                    
+                    // Add non-binary fallback names if gender is non-binary or prefer not to say
+                    if (this.answers.gender === 'NB') {
+                        if (this.answers.length === 'long') {
+                            fallbackNames.push(
                             { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Jordan', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Taylor', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Casey', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'extra_long') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'extra_long') {
+                            fallbackNames.push(
                             { name: 'Alexandria', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Christopher', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Stephanie', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Nathaniel', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Gabrielle', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
-                    } else if (this.answers.length === 'medium') {
-                        fallbackNames.push(
+                    } else                         if (this.answers.length === 'medium') {
+                            fallbackNames.push(
                             { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Jordan', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Taylor', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
@@ -3111,46 +3393,93 @@ class NameGuessingQuiz {
                             { name: 'Morgan', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
                     } else {
-                        fallbackNames.push(
+                            fallbackNames.push(
                             { name: 'Alex', gender: 'NB', totalCount: 2000, maleCount: 1000, femaleCount: 1000, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Sam', gender: 'NB', totalCount: 1800, maleCount: 900, femaleCount: 900, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Jamie', gender: 'NB', totalCount: 1600, maleCount: 800, femaleCount: 800, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Avery', gender: 'NB', totalCount: 1400, maleCount: 700, femaleCount: 700, genderBalance: 1.0, languageOrigin: 'english' },
                             { name: 'Riley', gender: 'NB', totalCount: 1200, maleCount: 600, femaleCount: 600, genderBalance: 1.0, languageOrigin: 'english' }
                         );
+                        }
                     }
+                    
+                    scoredCandidates = fallbackNames.map(name => ({
+                        ...name,
+                        score: this.calculateNameScore(name)
+                    }));
+                } else {
+                    scoredCandidates = relaxedCandidates.map(candidate => ({
+                        ...candidate,
+                        score: this.calculateNameScore(candidate)
+                    }));
                 }
-                
-                scoredCandidates = fallbackNames.map(name => ({
-                    ...name,
-                    score: this.calculateNameScore(name)
-                }));
             } else {
-                scoredCandidates = relaxedCandidates.map(candidate => ({
+                // Score each candidate based on how well they match the responses
+                scoredCandidates = candidates.map(candidate => ({
                     ...candidate,
                     score: this.calculateNameScore(candidate)
                 }));
             }
-        } else {
-            // Score each candidate based on how well they match the responses
-            scoredCandidates = candidates.map(candidate => ({
-                ...candidate,
-                score: this.calculateNameScore(candidate)
-            }));
-        }
-        
-        // Sort by score (highest first), then by popularity as tiebreaker
-        scoredCandidates.sort((a, b) => {
-            if (b.score !== a.score) {
-                return b.score - a.score;
+            
+            // Sort by score (highest first), then by popularity as tiebreaker
+            scoredCandidates.sort((a, b) => {
+                if (b.score !== a.score) {
+                    return b.score - a.score;
+                }
+                return b.totalCount - a.totalCount;
+            });
+            
+            const result = scoredCandidates.slice(0, count);
+            console.log(`✅ calculateRuleBasedGuesses: Returning ${result.length} guesses after scoring`);
+            console.log(`✅ calculateRuleBasedGuesses: scoredCandidates.length=${scoredCandidates.length}, result.length=${result.length}`);
+            
+            // If we still have no guesses, return fallback non-binary names
+            if (!result || result.length === 0) {
+                console.log(`⚠️ No guesses found after scoring. Gender: ${this.answers.gender}`);
+                console.log(`⚠️ scoredCandidates.length: ${scoredCandidates.length}`);
+                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                    console.log('⚠️ Using hardcoded fallback for non-binary - returning 5 names');
+                    const fallback = [
+                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                    ];
+                    console.log(`✅ calculateRuleBasedGuesses: Returning fallback with ${fallback.length} names`);
+                    return fallback;
+                }
+                console.log(`⚠️ calculateRuleBasedGuesses: Returning empty array for gender=${this.answers.gender}`);
+                return [];
             }
-            return b.totalCount - a.totalCount;
-        });
-        
-        return scoredCandidates.slice(0, count);
+            
+            console.log(`✅ calculateRuleBasedGuesses: Final result has ${result.length} guesses`);
+            return result;
+        } catch (error) {
+            console.error('❌ calculateRuleBasedGuesses: Error occurred:', error);
+            console.error('Stack:', error.stack);
+            // Return fallback for non-binary
+            if (this.answers.gender === 'NB') {
+                return [
+                    { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
+                    { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
+                    { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
+                    { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
+                    { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
+                ];
+            }
+            return [];
+        }
     }
 
     combinePredictions(ruleBasedGuesses, mlPredictions, count) {
+        // If no rule-based guesses, return empty array
+        if (!ruleBasedGuesses || ruleBasedGuesses.length === 0) {
+            console.log('⚠️ combinePredictions: No rule-based guesses to combine');
+            return [];
+        }
+        
         const combinedScores = new Map();
         
         // Add rule-based scores
@@ -3167,7 +3496,7 @@ class NameGuessingQuiz {
         });
         
         // Add ML predictions if available AND we have rule-based candidates
-        if (mlPredictions && ruleBasedGuesses.length > 0) {
+        if (mlPredictions && mlPredictions.length > 0 && ruleBasedGuesses.length > 0) {
             
             // Get top ML predictions
             const mlTopIndices = Array.from({length: mlPredictions.length}, (_, i) => i)
@@ -3219,18 +3548,37 @@ class NameGuessingQuiz {
     }
 
     displayTopGuesses(guesses) {
+        console.log(`📺 displayTopGuesses: Displaying ${guesses ? guesses.length : 0} guesses`);
+        
+        if (!guesses || guesses.length === 0) {
+            console.error('❌ No guesses to display!');
+            // Show error message or fallback
+            for (let i = 1; i <= 5; i++) {
+                const guessElement = document.getElementById(`guess${i}`);
+                if (guessElement) {
+                    guessElement.style.display = 'none';
+                }
+            }
+            return;
+        }
         
         for (let i = 0; i < 5; i++) {
             const guessElement = document.getElementById(`guess${i + 1}`);
             const nameElement = document.getElementById(`guessName${i + 1}`);
             const confidenceElement = document.getElementById(`confidence${i + 1}`);
             
+            if (!guessElement || !nameElement || !confidenceElement) {
+                console.error(`❌ Missing DOM elements for guess ${i + 1}`);
+                continue;
+            }
             
-            if (i < guesses.length && guesses[i]) {
+            if (i < guesses.length && guesses[i] && guesses[i].name) {
                 const guess = guesses[i];
+                const confidence = guess.confidence || guess.score || (75 - (i * 5));
                 nameElement.textContent = guess.name;
-                confidenceElement.textContent = `${guess.confidence}%`;
+                confidenceElement.textContent = `${Math.round(confidence)}%`;
                 guessElement.style.display = 'flex';
+                console.log(`✅ Displaying guess ${i + 1}: ${guess.name} (${Math.round(confidence)}%)`);
             } else {
                 guessElement.style.display = 'none';
             }
@@ -3360,7 +3708,6 @@ class NameGuessingQuiz {
         // MEDIUM-HIGH: Gender (25 points) - Important demographic factor
         if (this.answers.gender && 
             this.answers.gender !== "NB" && 
-            this.answers.gender !== "PREFER_NOT_TO_SAY" && 
             nameInfo.gender === this.answers.gender) {
             score += 25;
         }
@@ -3612,14 +3959,36 @@ class NameGuessingQuiz {
         }
         
         // Use comprehensive lookups based on all user preferences
-        // For non-binary or prefer not to say, use only non-binary names database
-        if (this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') {
+        // For non-binary (PREFER_NOT_TO_SAY is normalized to NB earlier), use only non-binary names database
+        // Handle both array and string values for gender
+        const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
+        if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+            console.log(`🔍 getCandidates: Getting non-binary names for gender=${this.answers.gender}`);
+            
+            // Ensure database is loaded
+            if (this.enhancedNameDatabase && this.enhancedNameDatabase.ensureLoaded) {
+                await this.enhancedNameDatabase.ensureLoaded();
+            }
+            
+            if (!this.enhancedNameDatabase || !this.enhancedNameDatabase.getNonBinaryNames) {
+                console.error('❌ getCandidates: enhancedNameDatabase or getNonBinaryNames not available');
+                return [];
+            }
+            
             const nonBinaryNames = await this.enhancedNameDatabase.getNonBinaryNames();
+            console.log(`📊 getCandidates: Found ${nonBinaryNames ? nonBinaryNames.length : 0} non-binary names`);
+            
+            if (!nonBinaryNames || !Array.isArray(nonBinaryNames)) {
+                console.error('❌ getCandidates: nonBinaryNames is not an array:', nonBinaryNames);
+                return [];
+            }
             
             // Filter by length if specified
             let candidates = nonBinaryNames;
-            if (this.answers.length) {
-                candidates = nonBinaryNames.filter(nameInfo => {
+            if (this.answers.length && candidates.length > 0) {
+                const beforeFilter = candidates.length;
+                candidates = candidates.filter(nameInfo => {
+                    if (!nameInfo || !nameInfo.name) return false;
                     const nameLength = nameInfo.name.length;
                     if (this.answers.length === 'short' && nameLength <= 4) return true;
                     if (this.answers.length === 'medium' && nameLength >= 5 && nameLength <= 6) return true;
@@ -3627,8 +3996,12 @@ class NameGuessingQuiz {
                     if (this.answers.length === 'extra_long' && nameLength >= 10) return true;
                     return false;
                 });
+                console.log(`📏 getCandidates: Filtered from ${beforeFilter} to ${candidates.length} by length=${this.answers.length}`);
+            } else {
+                console.log(`✅ getCandidates: No length filter, returning all ${candidates.length} non-binary names`);
             }
             
+            console.log(`✅ getCandidates: Returning ${candidates.length} candidates for non-binary`);
             return candidates;
         } else {
             // Use comprehensive lookup with all criteria
@@ -3679,7 +4052,6 @@ class NameGuessingQuiz {
         // Check gender (include non-binary and prefer not to say as matching any gender)
         if (this.answers.gender && 
             this.answers.gender !== "NB" && 
-            this.answers.gender !== "PREFER_NOT_TO_SAY" && 
             nameInfo.gender !== this.answers.gender) {
             return false;
         }
@@ -3706,16 +4078,15 @@ class NameGuessingQuiz {
 
     matchesCriteria(nameInfo) {
         
-        // Check gender (include non-binary and prefer not to say as matching any gender)
+        // Check gender (PREFER_NOT_TO_SAY is normalized to NB earlier)
         if (this.answers.gender && 
             this.answers.gender !== "NB" && 
-            this.answers.gender !== "PREFER_NOT_TO_SAY" && 
             nameInfo.gender !== this.answers.gender) {
             return false;
         }
         
-        // For non-binary names (NB or PREFER_NOT_TO_SAY), we already filtered in getCandidates(), so just pass through
-        if ((this.answers.gender === 'NB' || this.answers.gender === 'PREFER_NOT_TO_SAY') && nameInfo.gender === 'NB') {
+        // For non-binary names, we already filtered in getCandidates(), so just pass through
+        if (this.answers.gender === 'NB' && nameInfo.gender === 'NB') {
         }
         
         // Check name length - CRITICAL FILTER
