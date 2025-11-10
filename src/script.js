@@ -3080,8 +3080,9 @@ class NameGuessingQuiz {
                 console.error('Error message:', error.message);
                 console.error('Stack:', error.stack);
                 // If it's a non-binary gender, return fallback
-                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+                const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+                if (hasNonBinary) {
                     console.log('⚠️ Returning fallback for non-binary due to error');
                     ruleBasedGuesses = [
                         { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
@@ -3124,9 +3125,10 @@ class NameGuessingQuiz {
                 console.error('❌ calculateTopGuesses: No rule-based guesses returned!');
                 console.error('❌ Rule-based guesses value:', ruleBasedGuesses);
                 console.error('❌ Gender value:', this.answers.gender);
-                // Return fallback for non-binary - this should ALWAYS work
-                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                // Return fallback if any gender is non-binary - this should ALWAYS work
+                const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+                const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+                if (hasNonBinary) {
                     console.log('⚠️ Returning fallback for non-binary - this should always work');
                     const fallback = [
                         { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
@@ -3144,8 +3146,10 @@ class NameGuessingQuiz {
         } catch (error) {
             console.error('❌ calculateTopGuesses: Error occurred:', error);
             console.error('Stack:', error.stack);
-            // Return fallback for non-binary
-            if (this.answers.gender === 'NB') {
+            // Return fallback if any gender is non-binary
+            const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+            const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+            if (hasNonBinary) {
                 return [
                     { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
                     { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
@@ -3161,43 +3165,53 @@ class NameGuessingQuiz {
     async calculateRuleBasedGuesses(count = 5) {
         try {
             // Handle both array and string values for gender
-            const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-            console.log(`🔍 calculateRuleBasedGuesses: Starting for gender=${genderValue} (raw: ${JSON.stringify(this.answers.gender)}), count=${count}`);
+            const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+            console.log(`🔍 calculateRuleBasedGuesses: Starting for genders=${JSON.stringify(genderArray)}, count=${count}`);
             console.log(`📋 Answers:`, JSON.stringify(this.answers));
             
-            // For non-binary, ensure we always return something
-            if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
-                console.log('🔍 calculateRuleBasedGuesses: Processing non-binary gender');
+            // If multiple genders selected, get candidates for each and combine
+            let allCandidates = [];
+            const seenNames = new Set(); // Track unique names to avoid duplicates
+            
+            for (const genderValue of genderArray) {
+                console.log(`🔍 Processing gender: ${genderValue}`);
+                
+                // Temporarily set gender to current value for getCandidates
+                const originalGender = this.answers.gender;
+                this.answers.gender = genderValue;
+                
+                try {
+                    const candidates = await this.getCandidates();
+                    console.log(`🔍 Got ${candidates ? candidates.length : 0} candidates for gender=${genderValue}`);
+                    
+                    // Add candidates that we haven't seen yet
+                    if (candidates && Array.isArray(candidates)) {
+                        for (const candidate of candidates) {
+                            const nameKey = candidate.name ? candidate.name.toLowerCase() : null;
+                            if (nameKey && !seenNames.has(nameKey)) {
+                                seenNames.add(nameKey);
+                                allCandidates.push(candidate);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error(`❌ Error getting candidates for gender ${genderValue}:`, error);
+                } finally {
+                    // Restore original gender value
+                    this.answers.gender = originalGender;
+                }
             }
             
-            let candidates = [];
-            try {
-                candidates = await this.getCandidates();
-                console.log(`🔍 calculateRuleBasedGuesses: Got ${candidates ? candidates.length : 0} candidates for gender=${this.answers.gender}`);
-                console.log(`🔍 calculateRuleBasedGuesses: candidates type:`, typeof candidates, Array.isArray(candidates));
-            } catch (error) {
-                console.error('❌ calculateRuleBasedGuesses: Error in getCandidates:', error);
-                console.error('Stack:', error.stack);
-                // Return fallback for non-binary
-                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
-                    console.log('⚠️ Returning fallback for non-binary due to getCandidates error');
-                    return [
-                        { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
-                        { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
-                        { name: 'Taylor', gender: 'NB', totalCount: 1600, score: 46, confidence: 46 },
-                        { name: 'Casey', gender: 'NB', totalCount: 1400, score: 44, confidence: 44 },
-                        { name: 'Morgan', gender: 'NB', totalCount: 1200, score: 42, confidence: 42 }
-                    ];
-                }
-                return [];
-            }
+            console.log(`🔍 calculateRuleBasedGuesses: Got ${allCandidates.length} total unique candidates across all genders`);
+            
+            let candidates = allCandidates;
             
             if (!candidates || !Array.isArray(candidates)) {
                 console.error('❌ calculateRuleBasedGuesses: candidates is not an array:', candidates);
-                // Return fallback for non-binary
-                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                // Return fallback if any gender is non-binary
+                const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+                const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+                if (hasNonBinary) {
                     console.log('⚠️ Returning fallback for non-binary due to invalid candidates');
                     return [
                         { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
@@ -3435,10 +3449,11 @@ class NameGuessingQuiz {
             
             // If we still have no guesses, return fallback non-binary names
             if (!result || result.length === 0) {
-                console.log(`⚠️ No guesses found after scoring. Gender: ${this.answers.gender}`);
+                console.log(`⚠️ No guesses found after scoring. Gender: ${JSON.stringify(this.answers.gender)}`);
                 console.log(`⚠️ scoredCandidates.length: ${scoredCandidates.length}`);
-                const genderValue = Array.isArray(this.answers.gender) ? this.answers.gender[0] : this.answers.gender;
-                if (genderValue === 'NB' || genderValue === 'PREFER_NOT_TO_SAY') {
+                const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+                const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+                if (hasNonBinary) {
                     console.log('⚠️ Using hardcoded fallback for non-binary - returning 5 names');
                     const fallback = [
                         { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
@@ -3459,8 +3474,10 @@ class NameGuessingQuiz {
         } catch (error) {
             console.error('❌ calculateRuleBasedGuesses: Error occurred:', error);
             console.error('Stack:', error.stack);
-            // Return fallback for non-binary
-            if (this.answers.gender === 'NB') {
+            // Return fallback if any gender is non-binary
+            const genderArray = Array.isArray(this.answers.gender) ? this.answers.gender : [this.answers.gender];
+            const hasNonBinary = genderArray.some(g => g === 'NB' || g === 'PREFER_NOT_TO_SAY');
+            if (hasNonBinary) {
                 return [
                     { name: 'Alex', gender: 'NB', totalCount: 2000, score: 50, confidence: 50 },
                     { name: 'Jordan', gender: 'NB', totalCount: 1800, score: 48, confidence: 48 },
@@ -3540,7 +3557,7 @@ class NameGuessingQuiz {
         const finalGuesses = sortedGuesses.map((guess, index) => ({
             ...guess,
             score: guess.combinedScore,
-            confidence: this.calculateConfidenceForGuess(guess, index + 1)
+            confidence: this.calculateConfidenceForGuess(guess, index + 1, sortedGuesses)
         }));
         
         
@@ -3574,26 +3591,82 @@ class NameGuessingQuiz {
             
             if (i < guesses.length && guesses[i] && guesses[i].name) {
                 const guess = guesses[i];
-                const confidence = guess.confidence || guess.score || (75 - (i * 5));
+                let confidence = guess.confidence;
+                
+                // If confidence wasn't calculated, calculate it now
+                if (confidence === undefined || confidence === null) {
+                    confidence = this.calculateConfidenceForGuess(guess, i + 1, guesses);
+                }
+                
+                // If we still don't have confidence, normalize score as fallback
+                if (confidence === undefined || confidence === null) {
+                    if (guess.score !== undefined && guess.score !== null) {
+                        // Normalize score: find max score in all guesses to normalize against
+                        const maxScore = guesses.length > 0 
+                            ? Math.max(...guesses.map(g => g.score || 0))
+                            : guess.score;
+                        
+                        if (maxScore > 0) {
+                            // Normalize to 0-1, then scale to 40-95 range
+                            const normalizedScore = guess.score / maxScore;
+                            confidence = 40 + (normalizedScore * 55); // Range: 40-95%
+                        } else {
+                            confidence = 50; // Default
+                        }
+                        
+                        // Apply rank penalty
+                        confidence -= (i * 8);
+                    } else {
+                        // Last resort: simple rank-based confidence
+                        confidence = 75 - (i * 8);
+                    }
+                }
+                
+                // Ensure confidence is in valid range
+                confidence = Math.min(100, Math.max(20, Math.round(confidence)));
+                
                 nameElement.textContent = guess.name;
-                confidenceElement.textContent = `${Math.round(confidence)}%`;
+                confidenceElement.textContent = `${confidence}%`;
                 guessElement.style.display = 'flex';
-                console.log(`✅ Displaying guess ${i + 1}: ${guess.name} (${Math.round(confidence)}%)`);
+                console.log(`✅ Displaying guess ${i + 1}: ${guess.name} (${confidence}%)`);
             } else {
                 guessElement.style.display = 'none';
             }
         }
     }
 
-    calculateConfidenceForGuess(guess, rank) {
-        // Base confidence on score and rank
-        const baseConfidence = Math.min(95, Math.max(30, guess.score * 0.8));
+    calculateConfidenceForGuess(guess, rank, allGuesses = []) {
+        // If confidence is already set, use it (but adjust for rank)
+        if (guess.confidence !== undefined && guess.confidence !== null) {
+            const rankPenalty = (rank - 1) * 5; // Smaller penalty if confidence already calculated
+            return Math.max(20, Math.min(100, Math.round(guess.confidence - rankPenalty)));
+        }
+        
+        // Calculate confidence based on score relative to other guesses
+        let baseConfidence = 50; // Default base
+        
+        if (guess.score !== undefined && guess.score !== null) {
+            // Normalize score to a percentage
+            // Scores typically range from 0-200+, so we need to normalize
+            // Use the max score in the list to normalize, or use a reasonable max
+            const maxScore = allGuesses.length > 0 
+                ? Math.max(...allGuesses.map(g => g.score || 0))
+                : guess.score;
+            
+            if (maxScore > 0) {
+                // Normalize to 0-1, then scale to 40-95 range
+                const normalizedScore = guess.score / maxScore;
+                baseConfidence = 40 + (normalizedScore * 55); // Range: 40-95%
+            } else {
+                baseConfidence = 50;
+            }
+        }
         
         // Reduce confidence for lower ranks
         const rankPenalty = (rank - 1) * 8;
         
-        // Add some randomness to make it feel more natural
-        const randomFactor = (Math.random() - 0.5) * 10;
+        // Add small randomness to make it feel more natural (±3%)
+        const randomFactor = (Math.random() - 0.5) * 6;
         
         const confidence = Math.round(Math.max(20, Math.min(95, baseConfidence - rankPenalty + randomFactor)));
         return confidence;
