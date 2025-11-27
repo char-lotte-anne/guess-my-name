@@ -17,11 +17,11 @@ A Content Security Policy header has been added to `index.html` to help prevent 
 **Current CSP Policy:**
 ```
 default-src 'self';
-script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+script-src 'self' https://cdn.jsdelivr.net;
 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 font-src 'self' https://fonts.gstatic.com;
 img-src 'self' data:;
-connect-src 'self' https://api.emailjs.com;
+connect-src 'self' https://api.emailjs.com https://api.github.com;
 ```
 
 **Note:** The `'unsafe-inline'` directive is used for scripts and styles. For production, consider:
