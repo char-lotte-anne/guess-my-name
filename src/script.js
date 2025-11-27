@@ -133,7 +133,12 @@ class NamePredictionML {
             );
             
             if (!response.ok) {
-                console.log('ℹ️  No global model available (this is okay)');
+                // 404 is expected if no release exists yet - this is normal
+                if (response.status === 404) {
+                    console.log('ℹ️  No global model release found (this is normal)');
+                } else {
+                    console.log(`ℹ️  Could not check for global model (status: ${response.status})`);
+                }
                 return false;
             }
             
@@ -296,7 +301,16 @@ class NamePredictionML {
     }
 
     async train(trainingData) {
-        if (!this.isModelLoaded || trainingData.length < 10) {
+        console.log(`🧠 train(): Called with ${trainingData.length} training examples`);
+        console.log(`🧠 train(): Model loaded: ${this.isModelLoaded}`);
+        
+        if (!this.isModelLoaded) {
+            console.log('⚠️ train(): Model not loaded, skipping training');
+            return;
+        }
+        
+        if (trainingData.length < 10) {
+            console.log(`⚠️ train(): Need at least 10 training examples, have ${trainingData.length}. Skipping training.`);
             return;
         }
 
@@ -305,6 +319,7 @@ class NamePredictionML {
             const features = [];
             const labels = [];
             
+            let validExamples = 0;
             for (const data of trainingData) {
                 if (data.success && data.correctGuess) {
                     features.push(this.encodeAnswers(data.answers));
@@ -314,30 +329,37 @@ class NamePredictionML {
                     const nameIndex = this.getNameIndex(data.correctGuess.name);
                     if (nameIndex !== -1) {
                         label[nameIndex] = 1;
+                        validExamples++;
                     }
                     labels.push(label);
                 }
             }
             
+            console.log(`🧠 train(): Prepared ${validExamples} valid training examples from ${trainingData.length} total`);
+            
             if (features.length === 0) {
+                console.log('⚠️ train(): No valid features extracted, skipping training');
                 return;
             }
             
+            console.log(`🧠 train(): Starting model training with ${features.length} examples, 50 epochs...`);
             const xs = tf.tensor2d(features);
             const ys = tf.tensor2d(labels);
             
             // Train the model
-            await this.model.fit(xs, ys, {
+            const history = await this.model.fit(xs, ys, {
                 epochs: 50,
                 batchSize: 32,
                 validationSplit: 0.2,
                 verbose: 0
             });
             
+            console.log(`✅ train(): Training complete! Final loss: ${history.history.loss[history.history.loss.length - 1].toFixed(4)}, Final accuracy: ${history.history.acc ? history.history.acc[history.history.acc.length - 1].toFixed(4) : 'N/A'}`);
+            
             xs.dispose();
             ys.dispose();
         } catch (error) {
-            console.error('Error training neural network:', error);
+            console.error('❌ Error training neural network:', error);
         }
     }
 
@@ -2938,13 +2960,19 @@ class NameGuessingQuiz {
                 // Fallback to local training if global model not available
                 console.log('🏠 Training local model on user data...');
                 const trainingData = this.getTrainingData();
+                console.log(`📊 Found ${trainingData.length} training examples in localStorage`);
+                
+                // Count successful examples
+                const successfulExamples = trainingData.filter(d => d.success === true && d.correctGuess).length;
+                console.log(`📊 ${successfulExamples} examples have correct guesses (needed for training)`);
+                
                 if (trainingData.length > 0) {
                     await this.mlModel.train(trainingData);
                 } else {
                     console.log('ℹ️  No local training data available yet');
                 }
             } else {
-                console.log('🌍 Using global model trained on aggregated data');
+                console.log('🌍 Using global model trained on aggregated data from GitHub Releases');
             }
         } catch (error) {
             console.error('Error training ML model:', error);
@@ -3104,6 +3132,16 @@ class NameGuessingQuiz {
                 try {
                     mlPredictions = await this.mlModel.predict(this.answers);
                     console.log(`🤖 calculateTopGuesses: Got ${mlPredictions ? mlPredictions.length : 0} ML predictions`);
+                    if (mlPredictions && mlPredictions.length > 0) {
+                        const topMLIndices = Array.from({length: mlPredictions.length}, (_, i) => i)
+                            .sort((a, b) => mlPredictions[b] - mlPredictions[a])
+                            .slice(0, 5);
+                        console.log(`🤖 Top 5 ML predictions:`, topMLIndices.map(i => ({
+                            index: i,
+                            name: this.mlModel.getNameFromIndex(i),
+                            score: (mlPredictions[i] * 100).toFixed(2) + '%'
+                        })));
+                    }
                 } catch (error) {
                     console.log('⚠️ ML predictions failed (expected with CSP), using rule-based only:', error.message);
                     // ML failed, just return rule-based guesses
@@ -3115,6 +3153,12 @@ class NameGuessingQuiz {
                     const hybridGuesses = this.combinePredictions(ruleBasedGuesses, mlPredictions, count);
                     console.log(`✅ calculateTopGuesses: Returning ${hybridGuesses ? hybridGuesses.length : 0} hybrid guesses`);
                     if (hybridGuesses && hybridGuesses.length > 0) {
+                        // Log which guesses came from ML
+                        hybridGuesses.forEach((g, i) => {
+                            if (g.source === 'hybrid' || g.source === 'ml-only') {
+                                console.log(`🤖 Hybrid guess ${i + 1}: ${g.name} (rule: ${g.ruleScore?.toFixed(1) || 0}, ML: ${g.mlScore?.toFixed(1) || 0}, combined: ${g.combinedScore?.toFixed(1) || 0})`);
+                            }
+                        });
                         return hybridGuesses;
                     }
                 }
@@ -3515,11 +3559,15 @@ class NameGuessingQuiz {
         
         // Add ML predictions if available AND we have rule-based candidates
         if (mlPredictions && mlPredictions.length > 0 && ruleBasedGuesses.length > 0) {
+            console.log(`🔀 combinePredictions: Combining ${ruleBasedGuesses.length} rule-based with ${mlPredictions.length} ML predictions`);
             
             // Get top ML predictions
             const mlTopIndices = Array.from({length: mlPredictions.length}, (_, i) => i)
                 .sort((a, b) => mlPredictions[b] - mlPredictions[a])
                 .slice(0, count);
+            
+            let hybridCount = 0;
+            let mlOnlyCount = 0;
             
             mlTopIndices.forEach((index, rank) => {
                 const name = this.mlModel.getNameFromIndex(index);
@@ -3532,6 +3580,7 @@ class NameGuessingQuiz {
                     existing.mlScore = mlScore;
                     existing.combinedScore = existing.ruleScore * 0.7 + mlScore * 0.3;
                     existing.source = 'hybrid';
+                    hybridCount++;
                 } else {
                     // Add new ML-only prediction
                     combinedScores.set(name, {
@@ -3544,8 +3593,11 @@ class NameGuessingQuiz {
                         combinedScore: mlScore * weight,
                         source: 'ml-only'
                     });
+                    mlOnlyCount++;
                 }
             });
+            
+            console.log(`🔀 combinePredictions: Created ${hybridCount} hybrid predictions, ${mlOnlyCount} ML-only predictions`);
         } else if (ruleBasedGuesses.length === 0) {
         }
         
@@ -5340,6 +5392,43 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const quiz = new NameGuessingQuiz();
     window.quizInstance = quiz; // Make quiz instance globally available
+    
+    // Helper function to check ML training status (available in console)
+    window.checkMLStatus = async function() {
+        console.log('🔍 Checking ML Training Status...\n');
+        
+        // Check localStorage training data
+        const trainingData = quiz.getTrainingData();
+        const successfulExamples = trainingData.filter(d => d.success === true && d.correctGuess).length;
+        console.log(`📊 Local Training Data:`);
+        console.log(`   - Total examples: ${trainingData.length}`);
+        console.log(`   - Successful examples (with correct guesses): ${successfulExamples}`);
+        console.log(`   - Need 10+ successful examples to train\n`);
+        
+        // Check model status
+        console.log(`🧠 Model Status:`);
+        console.log(`   - Model loaded: ${quiz.mlModel.isModelLoaded}`);
+        console.log(`   - Global model loaded: ${quiz.mlModel.globalModelLoaded}`);
+        console.log(`   - Name index size: ${Object.keys(quiz.mlModel.nameIndex).length}\n`);
+        
+        // Check GitHub Issues
+        console.log(`🌐 Checking GitHub Issues for training data...`);
+        try {
+            const response = await fetch('https://api.github.com/repos/char-lotte-anne/guess-my-name/issues?labels=training-data&state=open&per_page=5');
+            if (response.ok) {
+                const issues = await response.json();
+                console.log(`   - Found ${issues.length} open training-data issues`);
+                if (issues.length > 0) {
+                    console.log(`   - Latest issue: #${issues[0].number} - ${issues[0].title}`);
+                    console.log(`   - View all: https://github.com/char-lotte-anne/guess-my-name/issues?q=label%3Atraining-data`);
+                }
+            } else {
+                console.log(`   - Could not fetch issues (status: ${response.status})`);
+            }
+        } catch (error) {
+            console.log(`   - Error checking issues: ${error.message}`);
+        }
+    };
     
     // Handle browser back button
     window.addEventListener('popstate', (event) => {
