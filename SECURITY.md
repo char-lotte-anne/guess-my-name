@@ -17,17 +17,16 @@ A Content Security Policy header has been added to `index.html` to help prevent 
 **Current CSP Policy:**
 ```
 default-src 'self';
-script-src 'self' https://cdn.jsdelivr.net;
+script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net;
 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
 font-src 'self' https://fonts.gstatic.com;
 img-src 'self' data:;
 connect-src 'self' https://api.emailjs.com https://api.github.com;
 ```
 
-**Note:** The `'unsafe-inline'` directive is used for scripts and styles. For production, consider:
-- Moving inline scripts to external files
-- Using nonces or hashes for inline scripts/styles
-- Further restricting the CSP policy
+**Note:** 
+- The `'unsafe-inline'` directive is used for styles due to inline style attributes in HTML
+- The `'unsafe-eval'` directive is required for TensorFlow.js, which uses dynamic code generation for performance
 
 ### 3. Input Validation
 
@@ -92,8 +91,10 @@ connect-src 'self' https://api.emailjs.com https://api.github.com;
    - Moving inline styles to CSS classes
    - Using CSS custom properties
    - Removing inline style attributes
-2. **Client-Side Rate Limiting**: Rate limiting is client-side only (localStorage). Determined users can bypass by clearing localStorage. For production, consider server-side rate limiting.
-3. **Local Storage**: Data stored in localStorage can be accessed by any script on the same origin.
+
+2. **CSP 'unsafe-eval' for TensorFlow.js**: Required for TensorFlow.js which uses dynamic code generation (`eval()`, `Function()`, etc.) for performance. This is a known requirement of TensorFlow.js and cannot be avoided while using the library.
+3. **Client-Side Rate Limiting**: Rate limiting is client-side only (localStorage). Determined users can bypass by clearing localStorage. For production, consider server-side rate limiting.
+4. **Local Storage**: Data stored in localStorage can be accessed by any script on the same origin.
 
 ## Reporting Security Issues
 
