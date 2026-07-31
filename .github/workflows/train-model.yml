@@ -22,18 +22,32 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
-          # No 'cache: npm' here on purpose: there is no package-lock.json
-          # anywhere in the repo, and setup-node hard-fails when it cannot
-          # find a lockfile to key the cache on.
+          node-version: '22'
+          cache: 'npm'
 
+      # Cheap (no dependencies) and stops a broken build from publishing a
+      # model that clients would then download.
+      - name: Run tests
+        run: node --test "tests/**/*.test.js"
+
+      # npm ci, not npm install: installs exactly what package-lock.json
+      # pins, so a run today and a run in six months train on the same
+      # library versions.
       - name: Install dependencies
-        run: npm install @tensorflow/tfjs-node @tensorflow/tfjs
+        run: npm ci
+
+      # Only production dependencies are audited. tfjs-node's findings all come
+      # from its native-binary installer, which runs here and never reaches a
+      # visitor; `npm audit fix --force` "resolves" them by downgrading
+      # tfjs-node from 4.x to 0.1.11, which would be far worse than the
+      # exposure. See the note in package.json.
+      - name: Audit production dependencies
+        run: npm run audit:prod
 
       - name: Collect training data
         run: node scripts/collect-training-data.js

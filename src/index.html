@@ -205,7 +205,7 @@
                 <div class="about-content">
                     <div class="about-card">
                         <h3>🔮 The Vision</h3>
-                        <p>This interactive name-guessing experience combines cutting-edge web development with extensive cultural research and our own custom-built AI-powered predictions. Built with vanilla JavaScript and TensorFlow.js, it demonstrates sophisticated algorithms, cultural sensitivity, and modern UX design while remaining fun and accessible. <strong>All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
+                        <p>This interactive name-guessing experience combines web development with extensive cultural research and a custom prediction model. Built with vanilla JavaScript and TensorFlow.js, it demonstrates sophisticated algorithms, cultural sensitivity, and modern UX design while remaining fun and accessible. <strong>Predictions run in your browser; no user data is sent to any third-party AI service.</strong></p>
                     </div>
                     
                     <div class="about-card">
@@ -222,7 +222,7 @@
                             <li><strong>Interactive Maps</strong> - Continent and country selection with SVG manipulation</li>
                             <li><strong>350+ Curated Gender-Neutral Names</strong> from reputable baby name sources</li>
                             <li><strong>Multi-Factor Scoring</strong> - 15+ dimensions analyzed per name</li>
-                            <li><strong>Custom TensorFlow.js Implementation</strong> - Our own machine learning model (no commercial AI services)</li>
+                            <li><strong>TensorFlow.js model</strong> - trained by this project, not an external AI provider</li>
                             <li><strong>Responsive & Accessible</strong> - Mobile-first design with WCAG considerations</li>
                         </ul>
                     </div>
@@ -231,15 +231,15 @@
                         <h3>🔒 Data Usage & Privacy</h3>
                         <div class="privacy-notice">
                             <p><strong>This is a fun, educational project only!</strong> 🎉</p>
-                            <p>Your data is completely private and secure:</p>
+                            <p>Here is exactly what happens to your data:</p>
                             <ul>
                                 <li>✅ <strong>Local learning first</strong> - Quiz answers and optional names are stored in your browser's localStorage. Our custom TensorFlow.js AI model trains on your device using this local data.</li>
                                 <li>✅ <strong>No tracking or analytics</strong> - This site doesn't track you or collect analytics</li>
-                                <li>✅ <strong>Custom AI implementation</strong> - Our own TensorFlow.js machine learning model trains on your device using locally stored data. The trained model stays in memory and is not saved. <strong>No data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></li>
-                                <li>✅ <strong>Optional global learning</strong> - When you provide feedback, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues to improve predictions for all users. First names are included because they're the most valuable data for training. This data will be visible in public GitHub Issues. Only first names are sent (no last names, emails, or other identifying info).</li>
+                                <li>✅ <strong>No third-party AI</strong> - predictions come from this project's own TensorFlow.js model. <strong>No user data is sent to ChatGPT, OpenAI, or any other AI provider.</strong></li>
+                                <li>⚠️ <strong>Optional sharing</strong> - if you submit feedback or your first name, that one submission is sent to this project's GitHub repository so the shared model can learn from it. It is encrypted before storage, so other visitors cannot read it, though the maintainer can. Only first names are sent (no last names or emails), and playing the quiz without submitting sends nothing at all.</li>
                                 <li>✅ <strong>You control your data</strong> - You can clear your browser's localStorage at any time to delete all stored data</li>
                             </ul>
-                            <p class="privacy-note"><strong>How it works:</strong> When you provide feedback (correct/wrong guesses or your real name), this data is stored locally in your browser. Our custom TensorFlow.js machine learning model then trains on this local data to personalize predictions for you. The model itself is not saved - it only exists in memory during your session. <strong>All AI processing happens locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong> Additionally, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues for global model training. Your first name (if provided) is the most valuable data for training - it helps the model learn which names correspond to which characteristics. This data will be visible in public GitHub Issues. Providing your name is completely optional.</p>
+                            <p class="privacy-note"><strong>How it works:</strong> Your answers and feedback are kept in your browser's localStorage, where a personal model trains on them to tailor predictions to you. That model lives in memory for the session and is never saved or uploaded. If you choose to submit feedback or your name, that submission is separately encrypted and stored in this project's GitHub repository, where a weekly job trains the shared model everyone downloads. Submitting is entirely optional. Full detail, including the limits of the encryption, is in <a href="https://github.com/char-lotte-anne/guess-my-name/blob/main/PRIVACY_EXPLAINED.md" target="_blank" rel="noopener noreferrer">PRIVACY_EXPLAINED.md</a>.</p>
                         </div>
                     </div>
                 </div>
@@ -279,11 +279,11 @@
                         <div class="step-number">2</div>
                         <div class="step-content">
                             <h3>Custom Hybrid AI System</h3>
-                            <p>Our own implementation combines rule-based logic with machine learning. <strong>All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
+                            <p>Rule-based logic combined with machine learning. <strong>No user data is sent to any third-party AI service.</strong></p>
                             <p>Our advanced system combines rule-based logic with machine learning:</p>
                             <ul>
                                 <li><strong>Decision Tree Filtering</strong> - Efficient state/gender/length filtering</li>
-                                <li><strong>Custom Neural Network</strong> - Our own TensorFlow.js-powered pattern recognition (no commercial AI services)</li>
+                                <li><strong>Neural network</strong> - TensorFlow.js pattern recognition, trained by this project</li>
                                 <li><strong>70% Rule-Based + 30% ML</strong> - Best of both worlds</li>
                                 <li><strong>Real-Time Learning</strong> - Improves with each user interaction</li>
                                 <li><strong>Top 5 Predictions</strong> - Multiple name suggestions with confidence scores</li>
@@ -320,12 +320,12 @@
                         <div class="step-number">4</div>
                         <div class="step-content">
                             <h3>Custom Machine Learning Enhancement</h3>
-                            <p><strong>Note:</strong> This is our own TensorFlow.js implementation. No data is sent to ChatGPT, OpenAI, or any commercial AI services.</p>
+                            <p><strong>Note:</strong> the model is this project's own TensorFlow.js implementation. No user data is sent to any third-party AI service.</p>
                             <p>Our system learns and improves with every interaction:</p>
                             <ul>
                                 <li><strong>User Feedback Collection</strong> - Right/wrong responses train the model</li>
                                 <li><strong>Optional Real Name Input</strong> - Helps improve accuracy over time</li>
-                                <li><strong>Local Storage Training</strong> - Your data stays private on your device</li>
+                                <li><strong>Local training</strong> - your personal model trains on-device and is never uploaded</li>
                                 <li><strong>Continuous Learning</strong> - Model updates with each quiz completion</li>
                                 <li><strong>Confidence Scoring</strong> - Each prediction comes with accuracy percentage</li>
                             </ul>
@@ -373,7 +373,7 @@
                         
                         <div class="feature-card">
                             <h4>🧠 Custom Hybrid AI Architecture</h4>
-                            <p>Our own implementation combining sophisticated rule-based scoring with TensorFlow.js neural networks. 70% algorithmic precision + 30% machine learning adaptability. <strong>All processing is local - no commercial AI services are used.</strong></p>
+                            <p>Rule-based scoring combined with a TensorFlow.js neural network: 70% rules, 30% model. <strong>No user data is sent to any third-party AI service.</strong></p>
                         </div>
                         
                         <div class="feature-card">
@@ -388,12 +388,12 @@
                         
                         <div class="feature-card">
                             <h4>🔒 Privacy-First Design</h4>
-                            <p>All data stays on your device. No tracking, no analytics, no external servers. Feedback forms optional and transparent about data handling.</p>
+                            <p>No tracking and no analytics. The quiz runs entirely on your device; nothing is sent unless you choose to submit feedback or a name, and that submission is encrypted before it is stored.</p>
                         </div>
                         
                         <div class="feature-card">
                             <h4>📊 Continuous Learning</h4>
-                            <p>Our custom local TensorFlow.js model improves with each quiz completion and user feedback, adapting to real-world naming patterns while respecting privacy. <strong>No data is sent to ChatGPT, OpenAI, or any commercial AI services.</strong></p>
+                            <p>The on-device model improves with each quiz you complete, and a shared model is retrained weekly from submitted feedback. <strong>No user data is sent to any third-party AI service.</strong></p>
                         </div>
                         
                         <div class="feature-card">
@@ -716,8 +716,31 @@
 
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <!-- Pinned, not @latest: this must stay compatible with the @tensorflow/tfjs
+         version in package.json, which is what trains and serialises the model
+         this page loads. A floating version can silently change the format. -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <!-- Classic scripts, no bundler. They share one global scope and run in
+         document order; everything is instantiated on DOMContentLoaded, which
+         fires after all of them have executed. -->
+    <script src="debug-log.js?v=2"></script>
+    <script src="security-utils.js?v=2"></script>
+    <script src="feature-encoding.js?v=2"></script>
+    <script src="name-prediction-ml.js?v=2"></script>
+    <script src="name-scoring.js?v=2"></script>
+    <script src="candidate-ranking.js?v=2"></script>
+    <script src="name-origins.js?v=2"></script>
+    <script src="name-reference-data.js?v=2"></script>
+    <script src="quiz-data.js?v=2"></script>
+    <script src="mystical-background.js?v=2"></script>
     <script src="nameDatabase.js?v=2"></script>
+    <!-- quiz-core declares the class; the quiz-* files below mix the rest of
+         its methods onto the prototype, so core must come first. -->
+    <script src="quiz-core.js?v=2"></script>
+    <script src="quiz-inputs.js?v=2"></script>
+    <script src="quiz-maps.js?v=2"></script>
+    <script src="quiz-guessing.js?v=2"></script>
+    <script src="quiz-results.js?v=2"></script>
     <script src="script.js?v=2"></script>
 </body>
 </html>

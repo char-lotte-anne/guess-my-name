@@ -1,311 +1,104 @@
-# Machine Learning Architecture & Design Decisions
-
-## Current Design: Privacy-First, Per-User Learning
-
-### How It Works Now
-
-The current implementation is designed with **privacy as the top priority**:
-
-1. **Per-User Learning**: Each user's model learns only from their own data
-2. **No Data Transmission**: All data stays on the user's device
-3. **No Model Persistence**: The trained model exists only in memory during the session
-4. **No Cross-User Learning**: Users don't benefit from other users' data
-
-### Limitations of Current Approach
-
-- ❌ **No Global Learning**: The model doesn't improve across all users
-- ❌ **Model Resets**: Each session starts with a fresh model (though it can train on stored user data)
-- ❌ **Isolated Learning**: Each user's model only learns from their own feedback
-- ❌ **Limited Training Data**: Each user only has their own data (up to 1000 examples)
-
-### Why This Design?
-
-This is an **intentional design choice** prioritizing:
-- ✅ Complete user privacy
-- ✅ No server costs or infrastructure
-- ✅ No data breaches possible
-- ✅ User control over their data
-- ✅ Works entirely client-side (can be hosted on GitHub Pages)
-
-## Options for Global Learning
-
-If you want the model to learn and improve across all users, you have several options:
-
-### Option 1: Backend with Aggregated Data (Traditional Approach)
-
-**How it works:**
-- Frontend hosted on GitHub Pages (static files)
-- Backend hosted on separate service (API + database)
-- Users send anonymized training data to backend API
-- Backend aggregates data from all users
-- Backend trains a global model
-- Backend serves the trained model to all users
-
-**Pros:**
-- ✅ True global learning
-- ✅ Model improves for all users
-- ✅ Can use more training data
-- ✅ Frontend can still be on GitHub Pages (free)
-- ✅ Many free/cheap backend options available
-
-**Cons:**
-- ❌ Requires backend infrastructure (server, database)
-- ❌ Data leaves user devices
-- ❌ Privacy concerns (even if anonymized)
-- ❌ Backend costs (though many free tiers available)
-- ❌ More complex architecture (two services to manage)
-
-**Can You Use GitHub Pages?**
-- ✅ **Yes for frontend** - GitHub Pages can host your HTML/CSS/JS
-- ❌ **No for backend** - GitHub Pages cannot run server-side code
-- ✅ **Solution** - Use GitHub Pages for frontend + separate backend service
-
-**Backend Options That Work with GitHub Pages:**
-
-1. **Firebase (Google)** - Free tier available
-   - Firestore database
-   - Cloud Functions for training
-   - Cloud Storage for model files
-   - Easy to set up
-
-2. **Supabase** - Open source Firebase alternative
-   - PostgreSQL database
-   - Edge Functions for training
-   - Storage for model files
-   - Generous free tier
-
-3. **Vercel/Netlify Functions** - Serverless functions
-   - Can host frontend too (but GitHub Pages works)
-   - Serverless functions for API
-   - Need separate database (e.g., PlanetScale, Supabase)
-
-4. **Railway/Render** - Full backend hosting
-   - Can host Node.js/Python backend
-   - PostgreSQL database
-   - Free tiers available
-
-5. **GitHub Actions + GitHub Releases** (Hybrid)
-   - Frontend on GitHub Pages
-   - GitHub Actions periodically trains model
-   - Model saved as GitHub Release asset
-   - Frontend downloads from releases
-   - No real-time API, but works with static hosting
-
-**Implementation Example (Firebase):**
-```javascript
-// Frontend (hosted on GitHub Pages)
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-
-// Send training data to Firebase
-const db = getFirestore();
-await addDoc(collection(db, 'trainingData'), {
-  answers: {...},
-  correctGuess: {...},
-  timestamp: Date.now(),
-  // No personally identifiable information
-});
-
-// Load trained model from Firebase Storage
-const modelUrl = await getModelUrl(); // From Firebase Storage
-const model = await tf.loadLayersModel(modelUrl);
-```
-
-**Implementation Example (GitHub Actions - No Backend Needed):**
-```yaml
-# .github/workflows/train-model.yml
-name: Train Model
-on:
-  schedule:
-    - cron: '0 0 * * 0'  # Weekly
-  workflow_dispatch:  # Manual trigger
-
-jobs:
-  train:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Train model
-        run: |
-          # Download training data from somewhere
-          # Train model
-          # Save model weights
-      - name: Create Release
-        uses: actions/create-release@v1
-        # Upload model as release asset
-```
-
-### Option 2: Federated Learning (Privacy-Preserving)
-
-**How it works:**
-- Users train models locally on their data
-- Users send only model weight updates (not raw data) to server
-- Server aggregates weight updates
-- Server distributes improved global model
-
-**Pros:**
-- ✅ Privacy-preserving (raw data never leaves device)
-- ✅ Global learning possible
-- ✅ Better than Option 1 for privacy
-
-**Cons:**
-- ❌ More complex to implement
-- ❌ Still requires backend
-- ❌ More computationally intensive
-- ❌ Still some privacy concerns (weight updates can leak information)
-
-**Implementation:**
-```javascript
-// User trains model locally
-const localModel = await trainLocalModel(userData);
-
-// Extract weight updates (deltas)
-const weightUpdates = extractWeightDeltas(localModel);
-
-// Send only weight updates (not data)
-fetch('/api/federated-update', {
-  method: 'POST',
-  body: JSON.stringify(weightUpdates)
-});
-```
-
-### Option 3: Opt-In Data Sharing (Hybrid)
-
-**How it works:**
-- Default: Privacy-first (current behavior)
-- Optional: Users can opt-in to share anonymized data
-- Opt-in users contribute to global model
-- Global model available to all users
-
-**Pros:**
-- ✅ Respects user choice
-- ✅ Privacy-first by default
-- ✅ Global learning from opt-in users
-- ✅ Can still work mostly client-side
-
-**Cons:**
-- ❌ Still requires backend for opt-in users
-- ❌ Two-tier system (opt-in vs opt-out)
-- ❌ More complex implementation
-
-**Implementation:**
-```javascript
-// User chooses to opt-in
-if (userOptedIn) {
-  // Send anonymized data to server
-  sendToServer(anonymizedData);
-}
-
-// Load global model if available
-const globalModel = await loadGlobalModel();
-```
-
-### Option 4: Pre-Trained Model Updates (Static Approach)
-
-**How it works:**
-- Periodically retrain model on aggregated data (manually or via CI/CD)
-- Commit updated model weights to repository
-- Users download latest model on page load
-- No real-time learning, but model improves over time
-
-**Pros:**
-- ✅ Can use GitHub for hosting
-- ✅ No backend needed
-- ✅ Model improves over time
-- ✅ Still privacy-focused (no real-time data collection)
-
-**Cons:**
-- ❌ Requires manual data collection/aggregation
-- ❌ Not real-time learning
-- ❌ Model file size increases
-- ❌ Still need way to collect data
-
-## Recommendation
-
-### For GitHub Pages Hosting (Current Setup)
-
-**Keep the current privacy-first approach** and update documentation to clarify:
-- This is a **design choice**, not a limitation
-- The model learns **per-user** for privacy
-- The rule-based system (70% of predictions) provides the core accuracy
-- ML component (30%) provides personalization per user
-
-### If You Want Global Learning with GitHub Pages
-
-**Yes, you can use Option 1 with GitHub Pages!** Here's how:
-
-**Architecture:**
-- Frontend: GitHub Pages (static files)
-- Backend: Separate service (Firebase, Supabase, etc.)
-
-**Best options:**
-
-1. **Firebase + GitHub Pages** (Recommended)
-   - Frontend on GitHub Pages (free)
-   - Backend on Firebase (free tier available)
-   - Real-time global learning
-   - Easy to set up
-   - See [BACKEND_OPTIONS.md](BACKEND_OPTIONS.md) for detailed setup
-
-2. **GitHub Actions + Releases** (No external backend)
-   - Frontend on GitHub Pages
-   - Model training via GitHub Actions (scheduled)
-   - Model served via GitHub Releases
-   - Not real-time, but completely free
-   - See [BACKEND_OPTIONS.md](BACKEND_OPTIONS.md) for setup
-
-3. **Supabase + GitHub Pages**
-   - Similar to Firebase but open source
-   - PostgreSQL database
-   - Good free tier
-
-**See [BACKEND_OPTIONS.md](BACKEND_OPTIONS.md) for complete implementation guide.**
-
-## Code Changes Needed for Global Learning
-
-### To Save Model Weights (Option 4)
-
-```javascript
-// After training
-const modelWeights = await this.model.getWeights();
-const modelJson = await this.model.save('indexeddb://model-v1');
-
-// Load saved model
-this.model = await tf.loadLayersModel('indexeddb://model-v1');
-```
-
-### To Send Data to Server (Option 1 or 3)
-
-```javascript
-// In storeTrainingData()
-if (userOptedIn) {
-  fetch('/api/training-data', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      answers: data.answers,
-      correctGuess: data.correctGuess,
-      // No realName or identifying info
-    })
-  });
-}
-```
-
-## Summary
-
-**Current State:**
-- Privacy-first design
-- Per-user learning only
-- No global improvement
-- Works entirely client-side
-
-**If You Want Global Learning:**
-- Need to decide: Privacy vs. Global Learning
-- Options range from simple (pre-trained updates) to complex (federated learning)
-- All options require some compromise on privacy or complexity
-
-**Recommendation:**
-- Keep current design for now (it's a feature, not a bug!)
-- Update documentation to clarify this is intentional
-- Consider Option 4 (pre-trained updates) if you want gradual improvement without real-time data collection
+# Learning Architecture
 
+How the model works, and why the non-obvious parts are the way they are.
+For what users are told about their data, see `PRIVACY_EXPLAINED.md`.
+
+## Two models, not one
+
+**Local.** Trained in the browser on that person's own submissions from
+`localStorage`. Never saved, never uploaded — it exists for the length of a
+session. This is what lets the app personalise with no backend at all.
+
+**Global.** Trained weekly in GitHub Actions on everyone's submissions and
+published as a release. Clients download it on load.
+
+They share `src/feature-encoding.js` and nothing else. The local model is a
+personalisation layer; the global model is the shared prior.
+
+## Why GitHub Issues are the database
+
+There is no server and no database. Submissions are stored as issues, and the
+training workflow reads them back. The app is a static site plus one serverless
+function, and this keeps it that way.
+
+The consequence to keep in mind: **issues are the only durable copy.**
+`data/training-data.json` is gitignored and rebuilt from scratch on every run, so
+the collector must never close or delete an issue. A failed run then costs
+nothing, because nothing was consumed.
+
+## Why submissions are encrypted
+
+The repository is public, so anything posted to an issue is world-readable. A
+first name alone is not very identifying; a first name alongside birth decade,
+gender, languages, and political values is a good deal more so, and that is one
+submission.
+
+`api/create-issue.js` encrypts with AES-256-GCM before posting;
+`scripts/collect-training-data.js` decrypts. The key lives in exactly two
+places — `TRAINING_DATA_KEY` in the Vercel environment, and the identically named
+Actions secret.
+
+- **Lose the key and every past submission is unreadable.** There is no recovery.
+- The serverless function **fails closed**: no key means no issue is created,
+  rather than falling back to plaintext.
+- Issues #1–#24 (Nov 2025) predate this and are plaintext. They cannot be
+  unpublished, so they are still read; `parseIssueBody` handles both formats.
+- GCM rather than CBC so tampering fails loudly instead of decrypting into
+  garbage the trainer would learn from.
+
+## Why the label is `realName`
+
+Training pairs quiz answers with a name. That name comes from `realName` when the
+user typed one, falling back to `correctGuess.name` on a confirmed correct guess.
+
+Originally only `correctGuess` was used, which required the app to have already
+guessed right. Across the first 24 submissions that produced **zero** usable
+examples — nobody had ever confirmed a correct guess — so the model could never
+train. Preferring `realName` is what makes a *failed* guess useful: the guess was
+wrong, but the answers-to-name pair is still true.
+
+Failures where nobody supplied a name are kept in the dataset but not trained on.
+They carry only negative information ("not these three names"), which categorical
+crossentropy cannot consume. Using them would need a different loss function.
+
+## Why the encoder is its own file
+
+`src/feature-encoding.js` is loaded as a plain `<script>` in the browser and
+`require`d by the trainer. It used to be two copies, which drifted.
+
+A mismatch here fails silently in the worst way: the model trains on inputs laid
+out one way and predicts on inputs laid out another, with no error anywhere —
+just quietly worse guesses. `tests/encoder-parity.test.js` fails if a second
+implementation reappears.
+
+Field offsets are positional. Adding a value to an existing field is safe if it
+fits the reserved width; new fields, wider fields, or reordering invalidate every
+previously trained model. Bump `FEATURE_LAYOUT_VERSION` when that happens —
+clients compare it against the release and ignore models they can no longer feed
+correctly.
+
+## Why a model can be refused
+
+`MIN_UNIQUE_NAMES` (currently 10) stops the workflow publishing a model trained
+on too few distinct names. A classifier that knows four names will recommend
+those four to everyone, confidently, which is worse than the rule-based guesser
+it feeds into. Below the threshold nothing is published and the rules stand alone.
+
+The client refuses a release that is missing `name-index.json`, or whose
+`featureLayoutVersion` does not match. Both cases fall back to the local model.
+
+## Interpreting training output
+
+`name-index.json` ships with each release because the model outputs a bare
+probability per class. `names[i]` is the label for output `i`; without it the
+predictions are indices into an unknown dictionary.
+
+Two numbers in the training log that mislead:
+
+- **Accuracy under a few hundred examples is training accuracy on a set the model
+  has memorised.** It says nothing about new visitors.
+- **A validation split needs shuffling first.** tfjs slices the validation set
+  off the end of the array *before* shuffling, and submissions arrive in
+  chronological order, so an unshuffled split lands on a contiguous block that
+  often shares one name and reports a perfect score. `shuffleTogether` runs
+  first, and validation is skipped entirely below `MIN_EXAMPLES_FOR_VALIDATION`.

@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # The tests themselves need no dependencies, but installing from the
+      # lockfile proves it stays installable.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      # Slower end-to-end pass: loads the real SSA data and runs the actual
+      # quiz algorithm over 24 answer combinations, asserting each returns
+      # guesses. Catches breakage the unit tests cannot, like a filter that
+      # silently excludes every candidate.
+      - name: Quiz integration test
+        run: npm run test:quiz
+
+      # Production dependencies only; see the note in package.json for why the
+      # devDependency findings are not actionable.
+      - name: Audit production dependencies
+        run: npm run audit:prod

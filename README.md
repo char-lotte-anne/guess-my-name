@@ -1,19 +1,19 @@
 # 🔮 Madame Mystique's Crystal Ball
 
-An interactive web application that uses a **custom-built hybrid AI system** (rule-based logic + machine learning) to predict names based on user responses to a series of questions. Built with vanilla JavaScript, CSS animations, and TensorFlow.js. **All AI/ML processing is done locally - no data is sent to ChatGPT, OpenAI, or any commercial AI services.**
+An interactive web application that predicts your name from a series of questions, using rule-based scoring blended with a small TensorFlow.js neural network. Built with vanilla JavaScript, CSS animations, and TensorFlow.js. **Predictions run in your browser; no user data is sent to any third-party AI service.**
 
 🌐 **Live Website**: [https://guess-my-name-chi.vercel.app](https://guess-my-name-chi.vercel.app)
 
 ## ✨ Features
 
 - **Interactive Quiz**: Engaging question-based interface with multiple question types (multiple choice, sliders, maps)
-- **Custom Hybrid AI System**: Our own implementation combining rule-based decision trees with TensorFlow.js neural networks for accurate predictions. No commercial AI services (ChatGPT, OpenAI, etc.) are used - all processing happens locally or on GitHub.
+- **Hybrid prediction**: rule-based decision trees blended with a TensorFlow.js neural network. No third-party AI service is called at any point: prediction happens in your browser, and model training happens in this project's own GitHub Actions.
 - **Comprehensive Database**: 47,689+ names from Social Security Administration data (1880-2024)
 - **State-Specific Predictions**: Uses geographic data from all 50 US states plus DC and territories
 - **Inclusive Design**: Supports non-binary gender with gender-balanced name identification
 - **Research-Based Algorithm**: Incorporates findings from NPR research, Namerology studies, and academic research on naming patterns
-- **Privacy-First**: All data processing happens locally in the browser - no server-side data collection
-- **Per-User Learning**: Machine learning model learns from each user's feedback (stored locally). Each user's model personalizes to their own data.
+- **Privacy-conscious**: the quiz runs entirely in your browser. Feedback and names are only sent if you choose to submit them, and are encrypted before storage — see `PRIVACY_EXPLAINED.md`
+- **Two-tier learning**: a per-user model trains locally in your browser, and a shared model is trained weekly in GitHub Actions from submitted feedback
 - **Beautiful UI**: Mystical-themed design with CSS animations and responsive layout
 
 ## 🚀 Getting Started
@@ -31,46 +31,58 @@ git clone https://github.com/your-username/guess-my-name.git
 cd guess-my-name
 ```
 
-2. Start a local web server:
-
-**Option 1: Using Python**
+2. Start the dev server from the repo root:
 ```bash
-cd src
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
 
-**Option 2: Using Node.js (if you have http-server installed)**
-```bash
-cd src
-npx http-server -p 8000
-```
+3. Open http://localhost:8000
 
-3. Open your browser and navigate to:
-```
-http://localhost:8000
-```
-
-### Direct File Access
-
-You can also open `src/index.html` directly in your browser, though using a local server is recommended to avoid CORS issues.
+Serving `src/` directly (`cd src && python3 -m http.server`) will load the page
+but 404 every data file: `index.html` lives in `src/`, while `names/`,
+`namesbystate/`, `data/` and `assets/` live at the repo root. `npm run dev`
+reproduces the rewrites in `vercel.json` so paths resolve as they do in
+production. Opening `index.html` as a `file://` URL will not work at all.
 
 ## 📁 Project Structure
 
 ```
 guess-my-name/
 ├── src/
-│   ├── index.html          # Main HTML file
-│   ├── script.js           # Main JavaScript application logic
+│   ├── index.html          # Main HTML file; the <script> order is the dependency graph
+│   ├── script.js           # Entry point: bootstrap and history handling
+│   ├── quiz-core.js        # NameGuessingQuiz class: state and question flow
+│   ├── quiz-inputs.js      # Sliders and multi-selects      ┐
+│   ├── quiz-maps.js        # World/continent/state pickers  │ mixed onto
+│   ├── quiz-guessing.js    # Candidate selection, blending  │ the prototype
+│   ├── quiz-results.js     # Results, feedback, sharing     ┘
+│   ├── name-scoring.js     # Pure scoring functions (tested)
+│   ├── candidate-ranking.js # Dedupe, rank, fallback selection (tested)
+│   ├── name-origins.js     # Name -> linguistic origin lookup table
+│   ├── name-reference-data.js # Religious and etymological reference tables
+│   ├── quiz-data.js        # Question definitions and continent groupings
+│   ├── feature-encoding.js # Answers -> feature vector (shared with training)
+│   ├── name-prediction-ml.js # Local and global TensorFlow models
 │   ├── nameDatabase.js     # Name database and indexing system
+│   ├── security-utils.js   # Input sanitisation, client-side rate limiting
+│   ├── mystical-background.js # Decorative graphics
+│   ├── debug-log.js        # Logging gated on ?debug=1
 │   ├── styles.css          # Styling and animations
 │   └── us.svg              # US state map SVG
+├── api/
+│   └── create-issue.js     # Serverless: encrypts and stores a submission
 ├── .github/
 │   └── workflows/
-│       └── train-model.yml # Automated model training workflow
+│       ├── train-model.yml # Weekly model training and release
+│       └── test.yml        # Tests on push and PR
 ├── scripts/
+│   ├── lib/                # Shared, dependency-free training logic
 │   ├── train-model.js      # Model training script
 │   ├── collect-training-data.js # Data collection script
-│   └── package.json        # Training script dependencies
+│   ├── test-quiz-combinations.js # End-to-end run over real data
+│   └── dev-server.js       # Local server mirroring vercel.json routing
+├── tests/                  # node:test suite, no dependencies
 ├── data/                   # Training data (gitignored)
 ├── model/                  # Trained models (gitignored, generated by CI)
 ├── assets/                 # Image assets and maps
@@ -80,6 +92,64 @@ guess-my-name/
 ├── namesbyterritory/       # Territory-specific name data
 └── README.md               # This file
 ```
+
+## 🧪 Development
+
+```bash
+npm install        # once, to create package-lock.json
+npm test           # unit tests, no dependencies, ~1s
+npm run lint
+npm run test:quiz  # end-to-end over the real SSA data, ~1 min
+npm run dev        # http://localhost:8000
+```
+
+`npm test` covers the pure logic: feature encoding, scoring, candidate ranking,
+crypto, issue parsing, and the browser wiring (script order, missing files,
+colliding globals). `npm run test:quiz` loads the actual name database and runs
+24 answer combinations end to end — slower, but it is what catches a filter that
+silently excludes every candidate.
+
+Use `npm run dev`, not `python3 -m http.server` from `src/`. `index.html` lives in
+`src/` but the data it fetches (`names/`, `namesbystate/`, `data/`, `assets/`)
+lives at the repo root; in production Vercel serves `src/index.html` at `/` and
+rewrites asset requests into `src/`. `scripts/dev-server.js` reproduces that.
+It does not serve `/api` — use `vercel dev` if you need the serverless function.
+
+The tests use only the Node standard library; the dependency is TensorFlow, which
+only the training scripts need. The app itself is static files with no build step.
+Node 20+.
+
+Add `?debug=1` to any URL for the prediction tracing in the console.
+
+There is no bundler, so **the `<script>` order in `index.html` is the dependency
+graph**, and the files share one global scope — two top-level `const`s with the
+same name in different files is a page-breaking SyntaxError. `tests/browser-wiring.test.js`
+checks for that, for tags pointing at missing files, and for files nothing loads.
+
+### Configuration
+
+Global model training needs one secret in two places, with the same value:
+
+| Where | Name | Purpose |
+|---|---|---|
+| Vercel environment variable | `TRAINING_DATA_KEY` | Encrypts submissions |
+| GitHub Actions repository secret | `TRAINING_DATA_KEY` | Decrypts them for training |
+
+Generate with `openssl rand -hex 32` and back it up. Losing it makes every stored
+submission permanently unreadable. It must be an Actions **repository** secret —
+an environment secret is invisible to a workflow that does not declare
+`environment:`.
+
+`api/create-issue.js` also needs `GITHUB_TOKEN` (a PAT with `repo` scope) in
+Vercel. Without either variable the endpoint refuses to store anything rather
+than posting names in plaintext to a public repo.
+
+Training runs weekly, or on demand from Actions → Train Global Model → Run
+workflow. GitHub disables scheduled workflows after 60 days of repository
+inactivity, so if runs stop appearing, re-enable it from the Actions tab.
+
+`LEARNING_ARCHITECTURE.md` covers the design decisions that aren't obvious from
+the code.
 
 ## 🎯 How It Works
 
@@ -113,7 +183,7 @@ guess-my-name/
 - **HTML5**: Semantic markup
 - **CSS3**: Advanced animations, responsive design, custom fonts
 - **JavaScript (ES6+)**: Vanilla JS, no frameworks
-- **TensorFlow.js**: Client-side machine learning (our custom implementation - no commercial AI services)
+- **TensorFlow.js**: client-side inference and CI training; no third-party AI service is called
 - **SVG**: Interactive maps for state/country selection
 
 ## 📊 Data Sources
@@ -128,9 +198,9 @@ guess-my-name/
 This application is completely privacy-focused:
 - ✅ **Local storage first** - Quiz answers and optional names stored in browser's localStorage for local learning
 - ✅ **No tracking or analytics** - This site doesn't track you or collect analytics
-- ✅ **Local machine learning** - Our custom TensorFlow.js implementation trains on your device using locally stored data. The trained model exists only in memory during your session (not saved to disk). **No data is sent to ChatGPT, OpenAI, or any commercial AI services.**
+- ✅ **Local machine learning** - the per-user model trains on your device from locally stored data and exists only in memory for the session (never saved to disk). **No user data is sent to any third-party AI service.**
 - ✅ **You control your data** - Clear browser localStorage anytime to delete all stored data
-- ✅ **Optional global learning** - Training data (quiz answers + success/failure + first names if voluntarily provided) may be sent to GitHub Issues for global model training. First names are included because they're the most valuable data for training. This data will be visible in public GitHub Issues. Only first names are sent (no last names, emails, or other identifying info).
+- ⚠️ **Optional sharing** - if a user submits feedback or a first name, that submission is encrypted (AES-256-GCM) and stored as a GitHub issue so the shared model can learn from it. Other visitors cannot read it; the maintainer holds the key and can. Only first names are sent (no last names or emails), and playing without submitting sends nothing.
 - ✅ Input sanitization to prevent XSS attacks
 - ✅ Content Security Policy (CSP) headers
 - ✅ All user inputs are validated and sanitized
@@ -139,7 +209,7 @@ This application is completely privacy-focused:
 
 1. **Local Learning (Primary)**: When you provide feedback (correct/wrong guesses or your real name), this data is stored locally in your browser's localStorage. The machine learning model trains on this local data to personalize predictions for you. The model itself is not persisted - it only exists in memory during your session. All learning happens entirely on your device.
 
-2. **Global Learning (Optional)**: When you provide feedback, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues. This data is used to train a global model that improves predictions for all users. Your first name (if provided) is included because it's the most valuable data for training - it helps the model learn which names correspond to which characteristics. The global model is automatically downloaded from GitHub Releases. Note: This data will be visible in public GitHub Issues.
+2. **Global Learning (Optional)**: submitted feedback and names are encrypted and stored as GitHub issues, decrypted weekly by GitHub Actions to train a shared model, which is published as a release and downloaded by clients. See `PRIVACY_EXPLAINED.md` for what this does and does not protect.
 
 **Privacy Guarantees:**
 - Only first names are sent (if you voluntarily provide them) - no last names, emails, or other identifying info

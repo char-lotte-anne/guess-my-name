@@ -18,22 +18,22 @@ const TERRITORY_NAMES_DIR = path.join(__dirname, '..', 'namesbyterritory');
 function createTensorFlowMock() {
     return {
         loadLayersModel: async () => ({
-            predict: () => [],
+            predict: () => makeTensor(),
             summary: () => {}
         }),
         sequential: () => ({
             add: function() { return this; },
             compile: function() { return this; },
             fit: async function() { return { history: {} }; },
-            predict: () => [],
+            predict: () => makeTensor(),
             summary: () => {}
         }),
         layers: {
             dense: () => ({}),
             dropout: () => ({})
         },
-        tensor2d: () => ({}),
-        tensor1d: () => ({}),
+        tensor2d: () => makeTensor(),
+        tensor1d: () => makeTensor(),
         ready: Promise.resolve()
     };
 }
@@ -157,78 +157,71 @@ function createBrowserMocks() {
     return mocks;
 }
 
+/**
+ * Stand-in for a TensorFlow tensor. The real one is asynchronous and disposable;
+ * returning a bare array made predict() throw, which the app swallowed -- so the
+ * run "passed" while silently exercising only the rule-based path. An empty
+ * prediction is still the honest answer here (there is no trained model in this
+ * harness), it just has to be shaped like a tensor to get there.
+ */
+function makeTensor() {
+    return {
+        data: async () => new Float32Array(0),
+        dataSync: () => new Float32Array(0),
+        arraySync: () => [],
+        dispose: () => {},
+        shape: [0]
+    };
+}
+
 // Load and execute the actual source files
+/**
+ * Load the browser sources the same way the page does.
+ *
+ * The file list is read out of index.html rather than hardcoded: the quiz class
+ * is assembled from several files that Object.assign onto its prototype, and a
+ * hardcoded list silently goes stale the next time one is added. This script
+ * broke exactly that way once already.
+ */
 function loadSourceFiles() {
-    const nameDbCode = fs.readFileSync(path.join(SRC_DIR, 'nameDatabase.js'), 'utf8');
-    const scriptCode = fs.readFileSync(path.join(SRC_DIR, 'script.js'), 'utf8');
-    
-    // Create a sandbox with browser mocks
+    const html = fs.readFileSync(path.join(SRC_DIR, 'index.html'), 'utf8');
+    const files = [...html.matchAll(/<script src="([^"?]+)/g)]
+        .map(m => m[1])
+        .filter(src => !src.startsWith('http'));
+
     const mocks = createBrowserMocks();
-    // Make window the global object so classes attach to it
     const sandbox = vm.createContext({
         ...mocks,
         window: mocks.window,
-        global: mocks.window, // Make global point to window
+        global: mocks.window,
         module: { exports: {} },
         exports: {},
-        require: (module) => {
-            throw new Error(`Cannot require ${module} in sandbox`);
-        },
-        console: console,
-        setTimeout: setTimeout,
-        setInterval: setInterval,
-        clearTimeout: clearTimeout,
-        clearInterval: clearInterval,
-        Promise: Promise,
-        Array: Array,
-        Object: Object,
-        String: String,
-        Number: Number,
-        Math: Math,
-        Date: Date,
-        JSON: JSON,
-        Error: Error,
-        TypeError: TypeError,
-        ReferenceError: ReferenceError
+        require: (name) => { throw new Error(`Cannot require ${name} in sandbox`); },
+        console, setTimeout, setInterval, clearTimeout, clearInterval,
+        Promise, Array, Object, String, Number, Boolean, Math, Date, JSON, Map, Set,
+        Error, TypeError, ReferenceError, RangeError, URLSearchParams, Symbol
     });
-    
-    // Execute nameDatabase.js
-    const nameDbScript = new vm.Script(nameDbCode);
-    nameDbScript.runInContext(sandbox);
-    
-    // After executing, explicitly attach classes to window if they exist in scope
-    try {
-        const attachScript = new vm.Script(`
-            if (typeof EnhancedNameDatabase !== 'undefined') {
-                window.EnhancedNameDatabase = EnhancedNameDatabase;
-            }
-        `);
-        attachScript.runInContext(sandbox);
-    } catch (e) {
-        // Ignore if class not in scope
+
+    for (const file of files) {
+        const code = fs.readFileSync(path.join(SRC_DIR, file), 'utf8');
+        try {
+            new vm.Script(code, { filename: file }).runInContext(sandbox);
+        } catch (error) {
+            throw new Error(`Failed executing ${file}: ${error.message}`);
+        }
     }
-    
-    // Execute script.js (which depends on nameDatabase)
-    const script = new vm.Script(scriptCode);
-    script.runInContext(sandbox);
-    
-    // After executing, explicitly attach classes to window if they exist in scope
-    try {
-        const attachScript2 = new vm.Script(`
-            if (typeof NameGuessingQuiz !== 'undefined') {
-                window.NameGuessingQuiz = NameGuessingQuiz;
-            }
-        `);
-        attachScript2.runInContext(sandbox);
-    } catch (e) {
-        // Ignore if class not in scope
-    }
-    
-    // In browser, top-level classes are on window. In VM, they should be on the global object (which is window)
-    // But they might also be directly on sandbox if the code doesn't use window
+
+    // Classes declared at top level are not automatically on window in a VM
+    // context the way they are in a browser, so publish them explicitly.
+    new vm.Script(`
+        for (const name of ['NameGuessingQuiz', 'EnhancedNameDatabase', 'NamePredictionML']) {
+            try { if (eval('typeof ' + name) !== 'undefined') window[name] = eval(name); } catch (e) { void 0; }
+        }
+    `).runInContext(sandbox);
+
     const NameGuessingQuiz = sandbox.window?.NameGuessingQuiz || sandbox.NameGuessingQuiz;
     const EnhancedNameDatabase = sandbox.window?.EnhancedNameDatabase || sandbox.EnhancedNameDatabase;
-    
+
     if (!NameGuessingQuiz) {
         // Debug: show what's available
         const available = Object.keys(sandbox).filter(k => 
@@ -264,7 +257,7 @@ function generateTestCombinations() {
     const combinations = [];
     
     const genders = ['M', 'F', 'NB', 'PREFER_NOT_TO_SAY'];
-    const decades = [1900, 1950, 1980, 1990, 2000, 2020];
+    const _decades = [1900, 1950, 1980, 1990, 2000, 2020];
     const lengths = ['short', 'medium', 'long', 'extra_long'];
     
     // Focus on key combinations that might fail
@@ -317,11 +310,10 @@ async function runTests() {
     console.log('🧪 Testing Quiz Combinations with REAL Algorithm\n');
     console.log('Loading source files...\n');
     
-    let NameGuessingQuiz, EnhancedNameDatabase, sandbox;
+    let NameGuessingQuiz, sandbox;
     try {
         const classes = loadSourceFiles();
         NameGuessingQuiz = classes.NameGuessingQuiz;
-        EnhancedNameDatabase = classes.EnhancedNameDatabase;
         sandbox = classes.sandbox;
         console.log('✅ Source files loaded successfully\n');
     } catch (error) {

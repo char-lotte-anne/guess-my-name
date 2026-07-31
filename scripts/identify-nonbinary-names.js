@@ -84,9 +84,9 @@ function parseStateLine(line) {
     const parts = trimmed.split(',');
     if (parts.length < 5) return null;
     
-    const state = parts[0].trim();
+    const _state = parts[0].trim();
     const gender = parts[1].trim().toUpperCase();
-    const year = parts[2].trim();
+    const _year = parts[2].trim();
     const name = parts[3].trim();
     const count = parseInt(parts[4].trim(), 10);
     

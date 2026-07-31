@@ -1,0 +1,32 @@
+{
+  "name": "guess-my-name",
+  "version": "1.0.0",
+  "description": "Madame Mystique's Crystal Ball - a name-guessing quiz with browser and CI-trained models",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "lint": "eslint .",
+    "test:quiz": "node scripts/test-quiz-combinations.js",
+    "audit:prod": "npm audit --omit=dev",
+    "collect": "node scripts/collect-training-data.js",
+    "train": "node scripts/train-model.js"
+  },
+  "//": [
+    "There are no runtime dependencies. The site is static files, and the browser",
+    "loads @tensorflow/tfjs from a CDN (pinned in src/index.html) rather than npm.",
+    "@tensorflow/tfjs-node is a devDependency because only scripts/train-model.js",
+    "uses it, and that runs in GitHub Actions. Its audit findings all come from",
+    "@mapbox/node-pre-gyp, the installer that fetches its native binary; none of",
+    "that reaches a visitor. `npm run audit:prod` is the number that matters.",
+    "Keep the CDN version in src/index.html in step with the tfjs-node major/minor",
+    "below: one writes the model format and the other reads it."
+  ],
+  "devDependencies": {
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "eslint": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

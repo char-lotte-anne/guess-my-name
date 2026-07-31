@@ -61,385 +61,11 @@ class EnhancedNameDatabase {
     }
 
     initializeReligiousData() {
-        // Religious associations for names
-        this.religiousAssociations = {
-            // Christianity (Biblical and traditional Christian names)
-            'christianity': {
-                'male': [
-                    'Aaron', 'Abel', 'Abraham', 'Adam', 'Andrew', 'Anthony', 'Benjamin', 'Caleb', 'Daniel', 'David',
-                    'Elijah', 'Ethan', 'Gabriel', 'Isaac', 'Jacob', 'James', 'John', 'Jonathan', 'Joseph', 'Joshua',
-                    'Luke', 'Mark', 'Matthew', 'Michael', 'Nathan', 'Noah', 'Paul', 'Peter', 'Samuel', 'Simon',
-                    'Stephen', 'Thomas', 'Timothy', 'William', 'Zachary', 'Alexander', 'Christopher', 'Nicholas',
-                    'Christian', 'Dominic', 'Francis', 'Gregory', 'Jeremy', 'Jeremiah', 'Nathaniel', 'Sebastian'
-                ],
-                'female': [
-                    'Abigail', 'Anna', 'Bethany', 'Catherine', 'Elizabeth', 'Esther', 'Grace', 'Hannah', 'Hope',
-                    'Joy', 'Judith', 'Leah', 'Mary', 'Miriam', 'Naomi', 'Rachel', 'Rebecca', 'Ruth', 'Sarah',
-                    'Tabitha', 'Faith', 'Charity', 'Patience', 'Prudence', 'Temperance', 'Verity', 'Constance',
-                    'Felicity', 'Mercy', 'Serenity', 'Trinity', 'Victoria', 'Amanda', 'Christina', 'Christine',
-                    'Claire', 'Faith', 'Grace', 'Hope', 'Joy', 'Patience', 'Prudence', 'Serenity', 'Trinity'
-                ]
-            },
-            
-            // Judaism (Hebrew names and Jewish traditions)
-            'judaism': {
-                'male': [
-                    'Aaron', 'Abraham', 'Adam', 'Benjamin', 'Daniel', 'David', 'Elijah', 'Ethan', 'Gabriel',
-                    'Isaac', 'Jacob', 'Jonathan', 'Joshua', 'Levi', 'Michael', 'Nathan', 'Noah', 'Samuel',
-                    'Simon', 'Solomon', 'Zachary', 'Ariel', 'Asher', 'Caleb', 'Eli', 'Ezra', 'Gideon', 'Isaac',
-                    'Jeremiah', 'Jonah', 'Joseph', 'Judah', 'Mordecai', 'Moses', 'Reuben', 'Simeon', 'Tobias'
-                ],
-                'female': [
-                    'Abigail', 'Esther', 'Hannah', 'Leah', 'Miriam', 'Naomi', 'Rachel', 'Rebecca', 'Ruth',
-                    'Sarah', 'Deborah', 'Dinah', 'Eve', 'Judith', 'Lydia', 'Martha', 'Mary', 'Phoebe', 'Priscilla',
-                    'Susanna', 'Tamar', 'Zipporah', 'Adina', 'Ariel', 'Aviva', 'Chaya', 'Eliana', 'Hadassah',
-                    'Ilana', 'Leora', 'Malka', 'Nava', 'Rivka', 'Shoshana', 'Talia', 'Yael', 'Zara'
-                ]
-            },
-            
-            // Islam (Arabic and Islamic names)
-            'islam': {
-                'male': [
-                    'Ahmad', 'Ali', 'Amir', 'Anwar', 'Ayman', 'Bilal', 'Farid', 'Hakim', 'Hassan', 'Ibrahim',
-                    'Idris', 'Imran', 'Ismail', 'Jabir', 'Khalid', 'Mahmud', 'Malik', 'Mansur', 'Muhammad', 'Nabil',
-                    'Omar', 'Rashid', 'Salman', 'Tariq', 'Umar', 'Usman', 'Yusuf', 'Zaid', 'Abdullah', 'Abdul',
-                    'Ahmed', 'Ali', 'Amir', 'Anwar', 'Ayman', 'Bilal', 'Farid', 'Hakim', 'Hassan', 'Ibrahim',
-                    'Idris', 'Imran', 'Ismail', 'Jabir', 'Khalid', 'Mahmud', 'Malik', 'Mansur', 'Muhammad', 'Nabil'
-                ],
-                'female': [
-                    'Aisha', 'Amina', 'Fatima', 'Khadija', 'Maryam', 'Zainab', 'Aaliyah', 'Aisha', 'Amina',
-                    'Fatima', 'Khadija', 'Maryam', 'Zainab', 'Aaliyah', 'Aisha', 'Amina', 'Fatima', 'Khadija',
-                    'Maryam', 'Zainab', 'Aaliyah', 'Aisha', 'Amina', 'Fatima', 'Khadija', 'Maryam', 'Zainab',
-                    'Aaliyah', 'Aisha', 'Amina', 'Fatima', 'Khadija', 'Maryam', 'Zainab', 'Aaliyah', 'Aisha',
-                    'Amina', 'Fatima', 'Khadija', 'Maryam', 'Zainab', 'Aaliyah', 'Aisha', 'Amina', 'Fatima'
-                ]
-            },
-            
-            // Hinduism (Sanskrit and Hindu names)
-            'hinduism': {
-                'male': [
-                    'Arjun', 'Krishna', 'Rama', 'Shiva', 'Vishnu', 'Ganesh', 'Hanuman', 'Lakshman', 'Bharat',
-                    'Shatrughna', 'Aarav', 'Aryan', 'Dhruv', 'Ishaan', 'Kabir', 'Karan', 'Krish', 'Manav', 'Neel',
-                    'Pranav', 'Rohan', 'Rudra', 'Siddharth', 'Ved', 'Vikram', 'Yash', 'Zain', 'Aditya', 'Akash',
-                    'Aman', 'Ankit', 'Arnav', 'Chirag', 'Deepak', 'Gaurav', 'Harsh', 'Jatin', 'Kunal', 'Manoj'
-                ],
-                'female': [
-                    'Priya', 'Kavya', 'Ananya', 'Ishita', 'Saanvi', 'Aadhya', 'Aanya', 'Aaradhya', 'Anika',
-                    'Anvi', 'Diya', 'Ira', 'Kiara', 'Maya', 'Meera', 'Navya', 'Pari', 'Riya', 'Sara', 'Shreya',
-                    'Sia', 'Tara', 'Vanya', 'Zara', 'Aditi', 'Amara', 'Anaya', 'Aria', 'Asha', 'Bhavya', 'Chaya',
-                    'Disha', 'Esha', 'Gauri', 'Hema', 'Indira', 'Jaya', 'Kavya', 'Lakshmi', 'Meera', 'Nisha'
-                ]
-            },
-            
-            // Buddhism (Names with Buddhist significance)
-            'buddhism': {
-                'male': [
-                    'Bodhi', 'Dharma', 'Karma', 'Nirvana', 'Siddhartha', 'Buddha', 'Ananda', 'Arjuna', 'Ashoka',
-                    'Bodhi', 'Dharma', 'Karma', 'Nirvana', 'Siddhartha', 'Buddha', 'Ananda', 'Arjuna', 'Ashoka',
-                    'Bodhi', 'Dharma', 'Karma', 'Nirvana', 'Siddhartha', 'Buddha', 'Ananda', 'Arjuna', 'Ashoka'
-                ],
-                'female': [
-                    'Bodhi', 'Dharma', 'Karma', 'Nirvana', 'Siddhartha', 'Buddha', 'Ananda', 'Arjuna', 'Ashoka',
-                    'Bodhi', 'Dharma', 'Karma', 'Nirvana', 'Siddhartha', 'Buddha', 'Ananda', 'Arjuna', 'Ashoka'
-                ]
-            },
-            
-            // Sikhism (Sikh names and traditions)
-            'sikhism': {
-                'male': [
-                    'Gurpreet', 'Harpreet', 'Jaspreet', 'Manpreet', 'Rajpreet', 'Simran', 'Aman', 'Arjun', 'Bhavin',
-                    'Charan', 'Dilpreet', 'Gurdeep', 'Harman', 'Jasbir', 'Karan', 'Lakhbir', 'Manjit', 'Navdeep',
-                    'Prabhdeep', 'Rajdeep', 'Sukhdeep', 'Taran', 'Ujjal', 'Vikram', 'Yuvraj', 'Zorawar', 'Akal',
-                    'Bhai', 'Charan', 'Darshan', 'Ekam', 'Fateh', 'Gur', 'Hari', 'Ishwar', 'Jap', 'Kirat'
-                ],
-                'female': [
-                    'Gurpreet', 'Harpreet', 'Jaspreet', 'Manpreet', 'Rajpreet', 'Simran', 'Aman', 'Arjun', 'Bhavin',
-                    'Charan', 'Dilpreet', 'Gurdeep', 'Harman', 'Jasbir', 'Karan', 'Lakhbir', 'Manjit', 'Navdeep',
-                    'Prabhdeep', 'Rajdeep', 'Sukhdeep', 'Taran', 'Ujjal', 'Vikram', 'Yuvraj', 'Zorawar', 'Akal',
-                    'Bhai', 'Charan', 'Darshan', 'Ekam', 'Fateh', 'Gur', 'Hari', 'Ishwar', 'Jap', 'Kirat'
-                ]
-            },
-            
-            // Greek Mythology and Culture
-            'greek': {
-                'male': [
-                    'Alexander', 'Andreas', 'Dimitri', 'Elias', 'Gabriel', 'Jason', 'Nicholas', 'Theodore', 'Zachary',
-                    'Adonis', 'Apollo', 'Atlas', 'Dionysus', 'Hector', 'Hercules', 'Jason', 'Odysseus', 'Perseus',
-                    'Theseus', 'Zeus', 'Achilles', 'Agamemnon', 'Ajax', 'Anton', 'Aristotle', 'Demetrius', 'Evander',
-                    'Gregory', 'Hector', 'Icarus', 'Leonidas', 'Marcus', 'Nestor', 'Orion', 'Phoenix', 'Socrates'
-                ],
-                'female': [
-                    'Alexandra', 'Athena', 'Diana', 'Elena', 'Grace', 'Helen', 'Iris', 'Luna', 'Phoebe', 'Sophia',
-                    'Aphrodite', 'Artemis', 'Athena', 'Calliope', 'Cassandra', 'Diana', 'Elena', 'Helen', 'Iris',
-                    'Juno', 'Luna', 'Minerva', 'Phoebe', 'Selene', 'Sophia', 'Thea', 'Venus', 'Zoe', 'Ariadne',
-                    'Calypso', 'Circe', 'Demeter', 'Echo', 'Gaia', 'Hera', 'Iris', 'Juno', 'Kore', 'Leto'
-                ]
-            },
-            
-            // Norse/Scandinavian
-            'norse': {
-                'male': [
-                    'Erik', 'Bjorn', 'Gunnar', 'Leif', 'Magnus', 'Olaf', 'Ragnar', 'Sven', 'Thor', 'Ulf',
-                    'Ake', 'Anders', 'Axel', 'Erik', 'Gustav', 'Hans', 'Ingvar', 'Johan', 'Karl', 'Lars',
-                    'Magnus', 'Nils', 'Olav', 'Per', 'Rolf', 'Sten', 'Tore', 'Ulf', 'Vidar', 'Yngve'
-                ],
-                'female': [
-                    'Astrid', 'Freya', 'Ingrid', 'Sigrid', 'Solveig', 'Thora', 'Ursula', 'Valkyrie', 'Ylva', 'Zara',
-                    'Agneta', 'Birgitta', 'Cecilia', 'Dagny', 'Elin', 'Freya', 'Gunhild', 'Helga', 'Ingrid', 'Jorunn',
-                    'Karin', 'Liv', 'Maren', 'Nora', 'Oda', 'Petra', 'Ragnhild', 'Solveig', 'Tora', 'Ursula'
-                ]
-            },
-            
-            // Celtic/Irish
-            'celtic': {
-                'male': [
-                    'Aidan', 'Brendan', 'Connor', 'Declan', 'Finn', 'Liam', 'Owen', 'Patrick', 'Sean', 'Tristan',
-                    'Aengus', 'Bran', 'Cian', 'Darragh', 'Eamon', 'Fergus', 'Gareth', 'Hugh', 'Ian', 'Jarlath',
-                    'Keegan', 'Lorcan', 'Maeve', 'Niall', 'Oisin', 'Padraig', 'Quinn', 'Ronan', 'Shane', 'Tadhg'
-                ],
-                'female': [
-                    'Aisling', 'Bridget', 'Caitlin', 'Deirdre', 'Eileen', 'Fiona', 'Grainne', 'Hannah', 'Iona', 'Kiera',
-                    'Aine', 'Brigid', 'Ciara', 'Deirdre', 'Eilis', 'Fionnuala', 'Grainne', 'Hannah', 'Iona', 'Kiera',
-                    'Laoise', 'Maeve', 'Niamh', 'Orla', 'Padraig', 'Quinn', 'Roisin', 'Saoirse', 'Tara', 'Una'
-                ]
-            }
-        };
+        this.religiousAssociations = window.NameReferenceData.RELIGIOUS_ASSOCIATIONS;
     }
 
     initializeNameDefinitions() {
-        // Name definitions database - positive, neutral definitions from reputable etymological sources
-        // All definitions are positive and avoid gender/race stereotypes
-        this.nameDefinitions = {
-            // Common names A-C
-            'alexander': 'Defender of people',
-            'alexandra': 'Defender of people',
-            'alex': 'Defender of people',
-            'alice': 'Noble, exalted',
-            'amelia': 'Industrious, striving',
-            'andrew': 'Strong, courageous',
-            'anna': 'Grace, favor',
-            'anthony': 'Priceless, highly praiseworthy',
-            'aria': 'Melody, song',
-            'arthur': 'Bear, noble, courageous',
-            'ava': 'Life, living one',
-            'benjamin': 'Son of the right hand, fortunate',
-            'brian': 'Strong, virtuous, honorable',
-            'cameron': 'Crooked nose, bent river',
-            'carlos': 'Free person',
-            'catherine': 'Pure, clear',
-            'charlotte': 'Free person',
-            'chloe': 'Young green shoot, blooming',
-            'christopher': 'Bearer of Christ',
-            'claire': 'Clear, bright',
-            'daniel': 'God is my judge',
-            'david': 'Beloved, friend',
-            'diana': 'Divine, heavenly',
-            'dylan': 'Son of the sea',
-            'elizabeth': 'God is my oath',
-            'emily': 'Industrious, striving',
-            'emma': 'Whole, universal',
-            'ethan': 'Strong, firm, enduring',
-            'evelyn': 'Desired, wished for',
-            'frank': 'Free person',
-            'gabriel': 'God is my strength',
-            'grace': 'Grace, favor, blessing',
-            'hannah': 'Grace, favor',
-            'harper': 'Harp player',
-            'henry': 'Ruler of the household',
-            'isabella': 'God is my oath',
-            'isabel': 'God is my oath',
-            'james': 'Supplanter, one who follows',
-            'jane': 'God is gracious',
-            'jason': 'Healer, to heal',
-            'jennifer': 'Fair, smooth, gentle',
-            'jessica': 'God beholds, wealth',
-            'john': 'God is gracious',
-            'joseph': 'God will increase',
-            'joshua': 'God is salvation',
-            'julia': 'Youthful, downy',
-            'justin': 'Just, righteous',
-            'katherine': 'Pure, clear',
-            'kayla': 'Laurel, crown',
-            'kevin': 'Handsome, kind, gentle',
-            'kimberly': 'Royal fortress meadow',
-            'laura': 'Laurel, honor, victory',
-            'lauren': 'Laurel, honor, victory',
-            'lily': 'Lily flower, purity',
-            'linda': 'Beautiful, pretty',
-            'lisa': 'God is my oath',
-            'lucas': 'Light, illumination',
-            'lucy': 'Light, illumination',
-            'madison': 'Son of Matthew',
-            'margaret': 'Pearl, precious',
-            'maria': 'Star of the sea, beloved',
-            'marie': 'Star of the sea, beloved',
-            'mark': 'Warlike, dedicated to Mars',
-            'mary': 'Star of the sea, beloved',
-            'matthew': 'Gift of God',
-            'megan': 'Pearl, strong, capable',
-            'michael': 'Who is like God',
-            'michelle': 'Who is like God',
-            'natalie': 'Birthday, Christmas',
-            'nicholas': 'Victory of the people',
-            'nicole': 'Victory of the people',
-            'noah': 'Rest, comfort',
-            'olivia': 'Olive tree, peace',
-            'patricia': 'Noble, patrician',
-            'paul': 'Small, humble',
-            'rachel': 'Ewe, gentle',
-            'rebecca': 'To bind, to tie',
-            'richard': 'Strong ruler, brave power',
-            'robert': 'Bright fame, shining',
-            'ryan': 'Little king',
-            'samuel': 'God has heard',
-            'sarah': 'Princess, noblewoman',
-            'sophia': 'Wisdom, knowledge',
-            'stephanie': 'Crown, garland',
-            'stephen': 'Crown, garland',
-            'susan': 'Lily, rose',
-            'taylor': 'Tailor, cutter of cloth',
-            'thomas': 'Twin',
-            'tyler': 'Tile maker, tiler',
-            'victoria': 'Victory, conqueror',
-            'william': 'Resolute protector',
-            'zoe': 'Life, living',
-            
-            // Additional popular names
-            'aiden': 'Little fire, fiery',
-            'alexis': 'Defender, helper',
-            'allison': 'Noble, exalted',
-            'amanda': 'Worthy of love, lovable',
-            'amy': 'Beloved, friend',
-            'andrea': 'Strong, courageous',
-            'angel': 'Messenger, angel',
-            'angelina': 'Messenger, angel',
-            'anthony': 'Priceless, highly praiseworthy',
-            'ashley': 'Ash tree meadow',
-            'austin': 'Great, magnificent',
-            'brandon': 'Broom-covered hill',
-            'brittany': 'From Britain',
-            'brooke': 'Small stream',
-            'caitlin': 'Pure, clear',
-            'caleb': 'Faithful, devoted',
-            'cameron': 'Crooked nose, bent river',
-            'carol': 'Song, melody',
-            'caroline': 'Free person',
-            'casey': 'Vigilant, watchful',
-            'cassandra': 'Helper of humanity',
-            'christina': 'Follower of Christ',
-            'christine': 'Follower of Christ',
-            'cody': 'Helpful, pillow',
-            'connor': 'Lover of hounds',
-            'crystal': 'Clear, brilliant',
-            'cynthia': 'Moon goddess',
-            'danielle': 'God is my judge',
-            'deborah': 'Bee, industrious',
-            'denise': 'Follower of Dionysus',
-            'dennis': 'Follower of Dionysus',
-            'derek': 'Ruler of the people',
-            'donald': 'World ruler, proud chief',
-            'donna': 'Lady, woman',
-            'dorothy': 'Gift of God',
-            'douglas': 'Dark water, dark stream',
-            'edward': 'Wealthy guardian',
-            'elaine': 'Light, bright',
-            'eleanor': 'Light, bright',
-            'eric': 'Eternal ruler',
-            'erica': 'Eternal ruler',
-            'erin': 'Ireland, peace',
-            'frances': 'Free person',
-            'franklin': 'Free landholder',
-            'gary': 'Spear, warrior',
-            'george': 'Farmer, earthworker',
-            'gerald': 'Rule of the spear',
-            'gloria': 'Glory, fame',
-            'gregory': 'Watchful, alert',
-            'harold': 'Army ruler',
-            'helen': 'Light, bright',
-            'irene': 'Peace',
-            'jack': 'God is gracious',
-            'jackson': 'Son of Jack',
-            'jacob': 'Supplanter, one who follows',
-            'jade': 'Precious green stone',
-            'jamie': 'Supplanter, one who follows',
-            'janet': 'God is gracious',
-            'jean': 'God is gracious',
-            'jeffrey': 'Peace, pledge',
-            'jeremy': 'God will uplift',
-            'jerry': 'Spear ruler',
-            'jesse': 'Gift, wealth',
-            'jill': 'Youthful, downy',
-            'joan': 'God is gracious',
-            'joanna': 'God is gracious',
-            'jordan': 'To flow down, descend',
-            'jose': 'God will increase',
-            'joy': 'Joy, happiness',
-            'juan': 'God is gracious',
-            'judith': 'Woman of Judea, praised',
-            'julie': 'Youthful, downy',
-            'karen': 'Pure, clear',
-            'kathleen': 'Pure, clear',
-            'kelly': 'Warrior, bright-headed',
-            'kenneth': 'Handsome, born of fire',
-            'kim': 'Royal fortress',
-            'kyle': 'Narrow, straight',
-            'larry': 'Laurel, honor',
-            'lawrence': 'Laurel, honor',
-            'leah': 'Gentle, delicate',
-            'leonard': 'Brave lion',
-            'lillian': 'Lily flower',
-            'linda': 'Beautiful, pretty',
-            'lisa': 'God is my oath',
-            'lori': 'Laurel, honor',
-            'louis': 'Famous warrior',
-            'marcus': 'Warlike, dedicated to Mars',
-            'maria': 'Star of the sea, beloved',
-            'marie': 'Star of the sea, beloved',
-            'marilyn': 'Star of the sea, beloved',
-            'martha': 'Lady, mistress',
-            'martin': 'Warlike, dedicated to Mars',
-            'melissa': 'Honey bee',
-            'melvin': 'Smooth brow, friend',
-            'morgan': 'Sea circle, great brightness',
-            'nancy': 'Grace, favor',
-            'nathan': 'Gift, given',
-            'nathaniel': 'Gift of God',
-            'norma': 'Pattern, rule',
-            'pamela': 'All honey, sweetness',
-            'peter': 'Rock, stone',
-            'philip': 'Lover of horses',
-            'phyllis': 'Green bough, foliage',
-            'randy': 'Shield wolf',
-            'raymond': 'Wise protector',
-            'rebecca': 'To bind, to tie',
-            'regina': 'Queen',
-            'roger': 'Famous spear',
-            'ronald': 'Ruler\'s counselor',
-            'rose': 'Rose flower',
-            'ruth': 'Friend, companion',
-            'samantha': 'Listener, name of God',
-            'sandra': 'Defender of people',
-            'scott': 'From Scotland',
-            'sean': 'God is gracious',
-            'sharon': 'Plain, flat area',
-            'shirley': 'Bright meadow',
-            'steven': 'Crown, garland',
-            'tammy': 'Palm tree',
-            'teresa': 'Harvester, reaper',
-            'terry': 'Ruler of the people',
-            'theresa': 'Harvester, reaper',
-            'timothy': 'Honoring God',
-            'tracy': 'Warrior, fighter',
-            'valerie': 'Strong, valiant',
-            'vanessa': 'Butterfly',
-            'vernon': 'Alder tree',
-            'vincent': 'Conquering',
-            'virginia': 'Maiden, pure',
-            'walter': 'Ruler of the army',
-            'wayne': 'Wagon maker, driver',
-            'wendy': 'Friend, blessed ring',
-            'zachary': 'God remembers'
-        };
+        this.nameDefinitions = window.NameReferenceData.NAME_DEFINITIONS;
     }
 
     getNameDefinition(name) {
@@ -518,7 +144,7 @@ class EnhancedNameDatabase {
 
     // Enhanced name data structure with religious and cultural metadata
     createEnhancedNameEntry(name, gender, count, year) {
-        const nameLower = name.toLowerCase();
+        const _nameLower = name.toLowerCase();
         
         return {
             name: name,
@@ -604,7 +230,7 @@ class EnhancedNameDatabase {
 
     calculateReligiousSignificance(name, gender) {
         const religions = this.getReligiousAssociations(name, gender);
-        const origins = this.getCulturalOrigins(name);
+        const _origins = this.getCulturalOrigins(name);
         
         let significance = 'none';
         
@@ -863,371 +489,13 @@ class EnhancedNameDatabase {
         return reactions;
     }
 
+    /**
+     * Linguistic tradition for a name. The table lives in name-origins.js;
+     * `gender` is accepted for call-site compatibility but never influenced the
+     * result.
+     */
     getLanguageOrigin(name, gender) {
-        const nameLower = name.toLowerCase();
-        
-        // Hebrew/Jewish names
-        const hebrewNames = ['aaron', 'abraham', 'adam', 'benjamin', 'daniel', 'david', 'elijah', 'ethan', 
-            'gabriel', 'isaac', 'jacob', 'jonah', 'joseph', 'joshua', 'levi', 'michael', 'noah', 'samuel',
-            'abigail', 'deborah', 'esther', 'hannah', 'judith', 'leah', 'miriam', 'naomi', 'rachel', 'rebecca', 'ruth', 'sarah',
-            'ari', 'ariel', 'asher', 'avi', 'avraham', 'baruch', 'caleb', 'chaim', 'dov', 'efraim', 'eli', 'eliezer',
-            'emanuel', 'ezra', 'gideon', 'haim', 'israel', 'jonathan', 'judah', 'kaleb', 'levi', 'malachi', 'menachem',
-            'mordechai', 'moshe', 'nathan', 'nehemiah', 'reuben', 'saul', 'shlomo', 'simeon', 'simon', 'solomon', 'uri',
-            'yakob', 'yosef', 'zachary', 'adina', 'aliza', 'ayala', 'batya', 'bracha', 'chana', 'chava', 'devorah',
-            'dina', 'eliana', 'elisheva', 'havah', 'ilana', 'leora', 'malka', 'michal', 'noa', 'rina', 'rivka',
-            'shira', 'tamar', 'tova', 'yael', 'yaffa', 'zahava', 'ziva'];
-        if (hebrewNames.includes(nameLower)) return 'hebrew';
-        
-        // Spanish/Hispanic names
-        const spanishNames = ['alejandro', 'antonio', 'carlos', 'diego', 'francisco', 'jose', 'juan', 'luis', 'miguel', 'pablo',
-            'adrian', 'alberto', 'alfonso', 'alvaro', 'andres', 'angel', 'arturo', 'benjamin', 'daniel', 'david',
-            'eduardo', 'emilio', 'enrique', 'ernesto', 'esteban', 'federico', 'felipe', 'fernando', 'gabriel',
-            'gerardo', 'guillermo', 'gustavo', 'hector', 'hugo', 'ignacio', 'javier', 'jesus', 'joaquin', 'jorge',
-            'leonardo', 'lorenzo', 'manuel', 'marcos', 'mario', 'martin', 'mateo', 'nicolas', 'oscar', 'patricio',
-            'pedro', 'rafael', 'ramon', 'raul', 'ricardo', 'roberto', 'rodrigo', 'ruben', 'samuel', 'sancho',
-            'santiago', 'sergio', 'tomas', 'vicente', 'ana', 'carmen', 'elena', 'isabella', 'lucia', 'maria',
-            'rosa', 'sofia', 'valentina', 'adriana', 'alicia', 'amparo', 'andrea', 'angela', 'antonia', 'beatriz',
-            'blanca', 'catalina', 'cecilia', 'clara', 'claudia', 'cristina', 'daniela', 'dolores', 'elisa', 'emilia',
-            'emma', 'esperanza', 'esther', 'eva', 'fatima', 'francisca', 'gabriela', 'gloria', 'ines', 'irene',
-            'isabel', 'josefa', 'juana', 'julia', 'laura', 'leonor', 'lola', 'lourdes', 'luisa', 'luz', 'magdalena',
-            'mar', 'margarita', 'marina', 'marta', 'mercedes', 'monica', 'natalia', 'nuria', 'patricia', 'paula',
-            'pilar', 'raquel', 'rocio', 'rosario', 'sandra', 'sara', 'silvia', 'susana', 'teresa', 'veronica', 'victoria'];
-        if (spanishNames.includes(nameLower)) return 'spanish';
-        
-        // Italian names
-        const italianNames = ['angelo', 'bruno', 'dante', 'giovanni', 'leonardo', 'lorenzo', 'marco', 'matteo',
-            'alessandro', 'andrea', 'antonio', 'carlo', 'claudio', 'dario', 'davide', 'domenico', 'emanuele',
-            'enrico', 'fabio', 'federico', 'filippo', 'francesco', 'gabriele', 'giacomo', 'gianluca', 'giorgio',
-            'giuseppe', 'luca', 'luigi', 'manuel', 'marcello', 'mario', 'massimo', 'michele', 'nicola', 'paolo',
-            'pietro', 'riccardo', 'roberto', 'salvatore', 'sergio', 'simone', 'stefano', 'tommaso', 'valentino',
-            'vincenzo', 'vittorio', 'alessandra', 'bianca', 'elena', 'francesca', 'gianna', 'giulia', 'isabella',
-            'lucia', 'sophia', 'adriana', 'alessia', 'alice', 'angela', 'anna', 'antonella', 'arianna', 'beatrice',
-            'camilla', 'carla', 'carlotta', 'caterina', 'chiara', 'claudia', 'daniela', 'elena', 'eleonora',
-            'elisa', 'elisabetta', 'federica', 'gabriella', 'giada', 'giovanna', 'greta', 'ilaria', 'irene',
-            'laura', 'liliana', 'lisa', 'lorena', 'luciana', 'luisa', 'margherita', 'maria', 'marina', 'marta',
-            'martina', 'michela', 'monica', 'nicole', 'paola', 'patrizia', 'raffaella', 'rebecca', 'roberta',
-            'rosa', 'sara', 'serena', 'silvia', 'simona', 'sofia', 'stefania', 'valentina', 'valeria', 'veronica', 'vittoria'];
-        if (italianNames.includes(nameLower)) return 'italian';
-        
-        // French names
-        const frenchNames = ['andre', 'antoine', 'pierre', 'louis', 'jean', 'henri', 'alexandre', 'alain', 'arnaud',
-            'baptiste', 'benoit', 'bernard', 'bruno', 'charles', 'christophe', 'claude', 'daniel', 'david',
-            'denis', 'didier', 'dominique', 'emile', 'eric', 'etienne', 'fabien', 'florian', 'francois',
-            'gabriel', 'gaston', 'georges', 'gerard', 'guillaume', 'hugo', 'jacques', 'jerome', 'joseph',
-            'julien', 'laurent', 'leon', 'luc', 'marc', 'marcel', 'mathieu', 'maxime', 'michel', 'nicolas',
-            'olivier', 'pascal', 'patrice', 'paul', 'philippe', 'quentin', 'raphael', 'remi', 'rene',
-            'robert', 'sebastien', 'simon', 'stephane', 'thierry', 'thomas', 'victor', 'vincent', 'xavier', 'yves',
-            'amelie', 'claire', 'juliette', 'marie', 'sophie', 'yvonne', 'adele', 'adrienne', 'agathe',
-            'agnes', 'aimee', 'alice', 'aline', 'anais', 'andre', 'angelique', 'anne', 'annette', 'ariane',
-            'aurelie', 'beatrice', 'brigitte', 'camille', 'caroline', 'catherine', 'cecile', 'celine', 'chantal',
-            'charlotte', 'chloe', 'christine', 'claire', 'clemence', 'colette', 'corinne', 'danielle', 'delphine',
-            'denise', 'diane', 'dominique', 'eleonore', 'elise', 'eloise', 'emilie', 'emmanuelle', 'estelle',
-            'florence', 'francoise', 'genevieve', 'helene', 'henriette', 'isabelle', 'jacqueline', 'jeanne',
-            'josephine', 'julie', 'laetitia', 'laure', 'laurence', 'lea', 'leonie', 'louise', 'lucille',
-            'lucie', 'madeleine', 'manon', 'marguerite', 'marianne', 'marine', 'martine', 'mathilde', 'melanie',
-            'michele', 'monique', 'nadine', 'nathalie', 'nicole', 'odette', 'pascale', 'paulette', 'pauline',
-            'sandrine', 'simone', 'solange', 'stephanie', 'suzanne', 'sylvie', 'therese', 'valerie', 'veronique', 'virginie'];
-        if (frenchNames.includes(nameLower)) return 'french';
-        
-        // Arabic names
-        const arabicNames = ['ahmed', 'ali', 'hassan', 'ibrahim', 'khalid', 'mohammed', 'omar', 'rashid',
-            'aisha', 'fatima', 'leila', 'nadia', 'yasmin', 'zara', 'abdullah', 'abdulrahman', 'abdul', 'adel',
-            'adnan', 'ahmad', 'akram', 'amin', 'anwar', 'asad', 'aziz', 'bilal', 'faisal', 'farid', 'fawaz',
-            'hamid', 'hani', 'hakim', 'hussein', 'jamal', 'kamal', 'karim', 'kareem', 'mahdi', 'majid', 'malik',
-            'mansour', 'marwan', 'mustafa', 'nabil', 'nadir', 'nasir', 'omar', 'qasim', 'rami', 'rashad',
-            'saad', 'sabir', 'said', 'salah', 'saleh', 'salim', 'sami', 'tariq', 'walid', 'wassim', 'yusuf', 'zaki',
-            'aaliyah', 'abeer', 'adila', 'afaf', 'amal', 'amani', 'amina', 'amira', 'aya', 'ayat', 'aziza',
-            'basma', 'bushra', 'dalia', 'dina', 'farah', 'farida', 'fatin', 'habiba', 'hala', 'hanan', 'hiba',
-            'iman', 'inas', 'inaya', 'jameela', 'jamila', 'karima', 'khadija', 'laila', 'lamia', 'latifa',
-            'layla', 'lina', 'lubna', 'maha', 'malak', 'mariam', 'maryam', 'mona', 'nada', 'nadine', 'naima',
-            'najwa', 'noor', 'noura', 'raja', 'rana', 'rania', 'rasha', 'reem', 'sabah', 'safa', 'sahar',
-            'salma', 'samira', 'sana', 'sanaa', 'sara', 'sarah', 'shadha', 'suhair', 'sumaya', 'wafa', 'yasmin', 'zahra', 'zaynab'];
-        if (arabicNames.includes(nameLower)) return 'arabic';
-        
-        // Irish names
-        const irishNames = ['aiden', 'brendan', 'connor', 'declan', 'finn', 'liam', 'patrick', 'sean',
-            'aisling', 'ciara', 'maeve', 'niamh', 'siobhan', 'aidan', 'art', 'brian', 'cian', 'cillian',
-            'ciaran', 'colm', 'conall', 'conan', 'cormac', 'darragh', 'dermot', 'donal', 'eamon', 'eoin',
-            'fergal', 'fergus', 'finbar', 'fionn', 'garrett', 'kevin', 'killian', 'lorcan', 'malachy',
-            'micheal', 'niall', 'oisin', 'oscar', 'padraig', 'ronan', 'rory', 'ruairi', 'ryan', 'seamus',
-            'tadhg', 'tiernan', 'aife', 'ailbhe', 'aine', 'aoife', 'brigid', 'caoimhe', 'clodagh', 'deirdre',
-            'eabha', 'eilis', 'eimear', 'emma', 'erin', 'fiona', 'grainne', 'kate', 'kathleen', 'keira',
-            'mairead', 'maureen', 'muireann', 'nessa', 'niamh', 'nora', 'nuala', 'orla', 'roisin', 'sadhbh',
-            'saoirse', 'shannon', 'sinead', 'sorcha', 'una'];
-        if (irishNames.includes(nameLower)) return 'irish';
-        
-        // Slavic names
-        const slavicNames = ['boris', 'dmitri', 'igor', 'ivan', 'mikhail', 'nikolai', 'vladimir',
-            'aleksandr', 'aleksei', 'andrei', 'anton', 'artem', 'bogdan', 'daniil', 'denis', 'evgeny',
-            'fyodor', 'gennady', 'georgy', 'grigory', 'ilya', 'kirill', 'leonid', 'maxim', 'oleg', 'pavel',
-            'petr', 'roman', 'sergei', 'stanislav', 'timur', 'vadim', 'valentin', 'valery', 'vasily', 'viktor',
-            'vitaly', 'vladislav', 'yaroslav', 'yuri', 'anastasia', 'katerina', 'natasha', 'olga', 'svetlana',
-            'alexandra', 'alina', 'alla', 'anna', 'daria', 'diana', 'ekaterina', 'elena', 'elizaveta', 'galina',
-            'irina', 'julia', 'kira', 'larisa', 'lyudmila', 'margarita', 'maria', 'marina', 'nadia', 'natalia',
-            'nina', 'oksana', 'polina', 'raisa', 'sofia', 'tamara', 'tatiana', 'valentina', 'vera', 'victoria',
-            'yana', 'yelena', 'yulia', 'zoya'];
-        if (slavicNames.includes(nameLower)) return 'slavic';
-        
-        // Greek names
-        const greekNames = ['alexander', 'andreas', 'constantine', 'dimitri', 'nicholas', 'peter', 'theodore',
-            'alexandra', 'athena', 'chloe', 'elena', 'sophia', 'zoe', 'achilles', 'anastasios', 'angelos', 'antonis',
-            'apostolos', 'aris', 'athanasios', 'christos', 'costas', 'demetrios', 'elias', 'evangelos', 'georgios',
-            'giorgos', 'giannis', 'ioannis', 'jason', 'konstantinos', 'leonidas', 'lucas', 'markos', 'marios',
-            'michalis', 'nikos', 'odysseus', 'panagiotis', 'paris', 'pavlos', 'spyros', 'stavros', 'stefanos',
-            'thanasis', 'thanos', 'vasilis', 'yannis', 'adriana', 'agapi', 'aikaterini', 'anastasia', 'androniki',
-            'angeliki', 'anna', 'antigone', 'ariadne', 'artemis', 'calliope', 'cassandra', 'daphne', 'despina',
-            'dimitra', 'eirini', 'eleftheria', 'eleni', 'evangelia', 'georgia', 'helen', 'ioanna', 'irene',
-            'kalliope', 'katerina', 'maria', 'marina', 'melina', 'niki', 'olympia', 'panagiota', 'penelope',
-            'persephone', 'photini', 'rhea', 'sofia', 'stavroula', 'theodora', 'vasiliki', 'xenia'];
-        if (greekNames.includes(nameLower)) return 'greek';
-        
-        // Chinese names (first/given names)
-        const chineseNames = ['wei', 'mei', 'ling', 'ming', 'jing', 'yang', 'xin', 'yun', 'fang', 'hong', 
-            'qiang', 'hui', 'jun', 'lei', 'xia', 'yan', 'ying', 'yu', 'tao', 'chen', 'li', 'jie', 'qing',
-            'xiuying', 'fengying', 'xiuzhen', 'guiying', 'jinhua', 'yinhua', 'guilan', 'xiulan', 'yuzhen',
-            'hao', 'haoran', 'yuxuan', 'zihan', 'yichen', 'zixuan', 'xinyi', 'yihan', 'ruoxi', 'yutong',
-            'mengqi', 'kexin', 'wanting', 'yuxin', 'shihan', 'yiting', 'yiyi',
-            'an', 'bao', 'bei', 'bin', 'bo', 'chao', 'cheng', 'chun', 'dan', 'dong', 'fei', 'feng', 'gang',
-            'guo', 'guang', 'hai', 'han', 'he', 'hong', 'hua', 'jia', 'jian', 'jiang', 'jie', 'jin', 'kai',
-            'kang', 'kun', 'lan', 'lei', 'li', 'liang', 'lin', 'liu', 'long', 'lun', 'min', 'ming', 'nan',
-            'ning', 'peng', 'ping', 'qi', 'qian', 'qiang', 'qin', 'qing', 'qiu', 'quan', 'ran', 'rong',
-            'ru', 'rui', 'ruo', 'shan', 'sheng', 'shi', 'shu', 'shuai', 'song', 'tao', 'tian', 'wei', 'wen',
-            'wu', 'xi', 'xia', 'xiang', 'xiao', 'xin', 'xiong', 'xu', 'xuan', 'xue', 'ya', 'yan', 'yang',
-            'yao', 'ye', 'yi', 'yin', 'ying', 'yong', 'you', 'yuan', 'yue', 'yun', 'ze', 'zhen', 'zheng',
-            'zhi', 'zhong', 'zhou', 'zhu', 'zi'];
-        if (chineseNames.includes(nameLower)) return 'chinese';
-        
-        // Japanese names (first/given names)
-        const japaneseNames = ['hiroshi', 'takashi', 'akira', 'kenji', 'yuki', 'haruto', 'ren', 'sota',
-            'sakura', 'yui', 'aoi', 'hina', 'rina', 'nozomi', 'kokoro', 'himari', 'minato', 'riku',
-            'yuto', 'hayato', 'shota', 'daiki', 'kenta', 'ryota', 'takumi', 'yuji', 'tatsuya', 'naoki',
-            'koji', 'masato', 'ryo', 'kazuki', 'shinji', 'makoto', 'satoshi', 'yuta', 'daisuke',
-            'ayaka', 'emi', 'kaori', 'mika', 'ai', 'misaki', 'aiko', 'yoko', 'keiko', 'tomoko',
-            'naoko', 'akiko', 'yuka', 'maki', 'asuka', 'aya', 'nana', 'haruka', 'mai', 'rika',
-            'hinata', 'mei', 'tsubasa', 'sora', 'kohaku', 'kaito', 'takeru', 'yuma', 'yuuki'];
-        if (japaneseNames.includes(nameLower)) return 'japanese';
-        
-        // Korean names (first/given names)
-        const koreanNames = ['jihoon', 'minjun', 'seojun', 'hayoon', 'seoyeon', 'jiwoo', 'sumin', 'yuna',
-            'minho', 'seoah', 'doyoon', 'hajun', 'jaemin', 'jihyun', 'soojin', 'minji', 'jisu', 'hyejin',
-            'minseo', 'soyeon', 'eunji', 'jiyeon', 'yejin', 'chaeyoung', 'dahyun', 'nayeon', 'jieun',
-            'taehyung', 'jungkook', 'namjoon', 'yoongi', 'hoseok', 'jimin', 'seokjin', 'hyunwoo',
-            'jaehyun', 'donghyun', 'youngjae', 'wooyoung', 'san', 'hongjoong', 'seonghwa', 'yeosang',
-            'hyunjin', 'felix', 'changbin', 'jisung', 'seungmin', 'jeongin', 'minho', 'chan',
-            'eunbi', 'chaewon', 'yuri', 'yena', 'chaeyeon', 'hyewon', 'hitomi', 'nako', 'minju',
-            'yujin', 'wonyoung', 'gaeul', 'liz', 'rei', 'leeseo'];
-        if (koreanNames.includes(nameLower)) return 'korean';
-        
-        // Vietnamese names (first/given names)
-        const vietnameseNames = ['minh', 'hieu', 'quang', 'tuan', 'hung', 'nam', 'anh', 'linh', 'mai', 
-            'thu', 'lan', 'hoa', 'thao', 'van', 'ngoc', 'ha', 'huong', 'phuong', 'yen', 'thanh',
-            'dung', 'duc', 'hoang', 'khanh', 'khoa', 'long', 'phat', 'phuc', 'tai', 'thang', 'tien',
-            'trinh', 'truong', 'vinh', 'vu', 'han', 'hanh', 'hong', 'loan', 'my', 'nhi', 'nhu',
-            'quynh', 'thi', 'trang', 'tu', 'uyen', 'xuan', 'bao', 'chi', 'dao', 'giang', 'kim',
-            'le', 'ly', 'nguyet', 'tam', 'thuy'];
-        if (vietnameseNames.includes(nameLower)) return 'vietnamese';
-        
-        // Filipino names (first/given names)
-        const filipinoNames = ['jose', 'maria', 'bayani', 'makisig', 'luningning', 'ligaya', 'tala',
-            'nathaniel', 'gabriel', 'althea', 'angel', 'jacob', 'juan', 'ramon', 'francisco', 'antonio',
-            'miguel', 'manuel', 'pedro', 'carlos', 'roberto', 'ricardo', 'ferdinand', 'rodrigo',
-            'rosario', 'carmen', 'luz', 'esperanza', 'concepcion', 'pilar', 'gloria', 'mercedes',
-            'lourdes', 'josefina', 'trinidad', 'milagros', 'victoria', 'aurora', 'corazon', 'dolores',
-            'kristine', 'joshua', 'john', 'mark', 'christian', 'angelo', 'james', 'daniel', 'paul',
-            'andrea', 'sophia', 'isabella', 'nicole', 'samantha', 'angela', 'princess', 'maxine'];
-        if (filipinoNames.includes(nameLower)) return 'filipino';
-        
-        // Thai names (first/given names)
-        const thaiNames = ['somchai', 'chai', 'korn', 'anurak', 'niran', 'ploy', 'aranya', 'chalita',
-            'somsak', 'somboon', 'somkiat', 'somporn', 'suchart', 'surachai', 'surin', 'thawat', 'wichai',
-            'anong', 'arunee', 'benjawan', 'boonsri', 'busaba', 'chantana', 'kultida', 'malee', 'nittaya',
-            'pranee', 'rattana', 'saengdao', 'siriwan', 'sombat', 'somjit', 'suchada', 'supaporn',
-            'chanathip', 'pawin', 'theerathon', 'supachai', 'krit', 'thanawat', 'apinya', 'napasorn',
-            'pimchanok', 'baifern', 'aom', 'mai', 'bow', 'mint', 'namtarn', 'yaya'];
-        if (thaiNames.includes(nameLower)) return 'thai';
-        
-        // Indonesian names (first/given names)
-        const indonesianNames = ['budi', 'agus', 'joko', 'dewi', 'siti', 'putri', 'adi', 'rudi',
-            'ahmad', 'bambang', 'hadi', 'irwan', 'slamet', 'sutrisno', 'wawan', 'yanto', 'andri',
-            'eko', 'hendra', 'indra', 'rio', 'wahyu', 'yudi', 'dodi', 'andi', 'dimas', 'fajar',
-            'ani', 'endang', 'fatimah', 'ika', 'lestari', 'maya', 'nur', 'ratih', 'rina', 'sarah',
-            'tari', 'wati', 'yuni', 'ayu', 'dian', 'fitri', 'indah', 'mega', 'novita', 'puspita',
-            'angga', 'bayu', 'cahya', 'dwi', 'galih', 'putra', 'rama', 'satria'];
-        if (indonesianNames.includes(nameLower)) return 'indonesian';
-        
-        // Indian names (first/given names) - India has regional diversity
-        const indianNames = ['ravi', 'raj', 'krishna', 'arjun', 'aarav', 'shivansh', 'dhruv', 'vihaan',
-            'priya', 'ananya', 'aadhya', 'saanvi', 'aditi', 'diya', 'kavya', 'anika', 'amit', 'anil',
-            'ashok', 'deepak', 'dinesh', 'kiran', 'manoj', 'prakash', 'rajesh', 'sandeep', 'sunil',
-            'vijay', 'vivek', 'ankur', 'gaurav', 'mohit', 'nikhil', 'pankaj', 'rahul', 'rohan', 'sumit',
-            'anjali', 'asha', 'geeta', 'jaya', 'kamala', 'lakshmi', 'meera', 'neha', 'pooja', 'radha',
-            'rekha', 'sanjana', 'shreya', 'sonia', 'sunita', 'swati', 'tanvi', 'usha', 'vandana',
-            'aaditya', 'advait', 'ayaan', 'dev', 'ishaan', 'kabir', 'reyansh', 'vivaan', 'yash',
-            'aarohi', 'ahana', 'anaya', 'ishita', 'jhanvi', 'kiara', 'myra', 'navya', 'pari', 'riya',
-            'sara', 'tara', 'zara', 'aanya', 'avni'];
-        if (indianNames.includes(nameLower)) return 'indian';
-        
-        // Pakistani names (first/given names)
-        const pakistaniNames = ['ali', 'hassan', 'usman', 'zain', 'ahmed', 'abdullah', 'muhammad', 'hamza',
-            'omar', 'bilal', 'faisal', 'imran', 'kamran', 'arslan', 'asad', 'fahad', 'haider', 'junaid',
-            'saqib', 'shahid', 'tariq', 'wasim', 'zahid', 'adnan', 'affan', 'anas', 'haris', 'hasan',
-            'ayesha', 'fatima', 'maryam', 'zainab', 'khadija', 'aisha', 'amina', 'bushra', 'farah',
-            'hira', 'mahnoor', 'mehwish', 'nida', 'rabia', 'saba', 'sadia', 'saira', 'sana', 'shaista',
-            'sidra', 'uzma', 'zara', 'aleena', 'amna', 'anum', 'hajra', 'iman', 'laiba', 'malaika'];
-        if (pakistaniNames.includes(nameLower)) return 'pakistani';
-        
-        // Bangladeshi names (first/given names)
-        const bangladeshiNames = ['rahim', 'karim', 'jamil', 'arif', 'taslima', 'nusrat', 'anika',
-            'abul', 'aziz', 'habib', 'hanif', 'jahangir', 'mahbub', 'moin', 'najib', 'rafiq', 'rashid',
-            'salam', 'shakil', 'sharif', 'shafiq', 'tanvir', 'yasin', 'zahir', 'farid', 'hafiz', 'jalil',
-            'ayesha', 'farhana', 'fatema', 'hasina', 'jahanara', 'kulsum', 'mahmuda', 'nasrin', 'parvin',
-            'rehana', 'rozina', 'sabina', 'salma', 'shamima', 'sultana', 'tahera', 'yasmin', 'zakia',
-            'anjuman', 'firoza', 'hosneara', 'jannatul', 'monira', 'sharmin'];
-        if (bangladeshiNames.includes(nameLower)) return 'bangladeshi';
-        
-        // Persian/Iranian names (first/given names)
-        const persianNames = ['omid', 'reza', 'amir', 'dariush', 'cyrus', 'parisa', 'leila', 'nazanin', 'shirin',
-            'abbas', 'behnam', 'farhad', 'hamid', 'hossein', 'javad', 'karim', 'majid', 'mehdi', 'morteza',
-            'nasser', 'parviz', 'ramin', 'saeed', 'vahid', 'arash', 'babak', 'ehsan', 'farzad', 'kian',
-            'azadeh', 'farah', 'fatemeh', 'maryam', 'nasrin', 'zahra', 'laleh', 'mahsa', 'niloufar', 'roxana',
-            'sepideh', 'setareh', 'sima', 'soraya', 'taraneh', 'yasmin', 'yalda', 'anahita', 'darya', 'golnaz',
-            'mehrnoosh', 'neda', 'sadaf', 'sara', 'tara'];
-        if (persianNames.includes(nameLower)) return 'persian';
-        
-        // Turkish names (first/given names)
-        const turkishNames = ['emre', 'mehmet', 'mustafa', 'ahmet', 'yusuf', 'aylin', 'zeynep', 'elif', 'defne', 'asli',
-            'ali', 'can', 'cem', 'deniz', 'hakan', 'kemal', 'murat', 'onur', 'serkan', 'tamer', 'tolga',
-            'umut', 'volkan', 'baris', 'burak', 'caglar', 'engin', 'furkan', 'gokhan', 'halil', 'ismail',
-            'ayse', 'ebru', 'emine', 'fadime', 'fatma', 'gul', 'hatice', 'melek', 'nur', 'ozge', 'seda',
-            'selin', 'sevgi', 'tugba', 'yasemin', 'ada', 'aysun', 'beste', 'burcu', 'damla', 'duygu',
-            'esra', 'gamze', 'irem', 'merve', 'nehir', 'ozlem', 'pinar', 'sibel', 'simge'];
-        if (turkishNames.includes(nameLower)) return 'turkish';
-        
-        // Nigerian names (first/given names) - Yoruba, Igbo, Hausa
-        const nigerianNames = ['adebola', 'babatunde', 'olufemi', 'oluwaseun', 'temitope', 'ayodele', 'adebayo', 'oluwatobi',
-            'adebisi', 'funmilayo', 'yetunde', 'folake', 'adeola', 'oluwakemi', 'titilayo', 'omolara',
-            'chinedu', 'chinua', 'chukwuemeka', 'chioma', 'ngozi', 'chidi', 'emeka', 'obinna', 'uchenna',
-            'chiamaka', 'ifeoma', 'amaka', 'nneka', 'adaeze', 'chidinma', 'chinonso',
-            'abdullahi', 'abubakar', 'aminu', 'ibrahim', 'musa', 'usman', 'danjuma',
-            'aisha', 'hadiza', 'hauwa', 'khadija', 'rahma', 'zainab', 'fatima'];
-        if (nigerianNames.includes(nameLower)) return 'nigerian';
-        
-        // Ghanaian names (first/given names) - Akan day names
-        const ghanaianNames = ['kwame', 'kofi', 'kwabena', 'kwaku', 'yaw', 'kwesi', 'kodwo', 'kojo',
-            'ama', 'afua', 'abena', 'akua', 'aba', 'esi', 'adwoa',
-            'koffi', 'yao', 'ama', 'akosua', 'adjoua', 'akissi', 'akoua'];
-        if (ghanaianNames.includes(nameLower)) return 'ghanaian';
-        
-        // Ethiopian names (first/given names) - Amharic
-        const ethiopianNames = ['amanuel', 'dawit', 'tesfaye', 'solomon', 'yohannes', 'kebede', 'haile', 'bereket',
-            'selam', 'genet', 'hana', 'aster', 'meron', 'rahel', 'ruth', 'haben', 'lelise',
-            'abebe', 'alemayehu', 'desta', 'gebre', 'girma', 'mulugeta', 'tadesse', 'tekle',
-            'almaz', 'eleni', 'helen', 'marta', 'seble', 'tizita', 'tsion', 'yeshimebet'];
-        if (ethiopianNames.includes(nameLower)) return 'ethiopian';
-        
-        // Kenyan names (first/given names) - Swahili, Kikuyu, Luo
-        const kenyanNames = ['juma', 'mwangi', 'omari', 'baraka', 'hamisi', 'kamau', 'kariuki', 'njoroge',
-            'aisha', 'nia', 'zuri', 'amani', 'furaha', 'wambui', 'wanjiku', 'njeri',
-            'akinyi', 'atieno', 'awuor', 'adhiambo', 'onyango', 'ochieng', 'omondi', 'ouma',
-            'makena', 'mumbi', 'wangari', 'wanjiru', 'wairimu', 'muthoni'];
-        if (kenyanNames.includes(nameLower)) return 'kenyan';
-        
-        // South African names (first/given names) - Zulu, Xhosa, Sotho
-        const southAfricanNames = ['thabo', 'sipho', 'mandla', 'bongani', 'sifiso', 'sibusiso', 'thulani', 'nkosinathi',
-            'nomsa', 'zanele', 'precious', 'thandiwe', 'ntombi', 'noluthando', 'nokuthula', 'zandile',
-            'lungile', 'mpho', 'thato', 'tumelo', 'karabo', 'kgotso', 'lerato', 'kagiso',
-            'andile', 'ayanda', 'lunga', 'siyabonga', 'themba', 'xolani', 'yandisa', 'zolani'];
-        if (southAfricanNames.includes(nameLower)) return 'southafrican';
-        
-        // Egyptian names (first/given names)
-        const egyptianNames = ['ahmed', 'mohamed', 'youssef', 'omar', 'ali', 'mahmoud', 'hassan', 'mustafa',
-            'fatima', 'amina', 'layla', 'nour', 'yasmin', 'mariam', 'salma', 'heba',
-            'khaled', 'karim', 'tarek', 'amir', 'said', 'sherif', 'adel', 'sameh',
-            'dina', 'aya', 'sara', 'mona', 'rania', 'noha', 'hala', 'iman'];
-        if (egyptianNames.includes(nameLower)) return 'egyptian';
-        
-        // Zimbabwean names (first/given names) - Shona, Ndebele
-        const zimbabweanNames = ['tendai', 'tafadzwa', 'kudakwashe', 'tinashe', 'takudzwa', 'tatenda', 'farai',
-            'rudo', 'tariro', 'vimbai', 'chipo', 'nyasha', 'rufaro', 'ruvarashe', 'chenai',
-            'blessing', 'lovermore', 'patience', 'privilege', 'prosper', 'talent', 'trust',
-            'becktemba', 'sibusiso', 'nkosinathi', 'thulani'];
-        if (zimbabweanNames.includes(nameLower)) return 'zimbabwean';
-        
-        // Tanzanian/Swahili names (first/given names)
-        const swahiliNames = ['juma', 'salim', 'rashidi', 'hamisi', 'seif', 'bakari', 'said',
-            'asha', 'amani', 'neema', 'rehema', 'zuhura', 'subira', 'zawadi', 'faraja',
-            'bupe', 'mwanaidi', 'saada', 'safiya'];
-        if (swahiliNames.includes(nameLower)) return 'swahili';
-        
-        // Senegalese names (first/given names) - Wolof
-        const senegaleseNames = ['mamadou', 'cheikh', 'moussa', 'abdoulaye', 'ibrahima', 'ousmane', 'amadou',
-            'fatou', 'awa', 'ami', 'maimouna', 'khady', 'rokhaya', 'aissatou'];
-        if (senegaleseNames.includes(nameLower)) return 'senegalese';
-        
-        // Congolese names (first/given names)
-        const congoleseNames = ['jean', 'joseph', 'pierre', 'paul', 'jacques', 'francois', 'patrice',
-            'marie', 'anne', 'christine', 'grace', 'sylvie', 'celestine', 'clementine',
-            'blaise', 'pascal', 'emmanuel', 'justin', 'martin'];
-        if (congoleseNames.includes(nameLower)) return 'congolese';
-        
-        // Moroccan names (first/given names)
-        const moroccanNames = ['youssef', 'mehdi', 'amine', 'adam', 'hamza', 'ayoub', 'omar',
-            'khadija', 'samira', 'nadia', 'fatima', 'amina', 'yasmine', 'sarah',
-            'mohammed', 'rachid', 'karim', 'hassan', 'aziz'];
-        if (moroccanNames.includes(nameLower)) return 'moroccan';
-        
-        // Maori names (first/given names) - New Zealand
-        const maoriNames = ['tane', 'wiremu', 'rangi', 'hemi', 'manaia', 'aroha', 'moana', 'anahera', 'kiri', 'marama',
-            'kahu', 'matiu', 'rewi', 'tamati', 'whetu', 'awhina', 'hine', 'kora', 'mihi', 'ngaio',
-            'pania', 'roimata', 'tui', 'wiki'];
-        if (maoriNames.includes(nameLower)) return 'maori';
-        
-        // Pacific Islander names (first/given names) - Samoa, Tonga, Fiji
-        const pacificNames = ['mika', 'tupu', 'fetu', 'sione', 'lafaele', 'tasi', 'lani', 'leilani', 'sina', 'talia', 'moana',
-            'tui', 'latu', 'mele', 'ofa', 'sela', 'jone', 'peni', 'sakiusa', 'viliame', 'ratu',
-            'adi', 'mere', 'litia', 'sera', 'asenaca', 'losalini', 'alofa'];
-        if (pacificNames.includes(nameLower)) return 'pacific';
-        
-        // Mexican names (first/given names)
-        const mexicanNames = ['jose', 'carlos', 'miguel', 'juan', 'luis', 'antonio', 'francisco', 'jesus', 'diego', 'alejandro',
-            'maria', 'guadalupe', 'carmen', 'rosa', 'ana', 'isabel', 'margarita', 'veronica', 'fernanda', 'paola',
-            'santiago', 'mateo', 'sebastian', 'leonardo', 'emiliano', 'daniel', 'david', 'rafael',
-            'sofia', 'valentina', 'regina', 'victoria', 'isabella', 'camila', 'ximena', 'natalia'];
-        if (mexicanNames.includes(nameLower)) return 'mexican';
-        
-        // Brazilian names (first/given names)
-        const brazilianNames = ['joao', 'gabriel', 'lucas', 'miguel', 'pedro', 'arthur', 'bernardo', 'matheus', 'rafael', 'heitor',
-            'ana', 'maria', 'beatriz', 'camila', 'julia', 'leticia', 'amanda', 'vitoria', 'rafaela', 'fernanda',
-            'helena', 'alice', 'laura', 'manuela', 'valentina', 'sophia', 'isabella', 'heloisa', 'luisa',
-            'davi', 'samuel', 'enzo', 'lorenzo', 'theo'];
-        if (brazilianNames.includes(nameLower)) return 'brazilian';
-        
-        // Argentine names (first/given names)
-        const argentineNames = ['mateo', 'santiago', 'benjamin', 'thiago', 'lucas', 'bautista', 'tomas', 'francisco', 'nicolas', 'joaquin',
-            'sofia', 'emma', 'martina', 'isabella', 'valentina', 'lucia', 'emilia', 'catalina', 'mia', 'julieta',
-            'agustin', 'ignacio', 'facundo', 'juan', 'martin', 'felipe'];
-        if (argentineNames.includes(nameLower)) return 'argentine';
-        
-        // Colombian names (first/given names)
-        const colombianNames = ['santiago', 'sebastian', 'samuel', 'nicolas', 'daniel', 'mateo', 'alejandro', 'gabriel', 'andres', 'david',
-            'valentina', 'mariana', 'isabella', 'gabriela', 'daniela', 'sara', 'sofia', 'luciana', 'camila', 'maria',
-            'juan', 'carlos', 'miguel', 'diego', 'laura', 'natalia', 'carolina', 'andrea'];
-        if (colombianNames.includes(nameLower)) return 'colombian';
-        
-        // Chilean names (first/given names)
-        const chileanNames = ['mateo', 'agustin', 'santiago', 'tomas', 'lucas', 'benjamin', 'joaquin', 'martin', 'nicolas', 'matias',
-            'sofia', 'emilia', 'isabella', 'florencia', 'valentina', 'martina', 'antonia', 'maite', 'josefa', 'agustina',
-            'vicente', 'felipe', 'diego', 'ignacio', 'francisca', 'isidora'];
-        if (chileanNames.includes(nameLower)) return 'chilean';
-        
-        // Peruvian names (first/given names)
-        const peruvianNames = ['mateo', 'santiago', 'sebastian', 'nicolas', 'alejandro', 'diego', 'daniel', 'gabriel', 'adrian', 'joaquin',
-            'valentina', 'isabella', 'camila', 'luciana', 'mariana', 'gabriela', 'daniela', 'sara', 'sofia', 'mia',
-            'jose', 'luis', 'carlos', 'lucia', 'carmen', 'rosa'];
-        if (peruvianNames.includes(nameLower)) return 'peruvian';
-        
-        // Default to English for traditional Anglo-Saxon names
-        return 'english';
+        return window.NameOrigins.lookupLanguageOrigin(name);
     }
 
     getTraditionalSignificance(name, count, year) {
@@ -1638,7 +906,7 @@ class EnhancedNameDatabase {
             
             // Load and add non-binary names to nameData before indexing
             try {
-                console.log('🔍 Loading non-binary names for indexing...');
+                log.debug('🔍 Loading non-binary names for indexing...');
                 const nonBinaryNames = await this.getNonBinaryNames();
                 if (nonBinaryNames && nonBinaryNames.length > 0) {
                     let addedCount = 0;
@@ -1650,7 +918,7 @@ class EnhancedNameDatabase {
                             addedCount++;
                         }
                     });
-                    console.log(`✅ Added ${addedCount} non-binary names to database (${nonBinaryNames.length} total available)`);
+                    log.debug(`✅ Added ${addedCount} non-binary names to database (${nonBinaryNames.length} total available)`);
                 } else {
                     console.warn('⚠️ No non-binary names returned from getNonBinaryNames()');
                 }
@@ -1661,7 +929,7 @@ class EnhancedNameDatabase {
             
             this.buildIndexes();
             this.isLoaded = true;
-            console.log('✅ Enhanced name database fully loaded and indexed');
+            log.debug('✅ Enhanced name database fully loaded and indexed');
             return allNames;
         } catch (error) {
             console.error('Error loading enhanced name data:', error);
@@ -1680,7 +948,7 @@ class EnhancedNameDatabase {
                 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY'
             ];
             
-            console.log('🗺️ Loading state-specific name data...');
+            log.debug('🗺️ Loading state-specific name data...');
             
             for (const state of stateFiles) {
                 try {
@@ -1708,20 +976,20 @@ class EnhancedNameDatabase {
                         }
                     });
                     
-                    console.log(`✅ Loaded ${this.stateIndex[state].length} names for ${state}`);
+                    log.debug(`✅ Loaded ${this.stateIndex[state].length} names for ${state}`);
                 } catch (error) {
                     console.warn(`⚠️ Could not load data for state ${state}:`, error);
                 }
             }
             
-            console.log('🗺️ State data loading complete');
+            log.debug('🗺️ State data loading complete');
         } catch (error) {
             console.error('Error loading state data:', error);
         }
     }
 
     buildIndexes() {
-        console.log('🔨 Building comprehensive indexes for fast lookups...');
+        log.debug('🔨 Building comprehensive indexes for fast lookups...');
         
         // Clear existing indexes
         this.genderIndex = { 'M': [], 'F': [], 'NB': [] };
@@ -1831,12 +1099,12 @@ class EnhancedNameDatabase {
         // Sort all indexes by popularity
         this.sortIndexes();
         
-        console.log('✅ Comprehensive indexes built successfully!');
-        console.log(`📊 Gender index: M=${this.genderIndex.M.length}, F=${this.genderIndex.F.length}, NB=${this.genderIndex.NB.length}`);
-        console.log(`📏 Length index: short=${this.lengthIndex.short.length}, medium=${this.lengthIndex.medium.length}, long=${this.lengthIndex.long.length}, extra_long=${this.lengthIndex.extra_long.length}`);
-        console.log(`🔤 Vowel index: vowel=${this.vowelIndex.vowel.length}, consonant=${this.vowelIndex.consonant.length}`);
-        console.log(`⭐ Popularity index: very_popular=${this.popularityIndex.very_popular.length}, popular=${this.popularityIndex.popular.length}, uncommon=${this.popularityIndex.uncommon.length}`);
-        console.log(`🗺️ State indexes: ${Object.keys(this.stateGenderIndex).length} states loaded`);
+        log.debug('✅ Comprehensive indexes built successfully!');
+        log.debug(`📊 Gender index: M=${this.genderIndex.M.length}, F=${this.genderIndex.F.length}, NB=${this.genderIndex.NB.length}`);
+        log.debug(`📏 Length index: short=${this.lengthIndex.short.length}, medium=${this.lengthIndex.medium.length}, long=${this.lengthIndex.long.length}, extra_long=${this.lengthIndex.extra_long.length}`);
+        log.debug(`🔤 Vowel index: vowel=${this.vowelIndex.vowel.length}, consonant=${this.vowelIndex.consonant.length}`);
+        log.debug(`⭐ Popularity index: very_popular=${this.popularityIndex.very_popular.length}, popular=${this.popularityIndex.popular.length}, uncommon=${this.popularityIndex.uncommon.length}`);
+        log.debug(`🗺️ State indexes: ${Object.keys(this.stateGenderIndex).length} states loaded`);
     }
 
     sortIndexes() {
@@ -1894,54 +1162,54 @@ class EnhancedNameDatabase {
 
     // Efficient lookup methods using indexes
     getNamesByGenderAndLength(gender, length, limit = null) {
-        console.log(`🔍 Fast lookup: gender=${gender}, length=${length}`);
+        log.debug(`🔍 Fast lookup: gender=${gender}, length=${length}`);
         
         if (this.genderLengthIndex[gender] && this.genderLengthIndex[gender][length]) {
             const names = this.genderLengthIndex[gender][length];
-            console.log(`✅ Found ${names.length} names matching gender=${gender}, length=${length}`);
+            log.debug(`✅ Found ${names.length} names matching gender=${gender}, length=${length}`);
             return limit ? names.slice(0, limit) : names;
         }
         
-        console.log(`❌ No names found for gender=${gender}, length=${length}`);
+        log.debug(`❌ No names found for gender=${gender}, length=${length}`);
         return [];
     }
 
     getNamesByGender(gender, limit = null) {
-        console.log(`🔍 Fast lookup: gender=${gender}`);
+        log.debug(`🔍 Fast lookup: gender=${gender}`);
         
         if (this.genderIndex[gender]) {
             const names = this.genderIndex[gender];
-            console.log(`✅ Found ${names.length} names for gender=${gender}`);
+            log.debug(`✅ Found ${names.length} names for gender=${gender}`);
             return limit ? names.slice(0, limit) : names;
         }
         
-        console.log(`❌ No names found for gender=${gender}`);
+        log.debug(`❌ No names found for gender=${gender}`);
         return [];
     }
 
     getNamesByLength(length, limit = null) {
-        console.log(`🔍 Fast lookup: length=${length}`);
+        log.debug(`🔍 Fast lookup: length=${length}`);
         
         if (this.lengthIndex[length]) {
             const names = this.lengthIndex[length];
-            console.log(`✅ Found ${names.length} names for length=${length}`);
+            log.debug(`✅ Found ${names.length} names for length=${length}`);
             return limit ? names.slice(0, limit) : names;
         }
         
-        console.log(`❌ No names found for length=${length}`);
+        log.debug(`❌ No names found for length=${length}`);
         return [];
     }
 
     // Comprehensive lookup with all criteria
     getNamesByAllCriteria(state, gender, length, vowel, popularity, limit = null) {
-        console.log(`🎯 Comprehensive lookup: state=${state}, gender=${gender}, length=${length}, vowel=${vowel}, popularity=${popularity}`);
+        log.debug(`🎯 Comprehensive lookup: state=${state}, gender=${gender}, length=${length}, vowel=${vowel}, popularity=${popularity}`);
         
         let candidates = [];
         
         // Start with state-specific data if available
         if (state && this.stateGenderLengthIndex[state] && this.stateGenderLengthIndex[state][gender] && this.stateGenderLengthIndex[state][gender][length]) {
             candidates = this.stateGenderLengthIndex[state][gender][length];
-            console.log(`🗺️ Found ${candidates.length} state-specific candidates for ${state}`);
+            log.debug(`🗺️ Found ${candidates.length} state-specific candidates for ${state}`);
         } else if (gender && length) {
             // Fallback to national data - add safety checks
             if (this.genderLengthIndex[gender] && this.genderLengthIndex[gender][length]) {
@@ -1949,12 +1217,12 @@ class EnhancedNameDatabase {
             } else {
                 candidates = [];
             }
-            console.log(`🌍 Found ${candidates.length} national candidates`);
+            log.debug(`🌍 Found ${candidates.length} national candidates`);
         } else if (gender) {
             candidates = this.genderIndex[gender] || [];
-            console.log(`👤 Found ${candidates.length} gender candidates`);
+            log.debug(`👤 Found ${candidates.length} gender candidates`);
         } else {
-            console.log(`❌ No valid criteria provided`);
+            log.debug(`❌ No valid criteria provided`);
             return [];
         }
         
@@ -1962,45 +1230,45 @@ class EnhancedNameDatabase {
         if (vowel) {
             const vowelCandidates = this.genderVowelIndex[gender] && this.genderVowelIndex[gender][vowel] ? this.genderVowelIndex[gender][vowel] : [];
             candidates = candidates.filter(name => vowelCandidates.includes(name));
-            console.log(`🔤 After vowel filter: ${candidates.length} candidates`);
+            log.debug(`🔤 After vowel filter: ${candidates.length} candidates`);
         }
         
         if (popularity) {
             const popularityCandidates = this.genderPopularityIndex[gender] && this.genderPopularityIndex[gender][popularity] ? this.genderPopularityIndex[gender][popularity] : [];
             candidates = candidates.filter(name => popularityCandidates.includes(name));
-            console.log(`⭐ After popularity filter: ${candidates.length} candidates`);
+            log.debug(`⭐ After popularity filter: ${candidates.length} candidates`);
         }
         
-        console.log(`✅ Final result: ${candidates.length} candidates`);
+        log.debug(`✅ Final result: ${candidates.length} candidates`);
         return limit ? candidates.slice(0, limit) : candidates;
     }
 
     // State-specific lookups
     getNamesByStateAndGender(state, gender, limit = null) {
-        console.log(`🗺️ State lookup: state=${state}, gender=${gender}`);
+        log.debug(`🗺️ State lookup: state=${state}, gender=${gender}`);
         
         if (this.stateGenderIndex[state] && this.stateGenderIndex[state][gender]) {
             const names = this.stateGenderIndex[state][gender];
-            console.log(`✅ Found ${names.length} names for ${state} ${gender}`);
+            log.debug(`✅ Found ${names.length} names for ${state} ${gender}`);
             return limit ? names.slice(0, limit) : names;
         }
         
-        console.log(`❌ No names found for ${state} ${gender}`);
+        log.debug(`❌ No names found for ${state} ${gender}`);
         return [];
     }
 
     getNamesByStateGenderAndLength(state, gender, length, limit = null) {
-        console.log(`🗺️ State+Gender+Length lookup: state=${state}, gender=${gender}, length=${length}`);
+        log.debug(`🗺️ State+Gender+Length lookup: state=${state}, gender=${gender}, length=${length}`);
         
         if (this.stateGenderLengthIndex[state] && 
             this.stateGenderLengthIndex[state][gender] && 
             this.stateGenderLengthIndex[state][gender][length]) {
             const names = this.stateGenderLengthIndex[state][gender][length];
-            console.log(`✅ Found ${names.length} names for ${state} ${gender} ${length}`);
+            log.debug(`✅ Found ${names.length} names for ${state} ${gender} ${length}`);
             return limit ? names.slice(0, limit) : names;
         }
         
-        console.log(`❌ No names found for ${state} ${gender} ${length}`);
+        log.debug(`❌ No names found for ${state} ${gender} ${length}`);
         return [];
     }
 
@@ -2147,18 +1415,18 @@ class EnhancedNameDatabase {
     async getNonBinaryNames() {
         // Try to load pre-generated non-binary names file first (faster and more comprehensive)
         try {
-            console.log('📂 Attempting to fetch non-binary names from ../data/nonbinary-names.json');
+            log.debug('📂 Attempting to fetch non-binary names from ../data/nonbinary-names.json');
             const response = await fetch('../data/nonbinary-names.json');
-            console.log('📂 Fetch response status:', response.status, response.ok);
+            log.debug('📂 Fetch response status:', response.status, response.ok);
             if (response.ok) {
                 const data = await response.json();
-                console.log('📂 Parsed JSON, checking for names array...', data.names ? `Found ${data.names.length} names` : 'No names array found');
+                log.debug('📂 Parsed JSON, checking for names array...', data.names ? `Found ${data.names.length} names` : 'No names array found');
                 if (data.names && Array.isArray(data.names)) {
                     // Convert the pre-generated format to our internal format
                     const nonBinaryNames = data.names.map(nb => {
                         const nameLower = nb.nameLower || nb.name.toLowerCase();
-                        const maleVersion = this.nameData[`${nameLower}_M`];
-                        const femaleVersion = this.nameData[`${nameLower}_F`];
+                        const _maleVersion = this.nameData[`${nameLower}_M`];
+                        const _femaleVersion = this.nameData[`${nameLower}_F`];
                         const sourceVersion = this.getMostPopularVersion(nb.name) || {};
                         
                         // Convert years object to years array format (if available)
@@ -2190,7 +1458,7 @@ class EnhancedNameDatabase {
                         };
                     });
                     
-                    console.log(`✅ Loaded ${nonBinaryNames.length} non-binary names from pre-generated file`);
+                    log.debug(`✅ Loaded ${nonBinaryNames.length} non-binary names from pre-generated file`);
                     return nonBinaryNames;
                 }
             }
