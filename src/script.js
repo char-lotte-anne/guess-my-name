@@ -4715,16 +4715,10 @@ class NameGuessingQuiz {
             // Note: Only first names are included (no last names, emails, or other identifying info)
         };
         
-        // Create GitHub Issue with training data
-        // Note: This data (including first names if provided) will be visible in public GitHub Issues
-        const issueTitle = `Training Data: ${data.success !== undefined ? (data.success ? 'Success' : 'Failure') : 'Name Only'} - ${new Date(trainingData.timestamp).toISOString()}`;
-        const issueBody = `<!-- Training Data for Global Model -->
-\`\`\`json
-${JSON.stringify(trainingData, null, 2)}
-\`\`\`
-
-*This issue was automatically created for model training. It will be processed and closed by GitHub Actions.*`;
-
+        // The serverless function encrypts this payload (AES-256-GCM) and builds
+        // the issue itself. We deliberately do NOT construct the title or body
+        // here: the old title embedded the outcome in the clear, which leaks
+        // information about the person even when the body is encrypted.
         try {
             console.log('📤 Sending training data to GitHub via serverless function...', trainingData);
             
@@ -4738,8 +4732,7 @@ ${JSON.stringify(trainingData, null, 2)}
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    title: issueTitle,
-                    body: issueBody,
+                    trainingData,
                     labels: ['training-data', 'auto-generated']
                 })
             });
@@ -4788,6 +4781,7 @@ ${JSON.stringify(trainingData, null, 2)}
                     <button class="name-submit-btn" id="nameSubmitBtn">✨ Submit ✨</button>
                 </div>
                 <p class="name-input-note">This helps the spirits learn and improve their predictions!</p>
+                <p class="name-input-disclosure">Your name and quiz answers are sent to this project's GitHub repository to train the model. They are encrypted before being stored, and only the maintainer can read them. <a href="https://github.com/char-lotte-anne/guess-my-name/blob/main/PRIVACY_EXPLAINED.md" target="_blank" rel="noopener noreferrer">How this works</a></p>
             `;
         }
         

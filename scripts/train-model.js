@@ -11,6 +11,33 @@ const path = require('path');
 const TRAINING_DATA_FILE = process.env.TRAINING_DATA_FILE || 'data/training-data.json';
 const MODEL_DIR = path.join(__dirname, '..', 'model');
 const MIN_TRAINING_EXAMPLES = 10;
+// Size of the softmax output layer. Must match createModel() and the frontend.
+const OUTPUT_CLASSES = 1000;
+
+/**
+ * Work out which name an example should teach the model to predict.
+ *
+ * Two sources, in priority order:
+ *   1. realName -- the user typed their actual name in. Available on both
+ *      "Name Only" submissions and on failed guesses where they told us anyway.
+ *   2. correctGuess.name -- we guessed right and they confirmed it.
+ *
+ * Previously only source 2 was used, which meant a dataset of 24 submissions
+ * produced exactly 0 usable examples and the model could never train.
+ *
+ * Failed guesses without a realName return null. They carry only negative
+ * information ("not these three names"), which categorical crossentropy has no
+ * way to consume. The records are still kept in the dataset for future use.
+ */
+function getTrainingLabel(data) {
+    if (data.realName && typeof data.realName === 'string' && data.realName.trim()) {
+        return data.realName.trim();
+    }
+    if (data.success === true && data.correctGuess && data.correctGuess.name) {
+        return data.correctGuess.name;
+    }
+    return null;
+}
 
 // Ensure model directory exists
 if (!fs.existsSync(MODEL_DIR)) {
@@ -28,7 +55,7 @@ function createModel() {
             tf.layers.dense({ units: 64, activation: 'relu' }),
             tf.layers.dropout({ rate: 0.2 }),
             tf.layers.dense({ units: 32, activation: 'relu' }),
-            tf.layers.dense({ units: 1000, activation: 'softmax' }) // Output layer
+            tf.layers.dense({ units: OUTPUT_CLASSES, activation: 'softmax' }) // Output layer
         ]
     });
 
@@ -165,43 +192,58 @@ async function train() {
     }
 
     // Filter successful predictions only (for supervised learning)
-    const successfulData = trainingData.filter(data => 
-        data.success === true && data.correctGuess && data.correctGuess.name
-    );
+    const labelledData = trainingData
+        .map(data => ({ data, name: getTrainingLabel(data) }))
+        .filter(entry => entry.name && entry.data.answers);
 
-    console.log(`✅ Using ${successfulData.length} successful predictions for training`);
+    const fromRealName = labelledData.filter(e => e.data.realName).length;
+    const fromCorrectGuess = labelledData.length - fromRealName;
+    const failuresUsed = labelledData.filter(e => e.data.success === false).length;
 
-    if (successfulData.length < MIN_TRAINING_EXAMPLES) {
-        console.warn(`⚠️  Not enough successful predictions (${successfulData.length} < ${MIN_TRAINING_EXAMPLES})`);
+    console.log(`✅ Using ${labelledData.length} labelled examples for training`);
+    console.log(`   ${fromRealName} labelled from user-supplied realName, ${fromCorrectGuess} from confirmed correct guesses`);
+    console.log(`   (${failuresUsed} of these came from failed guesses where the user still told us their name)`);
+
+    if (labelledData.length < MIN_TRAINING_EXAMPLES) {
+        console.warn(`⚠️  Not enough labelled examples (${labelledData.length} < ${MIN_TRAINING_EXAMPLES})`);
+        console.warn('Skipping training. Collect more data first.');
         process.exit(0);
     }
 
     // Build name index
     const nameIndexMap = {};
-    successfulData.forEach(data => {
-        if (data.correctGuess && data.correctGuess.name) {
-            getNameIndex(data.correctGuess.name, nameIndexMap);
-        }
-    });
+    labelledData.forEach(entry => getNameIndex(entry.name, nameIndexMap));
 
-    console.log(`📝 Found ${Object.keys(nameIndexMap).length} unique names`);
+    const uniqueNames = Object.keys(nameIndexMap).length;
+    console.log(`📝 Found ${uniqueNames} unique names`);
+
+    if (uniqueNames > OUTPUT_CLASSES) {
+        console.warn(`⚠️  ${uniqueNames} unique names exceeds the ${OUTPUT_CLASSES}-way output layer.`);
+        console.warn('Names beyond the limit will be dropped. Increase OUTPUT_CLASSES and retrain.');
+    }
+
+    // A blunt but useful warning: this architecture has ~140k parameters and a
+    // 1000-way softmax. A few dozen examples will fit it almost perfectly and
+    // generalise poorly. Early accuracy numbers here are not meaningful.
+    if (labelledData.length < 500) {
+        console.warn(`⚠️  Only ${labelledData.length} examples against a ${OUTPUT_CLASSES}-way output layer.`);
+        console.warn('   Expect heavy overfitting. Treat reported accuracy as noise, not signal.');
+    }
 
     // Prepare features and labels
     const features = [];
     const labels = [];
 
-    for (const data of successfulData) {
-        if (data.answers && data.correctGuess && data.correctGuess.name) {
-            features.push(encodeAnswers(data.answers));
-            
-            // Create one-hot encoded label
-            const label = new Array(1000).fill(0);
-            const nameIndex = getNameIndex(data.correctGuess.name, nameIndexMap);
-            if (nameIndex < 1000) {
-                label[nameIndex] = 1;
-            }
-            labels.push(label);
-        }
+    for (const entry of labelledData) {
+        const nameIndex = getNameIndex(entry.name, nameIndexMap);
+        if (nameIndex >= OUTPUT_CLASSES) continue;
+
+        features.push(encodeAnswers(entry.data.answers));
+
+        // Create one-hot encoded label
+        const label = new Array(OUTPUT_CLASSES).fill(0);
+        label[nameIndex] = 1;
+        labels.push(label);
     }
 
     if (features.length === 0) {

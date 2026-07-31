@@ -1961,6 +1961,22 @@ body::after {
     font-style: italic;
 }
 
+/* Plain-language disclosure shown at the point where a name is collected.
+   Deliberately quieter than the prompt but not hidden. */
+.name-input-disclosure {
+    font-family: 'Bohemian Typewriter', sans-serif;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: rgba(0, 255, 136, 0.55);
+    margin: 0.75rem auto 0;
+    max-width: 32rem;
+}
+
+.name-input-disclosure a {
+    color: rgba(0, 255, 136, 0.8);
+    text-decoration: underline;
+}
+
 .correct:hover {
     background: linear-gradient(145deg, #8B2FC4, #7209b7);
     box-shadow: 0 8px 20px rgba(114, 9, 183, 0.4);

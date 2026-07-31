@@ -117,16 +117,16 @@ Our custom TensorFlow.js neural network:
 ## FAQ
 
 **Q: Does my data leave my computer?**  
-A: For local learning, no - everything stays in your browser's localStorage. However, if you provide feedback (correct/wrong guesses), training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues for global model training. This data will be visible in public GitHub Issues. Only first names are sent (no last names, emails, or other identifying info). You can use the app fully without providing your name or participating in global learning.
+A: For local learning, no - everything stays in your browser's localStorage. However, if you provide feedback (correct/wrong guesses), training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues for global model training. This data is encrypted (AES-256-GCM) and stored as GitHub Issues; other visitors cannot read it, though the project maintainer can. Only first names are sent (no last names, emails, or other identifying info). You can use the app fully without providing your name or participating in global learning.
 
 **Q: Can the developer see my data?**  
-A: No. There's no server, so the developer cannot access your localStorage.
+A: Your localStorage, no — that never leaves your browser and there is no server that can reach it. But if you submit feedback or your first name, that specific submission *is* sent to the project's repository, and the maintainer can decrypt and read it. They need to in order to train the model. Everything you keep to yourself stays on your device; everything you actively submit is visible to them.
 
 **Q: What if I clear my browser data?**  
 A: All stored training data will be deleted, and the model will start fresh.
 
 **Q: Does the model improve for other users based on my data?**  
-A: Optionally, yes - but only if you provide feedback. When you give feedback (correct/wrong guesses), training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues. This data is used to train a global model that improves predictions for all users. Your first name (if you provide it) is included because it's the most valuable data for training - it helps the model learn which names correspond to which characteristics. This data will be visible in public GitHub Issues. You can still use the app fully without providing your name or participating in global learning - your local learning will still work perfectly.
+A: Optionally, yes - but only if you provide feedback. When you give feedback (correct/wrong guesses), training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues. This data is used to train a global model that improves predictions for all users. Your first name (if you provide it) is included because it's the most valuable data for training - it helps the model learn which names correspond to which characteristics. This data is encrypted before being stored, so it is not readable by other visitors. You can still use the app fully without providing your name or participating in global learning - your local learning will still work perfectly.
 
 **Q: Is the trained model saved?**  
 A: No. The model only exists in memory during your browser session.
@@ -148,7 +148,7 @@ The application learns in two ways:
 1. When you provide feedback, training data (quiz answers + success/failure + your first name if you provide it) may be sent to GitHub Issues
 2. A global model is trained weekly from aggregated data from all users
 3. The global model is automatically downloaded from GitHub Releases
-4. This improves predictions for all users. Your first name (if provided) helps the model learn which names correspond to which characteristics - this is the most valuable training data. Note: This data will be visible in public GitHub Issues.
+4. This improves predictions for all users. Your first name (if provided) helps the model learn which names correspond to which characteristics - this is the most valuable training data. Note: This data is encrypted before it is stored.
 
 This provides the benefits of machine learning with both personalization and global improvements while maintaining privacy and user control.
 
@@ -168,15 +168,22 @@ The application now supports optional global learning to improve predictions for
    - Feedback (success/failure)
    - **First name (if you voluntarily provide it)** - This is the most valuable data for training the model to learn which names correspond to which characteristics
 3. **What Doesn't Get Sent**: Last names, email addresses, IP addresses, device identifiers, or any other identifying information beyond first names
-4. **Public Visibility**: Training data issues are visible in the public GitHub repository. If you provide your first name, it will be visible in these public issues.
+4. **Encrypted Before Storage**: Training data is stored as GitHub Issues in a public repository, but the contents are encrypted with AES-256-GCM before they are posted. Anyone can see that an issue exists; nobody can read what is inside it without the key, which is held only by the maintainer and the training workflow.
 5. **Automatic Model Updates**: A global model is trained weekly from aggregated data and automatically downloaded from GitHub Releases to improve predictions for all users
 
 **Privacy Guarantees for Global Learning:**
 - ✅ Only quiz answers, feedback, and first names (if voluntarily provided) are sent
 - ✅ No last names, emails, IP addresses, device IDs, or tracking information
-- ✅ Data is sent to public GitHub Issues (transparent and auditable)
+- ✅ Contents are encrypted before being published, so they are not readable by other visitors, search engines, or scrapers
 - ✅ You can still use the app fully without providing your name or participating in global learning
 - ✅ Providing your name is completely optional - the app works great without it
+
+**Being straight with you about the limits:**
+- ⚠️ Encryption protects your data from *other people*, not from the maintainer of this project. They hold the key and can read every submission. That is how the model gets trained.
+- ⚠️ Encrypted data is still *published* in a public repository. It is unreadable today, but it is permanently archived by third parties. If the key were ever leaked, past submissions could be read retroactively.
+- ⚠️ Submissions made before encryption was added (roughly issues #1–#24, Nov 2025) were stored in **plaintext** and are readable by anyone. If you submitted a name during that period and want it removed, open an issue or contact the maintainer.
+- ⚠️ A first name on its own is not very identifying. A first name combined with your birth decade, gender, languages, and values — which are all in the same submission — is considerably more so. This is the main reason the data is now encrypted.
+- ⚠️ Encryption means you can no longer independently audit what is being collected about you. The trade-off was deliberate: this document and the source code in `api/create-issue.js` are how you verify what is sent.
 
 **How It Works:**
 1. You complete a quiz and provide feedback (and optionally your first name)

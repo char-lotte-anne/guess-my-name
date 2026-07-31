@@ -1,0 +1,85 @@
+name: Train Global Model
+
+on:
+  schedule:
+    # Every Sunday at midnight UTC.
+    # NOTE: GitHub disables scheduled workflows after 60 days of repository
+    # inactivity and emails the owner. If runs stop appearing, re-enable the
+    # workflow from the Actions tab.
+    - cron: '0 0 * * 0'
+  workflow_dispatch:  # Allow manual trigger from the Actions tab
+
+# The default GITHUB_TOKEN is read-only on modern repos. Creating a release
+# needs contents: write. issues: read is enough now that we no longer close
+# processed issues.
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # No 'cache: npm' here on purpose: there is no package-lock.json
+          # anywhere in the repo, and setup-node hard-fails when it cannot
+          # find a lockfile to key the cache on.
+
+      - name: Install dependencies
+        run: npm install @tensorflow/tfjs-node @tensorflow/tfjs
+
+      - name: Collect training data
+        run: node scripts/collect-training-data.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          # Decrypts issue bodies written by api/create-issue.js.
+          # Must match TRAINING_DATA_KEY in the Vercel project.
+          TRAINING_DATA_KEY: ${{ secrets.TRAINING_DATA_KEY }}
+
+      - name: Train model
+        run: node scripts/train-model.js
+        env:
+          TRAINING_DATA_FILE: data/training-data.json
+
+      - name: Check if model was created
+        id: check-model
+        run: |
+          if [ -f "model/model.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "A model was produced; a release will be published."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No model was produced (not enough training data yet). Skipping release."
+          fi
+
+      - name: Create Release
+        if: steps.check-model.outputs.exists == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            model/model.json
+            model/*.bin
+            model/name-index.json
+          tag_name: model-v${{ github.run_number }}
+          name: Global Model v${{ github.run_number }}
+          body: |
+            Automated model training run.
+
+            - Run ID: ${{ github.run_id }}
+            - Commit: ${{ github.sha }}
+
+            Trained on aggregated user feedback. Clients pick this up on their
+            next visit via the releases API.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

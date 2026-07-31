@@ -1,0 +1,25 @@
+# Vercel ignore file
+# Files/directories that shouldn't be deployed to Vercel
+
+# Node modules (if any)
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files (should use Vercel environment variables instead)
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
